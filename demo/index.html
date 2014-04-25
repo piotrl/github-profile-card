@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>herp</title>
+  <link rel="stylesheet" href="style.css" />  
+  <script type="text/javascript">
+    // Generating new widget from user input
+    document.addEventListener('DOMContentLoaded', function() {
+
+      var $input = document.getElementById('gh-uname'),
+        $submit = document.getElementById('gh-uname-submit');
+
+      $submit.addEventListener('click', function (element) {
+        var widget = new GitHubWidget({ userName: $input.value });
+
+        element.preventDefault();
+      });
+    });
+  </script>
+</head>
+<body>
+  <!-- Load your own profile -->
+  <form action="" class="chose-user">
+    <input type="text" placeholder="GitHub username" id="gh-uname" />
+    <input type="submit" id="gh-uname-submit" value="send" />
+  </form>
+
+  <!-- Widget template -->
+  <div id="github-widget" data-username="piotrl"></div>
+  <script type="text/javascript" src="../dist/gh-profile-widget.js"></script>
+</body>
+</html>
