@@ -11,8 +11,8 @@ GitHubWidget = function (options) {
 
 	options = options || {};
 
-	this.template = document.getElementById(template);
-	this.user = options.userName || this.template.dataset.username;
+	this.$template = document.getElementById(template);
+	this.user = options.userName || this.$template.dataset.username;
 
 	this.url = {
 		api: "https://api.github.com/users/" + this.user,
@@ -126,7 +126,7 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 };
 
 GitHubWidget.prototype.render = function () {
-	var $root = this.template;
+	var $root = this.$template;
 
 	// clear root template element to prepare space for widget
 	while($root.hasChildNodes()) {
@@ -285,6 +285,7 @@ GitHubWidget.prototype.loadCSS = function() {
 	$style.href = scriptPath + "/../gh-profile-widget.css";
 
 	document.head.appendChild($style);
+	this.$template.className = "gh-profile-widget";
 
 	return $style.sheet;	
 };
