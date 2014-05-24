@@ -68,9 +68,11 @@
 		& {
 			position: relative;
 			clear: both;
-			border-top: 1px solid #DEDEDE;
-			padding: 10px;
 			margin: 0 -10px;
+			padding: 10px;
+			min-height: 40px;
+			
+			border-top: 1px solid #DEDEDE;
 			font-size: 0.8em;
 		}
 

@@ -44,6 +44,8 @@ GitHubWidget.prototype.load = function () {
 
 		this.error = null;
 
+		this.loadRepos();
+
 	} else {
 		var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
 		
@@ -66,7 +68,7 @@ GitHubWidget.prototype.load = function () {
 	}
 };
 
-GitHubWidget.prototype.getRepos = function () {
+GitHubWidget.prototype.loadRepos = function () {
 	var request = this.getURL(this.data.repos_url);
 
 	this.profile.repos = JSON.parse(request.responseText);  
@@ -78,6 +80,10 @@ GitHubWidget.prototype.getRepos = function () {
 
 	return this.profile.repos;
 };
+
+GitHubWidget.prototype.getRepos = function() {
+	return this.profile.repos;
+}
 
 GitHubWidget.prototype.getTopLanguages = function (callback) {
 	var langStats = []; // array of URL strings
@@ -110,7 +116,7 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 			for (k in repoLangs) {
 				if (repoLangs[k] !== undefined) {
 					sum += repoLangs[k];
-					this.langs[k] = this.langs[k] || 0;        
+					this.langs[k] = this.langs[k] || 0;    
 				}
 			}
 
@@ -125,7 +131,10 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 	};
 };
 
-GitHubWidget.prototype.render = function () {
+GitHubWidget.prototype.render = function (options) {
+	options = options || { sortyBy: "stars", labelText: "Most starred"};
+	console.log(options);
+
 	var $root = this.$template;
 
 	// clear root template element to prepare space for widget
@@ -158,16 +167,17 @@ GitHubWidget.prototype.render = function () {
 
 	// API doesen't return errors, try to built widget
 	var $profile = this.render.profile.bind(this)(),
-		$repos = this.render.repos.bind(this)();
+		$repos = this.render.repos.bind(this)(options.sortBy);
 
 	this.getTopLanguages((function () {
 		var $langs = this.render.langs.bind(this)();
 		$profile.appendChild($langs);
-	}).bind(this));
+	}).bind(this));		
+
 
 	var $reposHeader = document.createElement('span');
 	$reposHeader.className = "header";
-	$reposHeader.appendChild(document.createTextNode('Last updated repositories'));
+	$reposHeader.appendChild(document.createTextNode(options.labelText + ' repositories'));
 
 	$repos.insertBefore($reposHeader, $repos.firstChild);
 
@@ -175,14 +185,18 @@ GitHubWidget.prototype.render = function () {
 	$root.appendChild($repos);
 };
 
-GitHubWidget.prototype.render.repos = function () {
+GitHubWidget.prototype.render.repos = function (sortyBy) {
 	var reposData = this.getRepos();
 
 	var $reposList = document.createElement('div');
 
 	reposData.sort(function (a, b) {
 		// sorted by last commit
-		return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+		if (sortyBy == "stars") {
+			return b.stargazers_count - a.stargazers_count;
+		} else {
+			return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+		}
 	});
 
 	for (var i = 0; i < 5 && reposData[i]; i++) {
@@ -292,4 +306,4 @@ GitHubWidget.prototype.loadCSS = function() {
 
 })();
 
-new GitHubWidget();
+var widget = new GitHubWidget();

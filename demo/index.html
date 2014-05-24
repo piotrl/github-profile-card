@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
   <title>herp</title>
   <link rel="stylesheet" href="style.css" />  
-  <script type="text/javascript">
-    // Generating new widget from user input
-    document.addEventListener('DOMContentLoaded', function() {
-
-      var $input = document.getElementById('gh-uname'),
-        $submit = document.getElementById('gh-uname-submit');
-
-      $submit.addEventListener('click', function (element) {
-        var widget = new GitHubWidget({ userName: $input.value });
-
-        element.preventDefault();
-      });
-    });
-  </script>
 </head>
 <body>
   <!-- Load your own profile -->
-  <form action="" class="chose-user">
-    <input type="text" placeholder="GitHub username" id="gh-uname" />
-    <input type="submit" id="gh-uname-submit" value="send" />
-  </form>
+  <div class="config-section-left">
+    <form action="" class="tooltip choose-user">
+      <input type="text" placeholder="GitHub username" id="gh-uname" />
+      <input type="submit" id="gh-uname-submit" value="send" />
+    </form>
 
-  <!-- Widget template -->
-  <div id="github-widget" data-username="piotrl"></div>
+    <form action="" class="tooltip choose-repo-sorting">
+      <input type="radio" name="repo-sorting" id="last-updated" value="" checked />
+      <label for="last-updated" class="active">Last updated</label>
+      <br />
+      <input type="radio" name="repo-sorting" id="most-starred" value="" />
+      <label for="most-starred">Most starred</label>
+    </form>
+  </div>
+
+  <div class="content-section">
+    <!-- Widget template -->
+    <div id="github-widget" data-username="piotrl"></div>
+  </div>
+
   <script type="text/javascript" src="../dist/gh-profile-widget.js"></script>
+  <script type="text/javascript" src="demo.js"></script>
 </body>
 </html>

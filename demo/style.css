@@ -1,13 +1,25 @@
 /* Demo styles */
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #F4EADE;
   max-width: 650px;
   margin: 10px auto;
 }
 
-.chose-user {
+.config-section-left {
   float: left;
+  max-width: 200px;
+}
+
+.content-section {
+  float: left;
+}
+
+.tooltip {
   position: relative;
   display: block;
   box-shadow: 0 0 3px 1px #BBB;
@@ -18,14 +30,14 @@ body {
   margin-right: 15px;
 }
 
-.chose-user::before {
+.tooltip::before {
   content: '';
   position: absolute;
   display: block;
   width: 10px;
   height: 10px;
   right: -6px;
-  top: 8px;
+  top: 6px;
   background: inherit;
   border-right: 1px solid;
   border-bottom: 1px solid;
@@ -35,18 +47,32 @@ body {
   -ms-transform: rotate(-45deg);
 }
 
-.chose-user input[type="text"] {
+input[type="text"] {
   border: none;
   max-width: 100px;
   padding-right: 5px;
-  font-size: 0.7em;
 }
 
-.chose-user input[type="submit"] {
+input[type="submit"] {
   background: #D14836;
   color: #FFF;
   border: none;
   border-radius: 3px;
   padding: 3px 5px;
   font-size: 0.7em;
+}
+
+label {
+  font-size: 0.7em;
+}
+.choose-repo-sorting {
+  margin-top: 80px;
+}
+
+.choose-repo-sorting [type="radio"] {
+  display: none;
+}
+
+.active {
+  font-weight: bold;
 }
