@@ -1,15 +1,16 @@
-// var options = {
-//   userNameFrom: "template", // or "options"
-//   userName: piotrl,
-//   maxRepos: 5
-// }
 var GitHubWidget;
 (function() {
 
 GitHubWidget = function (options) {
 	var template = "github-widget";
 
-	options = options || {};
+	this.defaultConfig = {
+		sortBy: 'stars', // possible: 'stars', 'updateTime'
+		reposHeaderText: 'Most starred',
+		maxRepos: 5
+	}
+
+	options = options || this.defaultConfig;
 
 	this.$template = document.getElementById(template);
 	this.user = options.userName || this.$template.dataset.username;
@@ -25,7 +26,7 @@ GitHubWidget = function (options) {
 	this.profile = {};
 	this.langs = {};
 
-	// init widgiet
+	// load resources and render widget
 	this.init();
 };
 
@@ -35,7 +36,9 @@ GitHubWidget.prototype.init = function() {
 	this.render();
 };
 
-// first call API
+// first call to API
+// get all profile data
+
 GitHubWidget.prototype.load = function () {
 	var request = this.getURL(this.url.api);
 	this.data = JSON.parse(request.responseText);
@@ -132,7 +135,7 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 };
 
 GitHubWidget.prototype.render = function (options) {
-	options = options || { sortyBy: "stars", labelText: "Most starred"};
+	options = options || this.defaultConfig;
 	console.log(options);
 
 	var $root = this.$template;
@@ -166,31 +169,32 @@ GitHubWidget.prototype.render = function (options) {
 	}
 
 	// API doesen't return errors, try to built widget
-	var $profile = this.render.profile.bind(this)(),
-		$repos = this.render.repos.bind(this)(options.sortBy);
+	var $profile = this.render.profile.bind(this)();
 
 	this.getTopLanguages((function () {
 		var $langs = this.render.langs.bind(this)();
 		$profile.appendChild($langs);
 	}).bind(this));		
 
-
-	var $reposHeader = document.createElement('span');
-	$reposHeader.className = "header";
-	$reposHeader.appendChild(document.createTextNode(options.labelText + ' repositories'));
-
-	$repos.insertBefore($reposHeader, $repos.firstChild);
-
 	$root.appendChild($profile);
-	$root.appendChild($repos);
+
+	if (options.maxRepos > 0) {
+		var $repos = this.render.repos.bind(this)(options.sortBy, options.maxRepos),
+			$reposHeader = document.createElement('span');
+		$reposHeader.className = "header";
+		$reposHeader.appendChild(document.createTextNode(options.reposHeaderText + ' repositories'));
+
+		$repos.insertBefore($reposHeader, $repos.firstChild);
+		$root.appendChild($repos);
+	}
 };
 
-GitHubWidget.prototype.render.repos = function (sortyBy) {
+GitHubWidget.prototype.render.repos = function (sortyBy, maxRepos) {
 	var reposData = this.getRepos();
 
 	var $reposList = document.createElement('div');
 
-	reposData.sort(function (a, b) {
+	reposData.sort (function (a, b) {
 		// sorted by last commit
 		if (sortyBy == "stars") {
 			return b.stargazers_count - a.stargazers_count;
@@ -199,7 +203,7 @@ GitHubWidget.prototype.render.repos = function (sortyBy) {
 		}
 	});
 
-	for (var i = 0; i < 5 && reposData[i]; i++) {
+	for (var i = 0; i < maxRepos && reposData[i]; i++) {
 		var updated = new Date(reposData[i].updated_at);
 		var $repoLink = document.createElement('a');
 
