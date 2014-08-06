@@ -1,21 +1,22 @@
-// var options = {
-//   userNameFrom: "template", // or "options"
-//   userName: piotrl,
-//   maxRepos: 5
-// }
 var GitHubWidget;
 (function() {
 
 GitHubWidget = function (options) {
-	var template = "github-widget";
+	var template = 'github-widget';
 
-	options = options || {};
+	this.defaultConfig = {
+		sortBy: 'stars', // possible: 'stars', 'updateTime'
+		reposHeaderText: 'Most starred',
+		maxRepos: 5
+	};
+
+	options = options || this.defaultConfig;
 
 	this.$template = document.getElementById(template);
 	this.user = options.userName || this.$template.dataset.username;
 
 	this.url = {
-		api: "https://api.github.com/users/" + this.user,
+		api: 'https://api.github.com/users/' + this.user,
 		langs: []
 	};
 	
@@ -25,7 +26,7 @@ GitHubWidget = function (options) {
 	this.profile = {};
 	this.langs = {};
 
-	// init widgiet
+	// load resources and render widget
 	this.init();
 };
 
@@ -35,7 +36,9 @@ GitHubWidget.prototype.init = function() {
 	this.render();
 };
 
-// first call API
+// first call to API
+// get all profile data
+
 GitHubWidget.prototype.load = function () {
 	var request = this.getURL(this.url.api);
 	this.data = JSON.parse(request.responseText);
@@ -43,6 +46,8 @@ GitHubWidget.prototype.load = function () {
 	if (request.status === 200 ) {
 
 		this.error = null;
+
+		this.loadRepos();
 
 	} else {
 		var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
@@ -66,7 +71,7 @@ GitHubWidget.prototype.load = function () {
 	}
 };
 
-GitHubWidget.prototype.getRepos = function () {
+GitHubWidget.prototype.loadRepos = function () {
 	var request = this.getURL(this.data.repos_url);
 
 	this.profile.repos = JSON.parse(request.responseText);  
@@ -76,6 +81,10 @@ GitHubWidget.prototype.getRepos = function () {
 		this.url.langs.push(this.profile.repos[k].languages_url);
 	}
 
+	return this.profile.repos;
+};
+
+GitHubWidget.prototype.getRepos = function() {
 	return this.profile.repos;
 };
 
@@ -98,7 +107,7 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 
 		}, false);
 
-		request.open("GET", apiURL, true);
+		request.open('GET', apiURL, true);
 		request.send(null);
 	}, this);
 
@@ -110,7 +119,7 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 			for (k in repoLangs) {
 				if (repoLangs[k] !== undefined) {
 					sum += repoLangs[k];
-					this.langs[k] = this.langs[k] || 0;        
+					this.langs[k] = this.langs[k] || 0;
 				}
 			}
 
@@ -125,7 +134,10 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 	};
 };
 
-GitHubWidget.prototype.render = function () {
+GitHubWidget.prototype.render = function (options) {
+	options = options || this.defaultConfig;
+	console.log(options);
+
 	var $root = this.$template;
 
 	// clear root template element to prepare space for widget
@@ -135,8 +147,8 @@ GitHubWidget.prototype.render = function () {
 
 	// handle API errors
 	if (this.error) {
-		var $error = document.createElement("div");
-		$error.className = "error";
+		var $error = document.createElement('div');
+		$error.className = 'error';
 
 		$error.innerHTML = '<span>' + this.error.message + '</span>';
 
@@ -157,35 +169,41 @@ GitHubWidget.prototype.render = function () {
 	}
 
 	// API doesen't return errors, try to built widget
-	var $profile = this.render.profile.bind(this)(),
-		$repos = this.render.repos.bind(this)();
+	var $profile = this.render.profile.bind(this)();
 
 	this.getTopLanguages((function () {
 		var $langs = this.render.langs.bind(this)();
 		$profile.appendChild($langs);
 	}).bind(this));
 
-	var $reposHeader = document.createElement('span');
-	$reposHeader.className = "header";
-	$reposHeader.appendChild(document.createTextNode('Last updated repositories'));
-
-	$repos.insertBefore($reposHeader, $repos.firstChild);
-
 	$root.appendChild($profile);
-	$root.appendChild($repos);
+
+	if (options.maxRepos > 0) {
+		var $repos = this.render.repos.bind(this)(options.sortBy, options.maxRepos),
+			$reposHeader = document.createElement('span');
+		$reposHeader.className = 'header';
+		$reposHeader.appendChild(document.createTextNode(options.reposHeaderText + ' repositories'));
+
+		$repos.insertBefore($reposHeader, $repos.firstChild);
+		$root.appendChild($repos);
+	}
 };
 
-GitHubWidget.prototype.render.repos = function () {
+GitHubWidget.prototype.render.repos = function (sortyBy, maxRepos) {
 	var reposData = this.getRepos();
 
 	var $reposList = document.createElement('div');
 
 	reposData.sort(function (a, b) {
 		// sorted by last commit
-		return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+		if (sortyBy == 'stars') {
+			return b.stargazers_count - a.stargazers_count;
+		} else {
+			return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+		}
 	});
 
-	for (var i = 0; i < 5 && reposData[i]; i++) {
+	for (var i = 0; i < maxRepos && reposData[i]; i++) {
 		var updated = new Date(reposData[i].updated_at);
 		var $repoLink = document.createElement('a');
 
@@ -212,21 +230,21 @@ GitHubWidget.prototype.render.profile = function () {
 		$followers = document.createElement('span');
 
 	$name.href = this.data.html_url;
-	$name.className = "name";
+	$name.className = 'name';
 	$name.appendChild(document.createTextNode(this.data.name));
 	
 	$avatar.src = this.data.avatar_url;
-	$avatar.className = "avatar";
+	$avatar.className = 'avatar';
 
 	$followButton.href = $name.href;
-	$followButton.className = "follow-button";
-	$followButton.innerHTML = "Follow @" + this.user;
+	$followButton.className = 'follow-button';
+	$followButton.innerHTML = 'Follow @' + this.user;
 
 	$followers.href = this.data.followers_url;
-	$followers.className = "followers";
+	$followers.className = 'followers';
 	$followers.innerHTML = this.data.followers;
 
-	$followContainer.className = "followMe";
+	$followContainer.className = 'followMe';
 	$followContainer.appendChild($followButton);
 	$followContainer.appendChild($followers);
 
@@ -234,7 +252,7 @@ GitHubWidget.prototype.render.profile = function () {
 	$profile.appendChild($name);
 	$profile.appendChild($followContainer);
 	$profile.appendChild($stats);
-	$profile.classList.add("profile");
+	$profile.classList.add('profile');
 
 	return $profile;
 };
@@ -254,10 +272,10 @@ GitHubWidget.prototype.render.langs = function () {
 
 	// generating HTML structure
 	for (var i = 0; i < 3 && topLangs[i]; i++) {
-		$langsList.innerHTML += "<li>" + topLangs[i][0] + "</li>";
+		$langsList.innerHTML += '<li>' + topLangs[i][0] + '</li>';
 	}
 
-	$langsList.className = "languages";
+	$langsList.className = 'languages';
 	return $langsList;
 };
 
@@ -266,26 +284,26 @@ GitHubWidget.prototype.getURL = function (url, async) {
 	async = async || false;
 
 	var request = new XMLHttpRequest();
-		request.open("GET", url, async);
+		request.open('GET', url, async);
 		request.send();
 	
 	return request;
 };
 
 GitHubWidget.prototype.loadCSS = function() {
-	var $style = document.createElement("link"),
-		$scripts = document.getElementsByTagName("script"),
+	var $style = document.createElement('link'),
+		$scripts = document.getElementsByTagName('script'),
 		scriptPath;
 	
 	scriptPath = $scripts[$scripts.length-1].src;	// This works because the browser loads and executes scripts in order, 
 													// so while your script is executing, 
 													// the document it was included in 
 													// is sure to have your script element as the last one on the page
-	$style.rel = "stylesheet";
-	$style.href = scriptPath + "/../gh-profile-widget.css";
+	$style.rel = 'stylesheet';
+	$style.href = scriptPath + '/../gh-profile-widget.css';
 
 	document.head.appendChild($style);
-	this.$template.className = "gh-profile-widget";
+	this.$template.className = 'gh-profile-widget';
 
 	return $style.sheet;	
 };
