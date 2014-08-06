@@ -2,6 +2,7 @@
 // Generating new widget from user input
 document.addEventListener('DOMContentLoaded', function() {
 
+	var options = widget.defaultConfig;
 
 	// Sort repository acording to
 	// radio inputs on website
@@ -13,10 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		element.target.classList.add('active');
 		$sortingRadios[1].classList.remove('active');
 
-		widget.render({ 
-			sortBy: 'updateTime', 
-			labelText: element.target.textContent  
-		});
+		options.sortBy = 'updateTime';
+		options.reposHeaderText = element.target.textContent;
+
+		widget.render(options);
 
 	});
 
@@ -25,12 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
 		element.target.classList.add('active');
 		$sortingRadios[0].classList.remove('active');
 
-		widget.render({ 
-			sortBy: 'stars',
-			labelText: element.target.textContent 
-		});
-			
+		options.sortBy = 'stars';
+		options.reposHeaderText = element.target.textContent;
+
+		widget.render(options);
 	});
+
+	// Manipulating the number of repositories
+
+	var $inputNumber = document.getElementById('gh-reposNum');
+
+	$inputNumber.onchange = function() {
+		options.maxRepos = $inputNumber.value;
+
+		widget.render(options);
+	}
 
 	// Creating brand new widget instance
 	// for user that we type in input
@@ -43,5 +53,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		element.preventDefault();
 	});
-});
+ });
 

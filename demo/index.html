@@ -14,17 +14,25 @@
     </form>
 
     <form action="" class="tooltip choose-repo-sorting">
-      <input type="radio" name="repo-sorting" id="last-updated" value="" checked />
-      <label for="last-updated" class="active">Last updated</label>
+      <input type="radio" name="repo-sorting" id="last-updated" value=""  />
+      <label for="last-updated">Last updated</label>
       <br />
-      <input type="radio" name="repo-sorting" id="most-starred" value="" />
-      <label for="most-starred">Most starred</label>
+      <input type="radio" name="repo-sorting" id="most-starred" value="" checked/>
+      <label for="most-starred" class="active">Most starred</label>
     </form>
   </div>
 
   <div class="content-section">
+
     <!-- Widget template -->
     <div id="github-widget" data-username="piotrl"></div>
+  </div>
+
+  <div class="config-section-right">
+    <form action="" class="tooltip choose-repos-num">
+      <label for="gh-reposNum">repositories: </label>
+      <input type="number" min="0" max="10" value="5" id="gh-reposNum" />
+    </form>
   </div>
 
   <script type="text/javascript" src="../dist/gh-profile-widget.js"></script>

@@ -10,7 +10,8 @@ body {
   margin: 10px auto;
 }
 
-.config-section-left {
+.config-section-left,
+.config-section-right {
   float: left;
   max-width: 200px;
 }
@@ -47,10 +48,35 @@ body {
   -ms-transform: rotate(-45deg);
 }
 
-input[type="text"] {
+.config-section-right {
+  position: relative;
+  top: 125px;
+}
+
+.config-section-right .tooltip {
+  margin-left: 15px;
+}
+
+.config-section-right .tooltip::before {
+  left: -6px;
+  right: auto;
+
+  border: none;
+  border-top: 1px solid;
+  border-left: 1px solid;
+  border-color: inherit;
+}
+
+input[type="text"],
+input[type="number"] {
   border: none;
   max-width: 100px;
   padding-right: 5px;
+  font-size: 0.7em;
+}
+
+input[type="number"] {
+  max-width: 50px;
 }
 
 input[type="submit"] {
@@ -66,7 +92,8 @@ label {
   font-size: 0.7em;
 }
 .choose-repo-sorting {
-  margin-top: 80px;
+  position: relative;
+  top: 80px;
 }
 
 .choose-repo-sorting [type="radio"] {
