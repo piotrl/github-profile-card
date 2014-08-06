@@ -119,7 +119,7 @@ GitHubWidget.prototype.getTopLanguages = function (callback) {
 			for (k in repoLangs) {
 				if (repoLangs[k] !== undefined) {
 					sum += repoLangs[k];
-					this.langs[k] = this.langs[k] || 0;    
+					this.langs[k] = this.langs[k] || 0;
 				}
 			}
 
@@ -174,7 +174,7 @@ GitHubWidget.prototype.render = function (options) {
 	this.getTopLanguages((function () {
 		var $langs = this.render.langs.bind(this)();
 		$profile.appendChild($langs);
-	}).bind(this));		
+	}).bind(this));
 
 	$root.appendChild($profile);
 
@@ -194,7 +194,7 @@ GitHubWidget.prototype.render.repos = function (sortyBy, maxRepos) {
 
 	var $reposList = document.createElement('div');
 
-	reposData.sort (function (a, b) {
+	reposData.sort(function (a, b) {
 		// sorted by last commit
 		if (sortyBy == "stars") {
 			return b.stargazers_count - a.stargazers_count;
@@ -310,4 +310,4 @@ GitHubWidget.prototype.loadCSS = function() {
 
 })();
 
-var widget = new GitHubWidget();
+new GitHubWidget();
