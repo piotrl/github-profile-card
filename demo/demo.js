@@ -1,7 +1,6 @@
 
 // Generating new widget from user input
 document.addEventListener('DOMContentLoaded', function() {
-
 	var options = widget.defaultConfig;
 
 	// Sort repository acording to

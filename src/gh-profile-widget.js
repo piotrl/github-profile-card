@@ -310,4 +310,4 @@ GitHubWidget.prototype.loadCSS = function() {
 
 })();
 
-new GitHubWidget();
+var widget = new GitHubWidget();
