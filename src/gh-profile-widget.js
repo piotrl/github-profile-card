@@ -2,8 +2,8 @@ var GitHubWidget = (function() {
 	'use strict';
 
 	var GitHubWidget = function (options) {
-		var template = 'github-widget';
 		var defaultConfig = {
+			template: '#github-widget',
 			sortBy: 'stars', // possible: 'stars', 'updateTime'
 			reposHeaderText: 'Most starred',
 			maxRepos: 5
@@ -15,13 +15,8 @@ var GitHubWidget = (function() {
 			options[key] = options[key] || defaultConfig[key];
 		}
 
-		this.$template = document.getElementById(template);
+		this.$template = document.querySelector(options.template);
 		this.user = options.userName || this.$template.dataset.username;
-
-		this.url = {
-			api: 'https://api.github.com/users/' + this.user,
-			langs: []
-		};
 
 		this.error = null;
 		this.data = null;
@@ -39,9 +34,10 @@ var GitHubWidget = (function() {
 		var self = this;
 		apiLoader.getData(function(errors, result) {
 			self.data = apiLoader.getProfile();
+			self.repos = apiLoader.getRepos();
 			self.errors = errors;
 			self.url = apiLoader.getURLs();
-			self.render(options, apiLoader.getRepos());
+			self.render(options, self.repos);
 		});
 		
 		this.loadCSS();
@@ -233,8 +229,12 @@ var GitHubWidget = (function() {
 		return $langsList;
 	};
 
-	GitHubWidget.prototype.loadCSS = function() {
+	GitHubWidget.prototype.loadCSS = function () {
 		this.$template.className = 'gh-profile-widget';
+	};
+
+	GitHubWidget.prototype.refresh = function (options) {
+		this.render(options, this.repos);
 	};
 
 	return GitHubWidget;

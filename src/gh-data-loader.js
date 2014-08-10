@@ -32,13 +32,13 @@ var GitHubApiLoader = (function() {
 	};
 	
 	var getLangsURLs = function (repos) {
-		var langs = [];
+		var langsApiUrls = [];
 		
 		for (var k in repos) {
-			langs.push(repos[k].languages_url);
+			langsApiUrls.push(repos[k].languages_url);
 		}
 
-		return langs;
+		return langsApiUrls;
 	};
 
 	var ghLoader = function (userName) {
@@ -60,7 +60,8 @@ var GitHubApiLoader = (function() {
 			var reposPromise = loadJSON(result.repos_url);
 			reposPromise.success(function (repos) {
 				self.repos = repos;
-				self.url.langs = getLangsURLs(self.repos);			
+				self.url.langs = getLangsURLs(self.repos);
+				self.langs = getLangs();
 				callback(null, repos);
 			});
 			reposPromise.error(function (result) {
@@ -86,21 +87,19 @@ var GitHubApiLoader = (function() {
 			if (request.status === 404) {
 				error.isWrongUser = true;
 			}
-
 			callback(error, result);
 		});
 	};
 
-	ghLoader.prototype.getRepos = function() {
+	ghLoader.prototype.getRepos = function () {
 		return this.repos;
 	};
 
-	ghLoader.prototype.getProfile = function() {
+	ghLoader.prototype.getProfile = function () {
 		return this.profile;
 	};
 
-
-	ghLoader.prototype.getURLs = function() {
+	ghLoader.prototype.getURLs = function () {
 		return this.url;
 	};
 
