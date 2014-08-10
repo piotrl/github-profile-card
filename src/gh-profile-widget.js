@@ -1,88 +1,6 @@
 var GitHubWidget = (function() {
 	'use strict';
 
-	var GitHubApiLoader = (function() {
-
-		var getURL = function (url, async) {
-			async = async || false;
-
-			var request = new XMLHttpRequest();
-				request.open('GET', url, async);
-				request.send();
-			
-			return request;
-		};
-
-		var loadRepos = function (reposURL) {
-			var request = getURL(reposURL);
-
-			return JSON.parse(request.responseText);
-		};
-
-		var getLangsURLs = function (repos) {
-			var langs = [];
-			
-			for (var k in repos) {
-				langs.push(repos[k].languages_url);
-			}
-
-			return langs;
-		};
-
-		var ghLoader = function (userName) {
-			this.userName = userName;
-			this.url = {
-				api: 'https://api.github.com/users/' + userName,
-				langs: []
-			};
-			this.error = null;
-		};
-
-		// call GitHub API to get profile data
-		//
-		ghLoader.prototype.getData = function (callback) {
-			var request = getURL(this.url.api),
-				data = JSON.parse(request.responseText),
-				error = null;
-
-			if (request.status === 200 ) {
-				this.repos = loadRepos(data.repos_url);
-				this.url.langs = getLangsURLs(this.repos);
-			} else {
-				var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
-				error = {
-					message: data.message
-				};
-
-				if (Number(limitRequests) === 0) {
-					// API is blocked
-					var resetTime = request.getResponseHeader('X-RateLimit-Reset');
-					error.resetDate = new Date(resetTime * 1000);
-
-					// full message is too long, leave only important thing
-					error.message = error.message.split('(')[0]; 
-				}
-
-				if (request.status === 404) {
-					error.isWrongUser = true;
-				}
-			}
-
-			callback(error);
-			return data;
-		};
-
-		ghLoader.prototype.getRepos = function() {
-			return this.repos;
-		};
-
-		ghLoader.prototype.getURLs = function() {
-			return this.url;
-		};
-
-		return ghLoader;
-	}());
-
 	var GitHubWidget = function (options) {
 		var template = 'github-widget';
 		var defaultConfig = {
@@ -92,6 +10,10 @@ var GitHubWidget = (function() {
 		};
 
 		options = options || defaultConfig;
+
+		for(var key in defaultConfig) {
+			options[key] = options[key] || defaultConfig[key];
+		}
 
 		this.$template = document.getElementById(template);
 		this.user = options.userName || this.$template.dataset.username;
@@ -105,6 +27,7 @@ var GitHubWidget = (function() {
 		this.data = null;
 
 		this.profile = {};
+		this.repos = {};
 		this.langs = {};
 
 		// load resources and render widget
@@ -113,26 +36,22 @@ var GitHubWidget = (function() {
 
 	GitHubWidget.prototype.init = function(options) {
 		var apiLoader = new GitHubApiLoader(this.user);
-		this.data = apiLoader.getData(function(errors) {
-			this.errors = errors;
-		}.bind(this));
-
-		this.profile.repos = apiLoader.getRepos();
-		this.url = apiLoader.getURLs();
+		var self = this;
+		apiLoader.getData(function(errors, result) {
+			self.data = apiLoader.getProfile();
+			self.errors = errors;
+			self.url = apiLoader.getURLs();
+			self.render(options, apiLoader.getRepos());
+		});
+		
 		this.loadCSS();
-		this.render(options);
-	};
-
-	GitHubWidget.prototype.getRepos = function() {
-		return this.profile.repos;
 	};
 
 	GitHubWidget.prototype.getTopLanguages = function (callback) {
 		var langStats = []; // array of URL strings
-
 		// get URLs with language stats for each repository
 		this.url.langs.forEach(function (apiURL) {
-			var that = this,
+			var context = this,
 				request = new XMLHttpRequest();
 
 			request.addEventListener('load', function () {
@@ -140,8 +59,8 @@ var GitHubWidget = (function() {
 				var repoLangs = JSON.parse(request.responseText);
 				langStats.push(repoLangs);
 
-				if (langStats.length === that.url.langs.length) { // all requests were made
-					calcPopularity.bind(that)();
+				if (langStats.length === context.url.langs.length) { // all requests were made
+					calcPopularity(context.langs, callback);
 				}
 
 			}, false);
@@ -151,29 +70,28 @@ var GitHubWidget = (function() {
 		}, this);
 
 		// give rank (weights) to the language
-		var calcPopularity = function () {
+		var calcPopularity = function (langs, callback) {
 			langStats.forEach(function(repoLangs) {
 				var k, sum = 0;
 
 				for (k in repoLangs) {
 					if (repoLangs[k] !== undefined) {
 						sum += repoLangs[k];
-						this.langs[k] = this.langs[k] || 0;
+						langs[k] = langs[k] || 0;
 					}
 				}
 
 				for (k in repoLangs) {
 					if (repoLangs[k] !== undefined) {
-						this.langs[k] += repoLangs[k] / (sum * 1.00); // force floats
+						langs[k] += repoLangs[k] / (sum * 1.00); // force floats
 					}
 				}
 			}, this);
-
-			callback();
+			callback(langs);
 		};
 	};
 
-	GitHubWidget.prototype.render = function (options) {
+	GitHubWidget.prototype.render = function (options, repos) {
 		options = options || this.defaultConfig;
 
 		var $root = this.$template;
@@ -209,15 +127,15 @@ var GitHubWidget = (function() {
 		// API doesen't return errors, try to built widget
 		var $profile = this.render.profile.bind(this)();
 
-		this.getTopLanguages((function () {
-			var $langs = this.render.langs.bind(this)();
+		this.getTopLanguages((function (langs) {
+			var $langs = this.render.langs(langs);
 			$profile.appendChild($langs);
 		}).bind(this));
 
 		$root.appendChild($profile);
 
 		if (options.maxRepos > 0) {
-			var $repos = this.render.repos.bind(this)(options.sortBy, options.maxRepos),
+			var $repos = this.render.repos.bind(this)(repos, options.sortBy, options.maxRepos),
 				$reposHeader = document.createElement('span');
 			$reposHeader.className = 'header';
 			$reposHeader.appendChild(document.createTextNode(options.reposHeaderText + ' repositories'));
@@ -227,12 +145,10 @@ var GitHubWidget = (function() {
 		}
 	};
 
-	GitHubWidget.prototype.render.repos = function (sortyBy, maxRepos) {
-		var reposData = this.getRepos();
-
+	GitHubWidget.prototype.render.repos = function (repos, sortyBy, maxRepos) {
 		var $reposList = document.createElement('div');
 
-		reposData.sort(function (a, b) {
+		repos.sort(function (a, b) {
 			// sorted by last commit
 			if (sortyBy == 'stars') {
 				return b.stargazers_count - a.stargazers_count;
@@ -241,15 +157,15 @@ var GitHubWidget = (function() {
 			}
 		});
 
-		for (var i = 0; i < maxRepos && reposData[i]; i++) {
-			var updated = new Date(reposData[i].updated_at);
+		for (var i = 0; i < maxRepos && repos[i]; i++) {
+			var updated = new Date(repos[i].updated_at);
 			var $repoLink = document.createElement('a');
 
-			$repoLink.href = reposData[i].html_url;
-			$repoLink.title = reposData[i].description;
-			$repoLink.innerHTML += '<span class="repo-name">' + reposData[i].name + '</span>';
+			$repoLink.href = repos[i].html_url;
+			$repoLink.title = repos[i].description;
+			$repoLink.innerHTML += '<span class="repo-name">' + repos[i].name + '</span>';
 			$repoLink.innerHTML += '<span class="updated">Updated: ' + updated.toLocaleDateString() + '</span>';
-			$repoLink.innerHTML += '<span class="star">' + reposData[i].stargazers_count + '</span>';
+			$repoLink.innerHTML += '<span class="star">' + repos[i].stargazers_count + '</span>';
 
 			$reposList.appendChild($repoLink);
 		}
@@ -295,13 +211,13 @@ var GitHubWidget = (function() {
 		return $profile;
 	};
 
-	GitHubWidget.prototype.render.langs = function () {
+	GitHubWidget.prototype.render.langs = function (langs) {
 
 		var $langsList = document.createElement('ul');
 
 		var topLangs = [];
-		for (var k in this.langs) {
-			topLangs.push([k, this.langs[k]]);
+		for (var k in langs) {
+			topLangs.push([k, langs[k]]);
 		}
 
 		topLangs.sort(function (a, b) {
