@@ -1,7 +1,12 @@
 
 // Generating new widget from user input
 document.addEventListener('DOMContentLoaded', function() {
-	var options = widget.defaultConfig;
+	var options = {
+		sortBy: 'stars', // possible: 'stars', 'updateTime'
+		reposHeaderText: 'Most starred',
+		maxRepos: 5
+	};
+	var widget = new GitHubWidget(options);
 
 	// Sort repository acording to
 	// radio inputs on website
@@ -16,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		options.sortBy = 'updateTime';
 		options.reposHeaderText = element.target.textContent;
 
-		widget.render(options);
+		widget.refresh(options);
 
 	});
 
@@ -28,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		options.sortBy = 'stars';
 		options.reposHeaderText = element.target.textContent;
 
-		widget.render(options);
+		widget.refresh(options);
 	});
 
 	// Manipulating the number of repositories
@@ -38,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	$inputNumber.onchange = function() {
 		options.maxRepos = $inputNumber.value;
 
-		widget.render(options);
-	}
+		widget.refresh(options);
+	};
 
 	// Creating brand new widget instance
 	// for user that we type in input
@@ -53,4 +58,3 @@ document.addEventListener('DOMContentLoaded', function() {
 		element.preventDefault();
 	});
  });
-
