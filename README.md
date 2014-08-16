@@ -3,7 +3,7 @@
 This widget retrieves data about your GitHub profile and shows it up directly on your website. Always up to date.
 
 - Live demo at [CodePen](http://codepen.io/piotrl/pen/cwbgJ)
-- [@piotlr](http://twitter.com/piotlr)
+- Send me feedback on twitter: [@piotlr](http://twitter.com/piotlr)
 
 ## Download
 - Production [js](https://raw.github.com/piotrl/github-profile-widget/master/dist/gh-profile-widget.js) / [css](https://raw.github.com/piotrl/github-profile-widget/master/dist/gh-profile-widget.css)
@@ -11,16 +11,36 @@ This widget retrieves data about your GitHub profile and shows it up directly on
 
 ## Usage
 
-Include script just before end of the `<body>` tag:
+Include script and style inside of your `<head>` tag:
 ```
-	<script type="text/javascript" src="gh-profile-widget.js"></script>
+<script type="text/javascript" src="gh-profile-widget.js"></script>
+<link rel="stylesheet" href="gh-profile-widget.js" />
 ```
-`gh-profile-widget.js` and `gh-profile-widget.css` must be in one directory.
+We are almost done. You only need to configure your widget:
 
-Include this HTML template wherever you want to show widget
+## Configuration
+Example of use
 ```
-	<div id="github-widget" data-username="YOUR_GITHUB_USERNAME"></div>
+var githubWidget = new GitHubWidget({
+	template: '#github-widget',
+	sortBy: 'stars',
+	reposHeaderText: 'Most starred',
+	maxRepos: 5
+});
 ```
-Where `YOUR_GITHUB_USERNAME` is your github account username.
 
-There is no need for additional configuration.
+You need to reserve now some space for your widget
+```
+<div id="github-widget"></div>
+```
+You can also add attribute data-username with `YOUR_GITHUB_USERNAME`.
+
+## Options   
+
+Attribute  | Options                   | Default             | Description
+---        | ---                       | ---                 | ---
+`username` | *string*				   | `null`              | GitHub profile username
+`template` | *string*                  | `#github-widget`    | DOM selector of your widget in HTML
+`sortBy`   | `stars`, `updateTime`     | `updateTime`        | Repositories sorting method
+`maxRepos` | *int*			           | `5`				 | Indicates amount of showed repositories. `0` Shows anything.
+`reposHeaderText`     | *string*       | `Last updated repositories`| Text that is shown in labbel above repositories list                           
