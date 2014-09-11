@@ -62,3 +62,4 @@ bower_components
 ### Sass ###
 .sass-cache
 
+/nbproject/private/
