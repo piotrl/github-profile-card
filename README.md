@@ -6,8 +6,11 @@ This widget retrieves data about your GitHub profile and shows it up directly on
 - Send me feedback on twitter: [@piotlr](http://twitter.com/piotlr)
 
 ## Download
-- Production [js](https://raw.github.com/piotrl/github-profile-widget/master/dist/gh-profile-widget.js) / [css](https://raw.github.com/piotrl/github-profile-widget/master/dist/gh-profile-widget.css)
-- [Source](https://github.com/piotrl/github-profile-widget)
+You need bower:
+```
+bower install github-profile-widget
+```
+You will find important files in `/dist/` directory.
 
 ## Usage
 
