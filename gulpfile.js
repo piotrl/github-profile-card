@@ -14,6 +14,7 @@ var gulp = require('gulp'),
 var paths = {
 	scripts: [
 		'src/gh-data-loader.js',
+		'src/gh-sections-creator.js',
 		'src/gh-profile-widget.js'
 	],
 	styles: [
