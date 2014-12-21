@@ -23,9 +23,10 @@ var GitHubWidget = (function() {
 
 	var GitHubWidget = function (options) {
 		options = completeOptions(options);
-		username = options.userName || this.$template.dataset.username;
-		
 		this.$template = document.querySelector(options.template);
+
+		username = options.userName || this.$template.dataset.username;
+
 		this.profileData = null;
 		this.repos = {};
 
@@ -36,7 +37,7 @@ var GitHubWidget = (function() {
 	GitHubWidget.prototype.init = function(options) {
 		var apiLoader = new GitHubApiLoader(username);
 		var self = this;
-		apiLoader.getData(function(err, result) {
+		apiLoader.getData(function(err) {
 			self.profileData = apiLoader.getProfile();
 			self.repos = apiLoader.getRepos();
 			self.url = apiLoader.getURLs();
@@ -63,48 +64,47 @@ var GitHubWidget = (function() {
 		return $error;
 	};
 
+	// give rank (weights) to the language
+	var calcPopularity = function (langStats) {
+		var languagesRank = {};
+
+		langStats.forEach(function(repoLangs) {
+			var sum = 0;
+
+			for (var k in repoLangs) {
+				sum += repoLangs[k] || 0;
+				languagesRank[k] = languagesRank[k] || 0;
+			}
+			for (var k in repoLangs) {
+				languagesRank[k] += repoLangs[k] / (sum * 1.00);
+			}
+		});
+
+		return languagesRank;
+	};
+
 	GitHubWidget.prototype.getTopLanguages = function (callback) {
 		var langStats = []; // array of URL strings
+		var langUrls = this.url.langs;
+
 		// get URLs with language stats for each repository
-		this.url.langs.forEach(function (apiURL) {
-			var context = this,
-				request = new XMLHttpRequest();
-
-			request.addEventListener('load', function () {
-
-				var repoLangs = JSON.parse(request.responseText);
-				langStats.push(repoLangs);
-
-				if (langStats.length === context.url.langs.length) { // all requests were made
-					calcPopularity(context.langs, callback);
-				}
-
-			}, false);
-
+		langUrls.forEach(function (apiURL) {
+			var request = new XMLHttpRequest();
+			request.addEventListener('load', calcResponse, false);
 			request.open('GET', apiURL, true);
 			request.send(null);
-		}, this);
+		});
 
-		// give rank (weights) to the language
-		var calcPopularity = function (langs, callback) {
-			langStats.forEach(function(repoLangs) {
-				var k, sum = 0;
+		function calcResponse(loadEvent) {
+			var response = loadEvent.target.responseText;
+			var repoLangs = JSON.parse(response);
+			langStats.push(repoLangs);
 
-				for (k in repoLangs) {
-					if (repoLangs[k] !== undefined) {
-						sum += repoLangs[k];
-						langs[k] = langs[k] || 0;
-					}
-				}
-
-				for (k in repoLangs) {
-					if (repoLangs[k] !== undefined) {
-						langs[k] += repoLangs[k] / (sum * 1.00); // force floats
-					}
-				}
-			}, this);
-			callback(langs);
-		};
+			if (langStats.length === langUrls.length) { // all requests were made
+				var languagesRank = calcPopularity(langStats);
+				callback(languagesRank);
+			}
+		}
 	};
 
 	GitHubWidget.prototype.render = function (options, repos, error) {
