@@ -1,15 +1,89 @@
 var GitHubApiLoader = (function() {
 	'use strict';
-	
-	var getURL = function (url) {
-		var request = new XMLHttpRequest();
-			request.open('GET', url, true);
-			request.send();
-		
-		return request;
+
+	var API_USERS_URL = 'https://api.github.com/users/';
+
+	var ghLoader = function (userName) {
+		this.userName = userName;
+		this.url = {
+			api: API_USERS_URL + userName,
+			langs: []
+		};
+		this.error = null;
 	};
 
-	var loadJSON = function (url) {
+	ghLoader.prototype = {
+		getData: fetchProfileData,
+		getRepos: function () {
+			return this.repos;
+		},
+		getProfile: function () {
+			return this.profile;
+		},
+		getURLs: function () {
+			return this.url;
+		}
+	};
+
+	return ghLoader;
+
+	// call GitHub API to get profile data
+	//
+	function fetchProfileData(callback) {
+		var context = this;
+		var handler = loadJSON(this.url.api);
+
+		handler.success(function(result) {
+			context.profile = result;
+
+			loadJSON(result.repos_url)
+				.success(function (repos) {
+					context.repos = repos;
+					context.url.langs = getLangURLs(repos);
+					callback();
+				});
+		});
+
+		handler.error(function (result, request) {
+			var error = {
+				message: result.message
+			};
+			checkSpecifiedError(error, request);
+			callback(error);
+		});
+	};
+
+	/////////////////////////////
+	// Private
+	//
+
+	function checkSpecifiedError(error, request) {
+		if (request.status === 404) {
+			error.isWrongUser = true;
+		}
+
+		var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
+		if (Number(limitRequests) === 0) {
+			// API is blocked
+			var resetTime = request.getResponseHeader('X-RateLimit-Reset');
+			error.resetDate = new Date(resetTime * 1000);
+
+			// full message is too long, leave only important thing
+			error.message = error.message.split('(')[0];
+		}
+	}
+
+	function getLangURLs(repos) {
+		var langApiUrls = [];
+
+		for (var k in repos) {
+			langApiUrls.push(repos[k].languages_url);
+		}
+
+		return langApiUrls;
+	};
+
+	function loadJSON(url) {
 		var request = getURL(url);
 
 		return {
@@ -30,78 +104,13 @@ var GitHubApiLoader = (function() {
 			}
 		};
 	};
-	
-	var getLangsURLs = function (repos) {
-		var langsApiUrls = [];
-		
-		for (var k in repos) {
-			langsApiUrls.push(repos[k].languages_url);
-		}
 
-		return langsApiUrls;
+	function getURL(url) {
+		var request = new XMLHttpRequest();
+		request.open('GET', url, true);
+		request.send();
+
+		return request;
 	};
 
-	var ghLoader = function (userName) {
-		this.userName = userName;
-		this.url = {
-			api: 'https://api.github.com/users/' + userName,
-			langs: []
-		};
-		this.error = null;
-	};
-
-	// call GitHub API to get profile data
-	//
-	ghLoader.prototype.getData = function (callback) {
-		var handler = loadJSON(this.url.api);
-		var self = this;
-		handler.success(function(result) {
-			self.profile = result;
-			var reposPromise = loadJSON(result.repos_url);
-			reposPromise.success(function (repos) {
-				self.repos = repos;
-				self.url.langs = getLangsURLs(self.repos);
-				self.langs = getLangs();
-				callback(null, repos);
-			});
-			reposPromise.error(function (result) {
-				self.repos = result;
-				self.url.langs = getLangsURLs(self.repos);			
-				callback(null, result);
-			});
-		});
-
-		handler.error(function (result, request) {
-			var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
-			var error = {
-				message: result.message
-			};
-			if (Number(limitRequests) === 0) {
-				// API is blocked
-				var resetTime = request.getResponseHeader('X-RateLimit-Reset');
-				error.resetDate = new Date(resetTime * 1000);
-
-				// full message is too long, leave only important thing
-				error.message = error.message.split('(')[0]; 
-			}
-			if (request.status === 404) {
-				error.isWrongUser = true;
-			}
-			callback(error, result);
-		});
-	};
-
-	ghLoader.prototype.getRepos = function () {
-		return this.repos;
-	};
-
-	ghLoader.prototype.getProfile = function () {
-		return this.profile;
-	};
-
-	ghLoader.prototype.getURLs = function () {
-		return this.url;
-	};
-
-	return ghLoader;
 }());
