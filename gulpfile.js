@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-	sass = require('gulp-ruby-sass'),
+	sass = require('gulp-sass'),
 	autoprefixer = require('gulp-autoprefixer'),
 	minifycss = require('gulp-minify-css'),
 	jshint = require('gulp-jshint'),
@@ -13,6 +13,7 @@ var gulp = require('gulp'),
 
 var paths = {
 	scripts: [
+		'src/gh-data-loader.js',
 		'src/gh-profile-widget.js'
 	],
 	styles: [
@@ -28,12 +29,12 @@ gulp.task('clean', function () {
 
 gulp.task('styles', function () {
 	return gulp.src(paths.styles)
-		.pipe(sass({ style: 'compressed' }))
+		.pipe(sass())
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulp.dest(paths.dist))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifycss())
-		.pipe(gulp.dest(paths.dist))
+		.pipe(gulp.dest(paths.dist));
 });
 
 gulp.task('scripts', function () {
@@ -48,10 +49,10 @@ gulp.task('scripts', function () {
 	.pipe(notify({ message: 'Scripts task complete' }));
 });
 
-// Rerun the task when a file changes
+// Re-run the task when files are changing
 gulp.task('watch', function () {
 	gulp.watch(paths.scripts, ['scripts']);
-	gulp.watch(paths.images, ['styles']);
+	gulp.watch(paths.styles, ['styles']);
 });
 
 // The default task (called when you run `gulp` from cli)
