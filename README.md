@@ -3,7 +3,7 @@
 This widget retrieves data about your GitHub profile and shows it up directly on your website. Always up to date.
 
 - Live demo at [CodePen](http://codepen.io/piotrl/pen/cwbgJ)
-- Send me feedback on twitter: [@piotlr](http://twitter.com/piotlr)
+- Send me feedback on twitter: [@constjs](http://twitter.com/constjs)
 
 ## Download
 You need bower:
@@ -12,14 +12,25 @@ bower install github-profile-widget
 ```
 You will find important files in `/dist/` directory.
 
-## Usage
+## Installation
 
 Include script and style inside of your `<head>` tag:
 ```
 <script type="text/javascript" src="gh-profile-widget.js"></script>
 <link rel="stylesheet" href="gh-profile-widget.js" />
 ```
-We are almost done. You only need to configure your widget:
+
+Include HTML tag anywher you would like to place widget: 
+```
+<div id="github-widget"></div>
+```
+You can also add attribute data-username with `YOUR_GITHUB_USERNAME`.
+
+```
+<div id="github-widget" data-username="YOUR_GITHUB_USERNAME"></div>
+```
+
+We are almost done. You only need to init your new widget:
 
 ## Configuration
 Example of use
@@ -32,13 +43,7 @@ var githubWidget = new GitHubWidget({
 });
 ```
 
-You need to reserve now some space for your widget
-```
-<div id="github-widget"></div>
-```
-You can also add attribute data-username with `YOUR_GITHUB_USERNAME`.
-
-## Options   
+## Configuration options   
 
 Attribute  | Options                   | Default             | Description
 ---        | ---                       | ---                 | ---
