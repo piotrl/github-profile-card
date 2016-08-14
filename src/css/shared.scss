@@ -1,0 +1,47 @@
+& {
+  width: 280px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: Helvetica;
+  background: #FAFAFA;
+  border-width: 1px 1px 2px;
+  border-style: solid;
+  border-color: #DDD;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: #444;
+
+  &:hover {
+    color: #4183C4;
+  }
+}
+
+.name {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #222;
+}
+
+.error {
+  & {
+    font-size: 0.8em;
+    color: #444;
+    padding: 10px;
+  }
+
+  span {
+    display: block;
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+
+    &.remain {
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+}

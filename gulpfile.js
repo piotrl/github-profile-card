@@ -14,11 +14,11 @@ var gulp = require('gulp'),
 var paths = {
 	scripts: [
 		'src/gh-data-loader.js',
-		'src/gh-sections-creator.js',
+		'src/gh-dom-operator.js',
 		'src/gh-profile-widget.js'
 	],
 	styles: [
-		'src/css/gh-profile-widget.scss'
+		'src/css/base.scss'
 	],
 	dist: 'dist/'
 };
@@ -30,6 +30,7 @@ gulp.task('clean', function () {
 
 gulp.task('styles', function () {
 	return gulp.src(paths.styles)
+		.pipe(rename({basename: 'gh-profile-widget'}))
 		.pipe(sass())
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulp.dest(paths.dist))

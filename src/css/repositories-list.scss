@@ -1,0 +1,60 @@
+/* List of repositories */
+
+.repos {
+
+  & {
+    clear: both;
+  }
+
+  .header {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+    background: #EAEAEA;
+    background-image: linear-gradient(#FAFAFA, #EAEAEA);
+    border: solid #D5D5D5;
+    border-width: 1px 0;
+    color: #555;
+    font-size: 0.8em;
+    padding: 5px 10px;
+  }
+
+  a {
+    position: relative;
+    display: block;
+    padding: 7px 10px;
+    font-size: 0.9em;
+    border-top: 1px solid #DDD;
+
+    &:first-of-type {
+      border: none;
+    }
+  }
+
+  .repo-name {
+    max-width: 280px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+  }
+
+  .updated {
+    display: block;
+    font-size: 0.75em;
+    font-style: italic;
+    color: #777;
+  }
+
+  .star {
+    position: absolute;
+    font-size: 0.9em;
+    right: 0.5em;
+    top: 1.1em;
+    color: #888;
+
+    &::after {
+      content: '\a0\2605';
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+  }
+}

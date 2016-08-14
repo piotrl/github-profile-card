@@ -1,4 +1,6 @@
 tmp/
+.idea/
+*.iml
 
 # SASS
 .sass-cache
