@@ -34,7 +34,16 @@ var GitHubWidget = (function() {
 		this.init(options);
 	};
 
-	GitHubWidget.prototype.init = function(options) {
+	GitHubWidget.prototype = {
+		init: init,
+		getTopLanguages: getTopLanguages,
+		render: render,
+		refresh: refresh
+	};
+
+	return GitHubWidget;
+
+	function init(options) {
 		var apiLoader = new GitHubApiLoader(username);
 		var self = this;
 		apiLoader.getData(function(err) {
@@ -44,10 +53,10 @@ var GitHubWidget = (function() {
 			self.render(options, err);
 		});
 		this.$template.className = 'gh-profile-widget';
-	};
+	}
 
 	// give rank (weights) to the language
-	var calcPopularity = function (langStats) {
+	function calcPopularity(langStats) {
 		var languagesRank = {};
 
 		langStats.forEach(function(repoLangs) {
@@ -56,16 +65,14 @@ var GitHubWidget = (function() {
 			for (var k in repoLangs) {
 				sum += repoLangs[k] || 0;
 				languagesRank[k] = languagesRank[k] || 0;
-			}
-			for (var k in repoLangs) {
 				languagesRank[k] += repoLangs[k] / (sum * 1.00);
 			}
 		});
 
 		return languagesRank;
-	};
+	}
 
-	GitHubWidget.prototype.getTopLanguages = function (callback) {
+	function getTopLanguages(callback) {
 		var langStats = []; // array of URL strings
 		var langUrls = this.url.langs;
 
@@ -87,9 +94,9 @@ var GitHubWidget = (function() {
 				callback(languagesRank);
 			}
 		}
-	};
+	}
 
-	GitHubWidget.prototype.render = function (options, error) {
+	function render(options, error) {
 		var $root = this.$template;
 		var repositories = this.repos;
 
@@ -121,12 +128,10 @@ var GitHubWidget = (function() {
 
 			$root.appendChild($reposList);
 		}
-	};
+	}
 
-	GitHubWidget.prototype.refresh = function (options) {
+	function refresh(options) {
 		options = autoComplete(options);
 		this.render(options);
-	};
-
-	return GitHubWidget;
+	}
 })();

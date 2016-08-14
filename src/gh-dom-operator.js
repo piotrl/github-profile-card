@@ -35,7 +35,7 @@ var DOMOperator = (function() {
         }
 
         return $error;
-    };
+    }
 
     function createProfileSection (data) {
         var $followButton = followButton(data.login, data.html_url);

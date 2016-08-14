@@ -51,7 +51,7 @@ var GitHubApiLoader = (function() {
 			checkSpecifiedError(error, request);
 			callback(error);
 		});
-	};
+	}
 
 	/////////////////////////////
 	// Private
@@ -81,7 +81,7 @@ var GitHubApiLoader = (function() {
 		}
 
 		return langApiUrls;
-	};
+	}
 
 	function loadJSON(url) {
 		var request = getURL(url);
@@ -103,7 +103,7 @@ var GitHubApiLoader = (function() {
 				});
 			}
 		};
-	};
+	}
 
 	function getURL(url) {
 		var request = new XMLHttpRequest();
@@ -111,6 +111,6 @@ var GitHubApiLoader = (function() {
 		request.send();
 
 		return request;
-	};
+	}
 
 }());
