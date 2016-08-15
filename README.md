@@ -1,12 +1,23 @@
-# Unofficial GitHub profile widget
+# GitHub profile card
 
-This widget retrieves data about your GitHub profile and shows it up directly on your website. Always up to date.
+Widget shows your profile form GitHub directly on your website!  
+Show your current projects always up to date.
 
-- Live demo at [CodePen](http://codepen.io/piotrl/pen/cwbgJ)
-- Send me feedback on twitter: [@constjs](http://twitter.com/constjs)
+![Screenshot](./demo/screenshot.png)
+
+### Main features
+- Top languages statistic
+- Configurable list of repositories by most starred or last updated
+- Amount of followers
+- No jQuery and other libraries required
+
+
+**Live demo at [CodePen](http://codepen.io/piotrl/pen/cwbgJ)**
+
+---
 
 ## Download
-You need bower:
+By bower or just clone repository.
 ```
 bower install github-profile-widget
 ```
@@ -17,7 +28,7 @@ You will find important files in `/dist/` directory.
 Include script and style inside of your `<head>` tag:
 ```
 <script type="text/javascript" src="gh-profile-widget.js"></script>
-<link rel="stylesheet" href="gh-profile-widget.js" />
+<link rel="stylesheet" href="gh-profile-widget.css" />
 ```
 
 Include HTML tag anywher you would like to place widget: 
@@ -52,3 +63,13 @@ Attribute  | Options                   | Default             | Description
 `sortBy`   | `stars`, `updateTime`     | `updateTime`        | Repositories sorting method
 `maxRepos` | *int*			           | `5`				 | Indicates amount of showed repositories. `0` Shows anything.
 `reposHeaderText`     | *string*       | `Last updated repositories`| Text that is shown in labbel above repositories list                           
+
+---
+
+I love feedback, send me one!
+- on twitter: [@constjs](https://twitter.com/constjs) 
+- create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
+
+Remember no other libraries required. It's like gluten free ;)
+
+![gluten-free](http://forthebadge.com/images/badges/gluten-free.svg)
