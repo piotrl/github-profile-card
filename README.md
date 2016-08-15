@@ -64,7 +64,7 @@ Attribute  | Options                   | Default             | Description
 `maxRepos` | *int*			           | `5`				 | Amount of showed repositories. `0` Shows anything.
 `reposHeaderText`     | *string*       | `Most starred`      | Text label above repositories list                           
 
----
+##[Changelog](./releases)
 
 I love feedback, send me one!
 - on twitter: [@constjs](https://twitter.com/constjs) 
