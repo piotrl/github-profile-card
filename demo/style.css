@@ -8,6 +8,7 @@ body {
   background-color: #F4EADE;
   max-width: 650px;
   margin: 10px auto;
+  font-family: Helvetica, serif;
 }
 
 .config-section-left,
@@ -102,4 +103,17 @@ label {
 
 .active {
   font-weight: bold;
+}
+
+.readme {
+  max-width: 280px;
+  line-height: 1.5;
+  color: #666;
+
+  padding: 0 10px;
+}
+
+.readme a {
+  color: #4183C4;
+  text-decoration: none;
 }

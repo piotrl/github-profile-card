@@ -1,7 +1,7 @@
 # GitHub profile card
 
-Widget shows your profile form GitHub directly on your website!  
-Show your current projects always up to date.
+Widget shows your GitHub profile directly on your website!  
+Show your current projects — always up to date.
 
 ![Screenshot](./demo/screenshot.png)
 
@@ -12,7 +12,7 @@ Show your current projects always up to date.
 - No jQuery and other libraries required
 
 
-**Live demo at [CodePen](http://codepen.io/piotrl/full/cwbgJ/)**
+**Live demo on [CodePen](http://codepen.io/piotrl/full/cwbgJ/)**
 
 ---
 
