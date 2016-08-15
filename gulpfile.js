@@ -15,7 +15,7 @@ var paths = {
 	scripts: [
 		'src/gh-data-loader.js',
 		'src/gh-dom-operator.js',
-		'src/gh-profile-widget.js'
+		'src/gh-profile-card.js'
 	],
 	styles: [
 		'src/css/base.scss'
@@ -30,7 +30,7 @@ gulp.task('clean', function () {
 
 gulp.task('styles', function () {
 	return gulp.src(paths.styles)
-		.pipe(rename({basename: 'gh-profile-widget'}))
+		.pipe(rename({basename: 'gh-profile-card'}))
 		.pipe(sass())
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulp.dest(paths.dist))
@@ -43,7 +43,7 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
 	// .pipe(jshint('.jshintrc'))
 	// .pipe(jshint.reporter('default'))
-	.pipe(concat('gh-profile-widget.js'))
+	.pipe(concat('gh-profile-card.js'))
 	.pipe(gulp.dest(paths.dist))
 	.pipe(rename({suffix: '.min'}))
 	.pipe(uglify())

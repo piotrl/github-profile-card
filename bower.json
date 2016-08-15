@@ -1,12 +1,12 @@
 {
-  "name": "github-profile-widget",
+  "name": "github-profile-card",
   "version": "1.1.0",
-  "homepage": "https://github.com/piotrl/github-profile-widget",
+  "homepage": "https://github.com/piotrl/github-profile-card",
   "authors": [
     "Piotr Lewandowski <grovman@gmail.com>"
   ],
-  "description": "GitHub profile widget. No dependencies required.",
-  "main": "dist/github-profile-widget.js",
+  "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
+  "main": "dist/github-profile-card.js",
   "keywords": [
     "github",
     "card",

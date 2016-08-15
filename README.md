@@ -12,14 +12,14 @@ Show your current projects always up to date.
 - No jQuery and other libraries required
 
 
-**Live demo at [CodePen](http://codepen.io/piotrl/pen/cwbgJ)**
+**Live demo at [CodePen](http://codepen.io/piotrl/full/cwbgJ/)**
 
 ---
 
 ## Download
-By bower or just clone repository.
+With *bower* or just clone this repository.
 ```
-bower install github-profile-widget
+bower install github-profile-card
 ```
 You will find important files in `/dist/` directory.
 
@@ -27,18 +27,18 @@ You will find important files in `/dist/` directory.
 
 Include script and style inside of your `<head>` tag:
 ```
-<script type="text/javascript" src="gh-profile-widget.js"></script>
-<link rel="stylesheet" href="gh-profile-widget.css" />
+<script type="text/javascript" src="gh-profile-card.js"></script>
+<link rel="stylesheet" href="gh-profile-card.css" />
 ```
 
-Include HTML tag anywher you would like to place widget: 
+Include HTML tag anywhere you would like to place widget: 
 ```
-<div id="github-widget"></div>
+<div id="github-card"></div>
 ```
 You can also add attribute data-username with `YOUR_GITHUB_USERNAME`.
 
 ```
-<div id="github-widget" data-username="YOUR_GITHUB_USERNAME"></div>
+<div id="github-card" data-username="YOUR_GITHUB_USERNAME"></div>
 ```
 
 We are almost done. You only need to init your new widget:
@@ -46,8 +46,8 @@ We are almost done. You only need to init your new widget:
 ## Configuration
 Example of use
 ```
-var githubWidget = new GitHubWidget({
-	template: '#github-widget',
+new GitHubCard({
+	template: '#github-card',
 	sortBy: 'stars',
 	reposHeaderText: 'Most starred',
 	maxRepos: 5
@@ -58,11 +58,11 @@ var githubWidget = new GitHubWidget({
 
 Attribute  | Options                   | Default             | Description
 ---        | ---                       | ---                 | ---
-`username` | *string*				   | `null`              | GitHub profile username
-`template` | *string*                  | `#github-widget`    | DOM selector of your widget in HTML
-`sortBy`   | `stars`, `updateTime`     | `updateTime`        | Repositories sorting method
-`maxRepos` | *int*			           | `5`				 | Indicates amount of showed repositories. `0` Shows anything.
-`reposHeaderText`     | *string*       | `Last updated repositories`| Text that is shown in labbel above repositories list                           
+`username` | *string*				   | `—`                | GitHub profile username
+`template` | *string*                  | `#github-card`    | DOM selector of your widget in HTML
+`sortBy`   | `stars`, `updateTime`     | `stars`             | Repositories sorting method
+`maxRepos` | *int*			           | `5`				 | Amount of showed repositories. `0` Shows anything.
+`reposHeaderText`     | *string*       | `Most starred`      | Text label above repositories list                           
 
 ---
 

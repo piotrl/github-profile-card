@@ -1,4 +1,5 @@
 var DOMOperator = (function() {
+    'use strict';
 
     return {
         clearChildren: clearElementFromChildren,

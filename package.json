@@ -1,8 +1,8 @@
 {
-  "name": "github-profile-widget",
+  "name": "github-profile-card",
   "version": "1.0.0",
-  "description": "GitHub profile widget. No dependencies required, just pure JavaScript.",
-  "main": "dist/github-profile-widget.js",
+  "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
+  "main": "dist/github-profile-card.js",
   "devDependencies": {
     "bower": "1.7.9",
     "del": "2.2.2",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/piotrl/github-profile-widget.git"
+    "url": "https://github.com/piotrl/github-profile-card.git"
   },
   "keywords": [
     "github",
@@ -34,9 +34,9 @@
   "author": "Piotr Lewandowski",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/piotrl/github-profile-widget/issues"
+    "url": "https://github.com/piotrl/github-profile-card/issues"
   },
-  "homepage": "https://github.com/piotrl/github-profile-widget",
+  "homepage": "https://github.com/piotrl/github-profile-card",
   "dependencies": {
     "jshint": "^2.9.2"
   }

@@ -1,11 +1,11 @@
-var GitHubWidget = (function() {
+var GitHubCard = (function() {
 	'use strict';
 	
 	var username;
 
 	var autoComplete = function (options) {
 		var defaultConfig = {
-			template: '#github-widget',
+			template: '#github-card',
 			sortBy: 'stars', // possible: 'stars', 'updateTime'
 			reposHeaderText: 'Most starred',
 			maxRepos: 5,
@@ -21,7 +21,7 @@ var GitHubWidget = (function() {
 		return options;
 	};
 
-	var GitHubWidget = function (options) {
+	var GitHubCard = function (options) {
 		options = autoComplete(options);
 		this.$template = document.querySelector(options.template);
 
@@ -34,14 +34,14 @@ var GitHubWidget = (function() {
 		this.init(options);
 	};
 
-	GitHubWidget.prototype = {
+	GitHubCard.prototype = {
 		init: init,
 		getTopLanguages: getTopLanguages,
 		render: render,
 		refresh: refresh
 	};
 
-	return GitHubWidget;
+	return GitHubCard;
 
 	function init(options) {
 		var apiLoader = new GitHubApiLoader(username);
@@ -52,7 +52,7 @@ var GitHubWidget = (function() {
 			self.url = apiLoader.getURLs();
 			self.render(options, err);
 		});
-		this.$template.className = 'gh-profile-widget';
+		this.$template.className = 'gh-profile-card';
 	}
 
 	// give rank (weights) to the language
