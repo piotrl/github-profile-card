@@ -12,7 +12,7 @@ Show your current projects — always up to date.
 - No jQuery and other libraries required
 
 
-**Live demo on [CodePen](http://codepen.io/piotrl/full/cwbgJ/)**
+**Live [demo](http://piotrl.github.io/github-profile-card/)** with configuration sample
 
 ---
 
