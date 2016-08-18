@@ -9,13 +9,12 @@ var gulp = require('gulp'),
 	concat = require('gulp-concat'),
 	notify = require('gulp-notify'),
 	livereload = require('gulp-livereload'),
-	del = require('del');
+	del = require('del'),
+	ts = require('gulp-typescript');
 
 var paths = {
 	scripts: [
-		'src/gh-data-loader.js',
-		'src/gh-dom-operator.js',
-		'src/gh-profile-card.js'
+		'src/**/*.ts'
 	],
 	styles: [
 		'src/css/base.scss'
@@ -41,7 +40,13 @@ gulp.task('styles', function () {
 
 gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
-	// .pipe(jshint('.jshintrc'))
+	  .pipe(ts({
+		  noImplicitAny: false,
+		  out: 'output.js',
+		  target: 'ES5'
+	  }))
+
+	  // .pipe(jshint('.jshintrc'))
 	// .pipe(jshint.reporter('default'))
 	.pipe(concat('gh-profile-card.js'))
 	.pipe(gulp.dest(paths.dist))

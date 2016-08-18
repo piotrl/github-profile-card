@@ -1,44 +1,31 @@
-var DOMOperator = (function() {
-    'use strict';
-
-    return {
-        clearChildren: clearElementFromChildren,
-        createError: createErrorSection,
-        createProfile: createProfileSection,
-        createTopLanguages: createTopLangsSection,
-        createReposHeader: createReposHeader,
-        createReposList: createReposListSection
-    };
-
-    ///////////////////
-
-    function clearElementFromChildren($parent) {
-        while($parent.hasChildNodes()) {
+class DOMOperator {
+    public static clearChildren($parent: Node) {
+        while ($parent.hasChildNodes()) {
             $parent.removeChild(
                 $parent.firstChild
             );
         }
     }
 
-    function createErrorSection(error, username) {
+    public static createError(error: IApiError, username: string): HTMLDivElement {
         var $error = document.createElement('div');
         $error.className = 'error';
-        $error.innerHTML = '<span>' + error.message + '</span>';
+        $error.innerHTML = `<span>${error.message}</span>`;
 
         if (error.isWrongUser) {
-            $error.innerHTML = '<span>Not found user: ' + username + '</span>';
+            $error.innerHTML = `<span>Not found user: ${username}</span>`;
         }
         if (error.resetDate) {
             var remainingTime = error.resetDate.getMinutes() - new Date().getMinutes();
             remainingTime = (remainingTime < 0) ? 60 + remainingTime : remainingTime;
 
-            $error.innerHTML += '<span class="remain">Come back after ' + remainingTime + ' minutes</span>';
+            $error.innerHTML += `<span class="remain">Come back after ${remainingTime} minutes</span>`;
         }
 
         return $error;
     }
 
-    function createProfileSection (data) {
+    public static createProfile(data: IApiProfile) {
         var $followButton = followButton(data.login, data.html_url);
         var $followers = followers(data.followers_url, data.followers);
         var $followContainer = followContainer([$followButton, $followers]);
@@ -46,12 +33,12 @@ var DOMOperator = (function() {
         var $avatar = avatar(data.avatar_url);
         var $name = name(data.html_url, data.name);
 
-        return profile([ $avatar, $name, $followContainer ]);
+        return profile([$avatar, $name, $followContainer]);
 
         //////////////////
 
         function appendChildren($parent, nodes) {
-            nodes.forEach(function($node) {
+            nodes.forEach(function ($node) {
                 $parent.appendChild($node);
             });
         }
@@ -81,7 +68,7 @@ var DOMOperator = (function() {
             return $avatar;
         }
 
-        function followButton(username, followUrl) {
+        function followButton(username: string, followUrl: string) {
             var $followButton = document.createElement('a');
             $followButton.href = followUrl;
             $followButton.className = 'follow-button';
@@ -90,7 +77,7 @@ var DOMOperator = (function() {
             return $followButton;
         }
 
-        function followers(followersUrl, followersAmount) {
+        function followers(followersUrl: string, followersAmount: number) {
             $followers = document.createElement('span');
             $followers.href = followersUrl;
             $followers.className = 'followers';
@@ -111,7 +98,7 @@ var DOMOperator = (function() {
         }
     }
 
-    function createTopLangsSection (langs) {
+    public static createTopLanguages(langs) {
         var topLangs = [];
         for (var k in langs) {
             topLangs.push([k, langs[k]]);
@@ -130,7 +117,7 @@ var DOMOperator = (function() {
         return $langsList;
     }
 
-    function createReposHeader(headerText) {
+    public static createReposHeader(headerText) {
         var $reposHeader = document.createElement('span');
         $reposHeader.className = 'header';
         $reposHeader.appendChild(
@@ -140,7 +127,7 @@ var DOMOperator = (function() {
         return $reposHeader;
     }
 
-    function createReposListSection (repos, sortyBy, maxRepos) {
+    public static createReposList(repos, sortyBy, maxRepos) {
         repos.sort(function (a, b) {
             // sorted by last commit
             if (sortyBy === 'stars') {
@@ -167,4 +154,4 @@ var DOMOperator = (function() {
 
         return $reposList;
     }
-})();
+}
