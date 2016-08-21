@@ -1,6 +1,6 @@
 let username;
 
-const autoComplete = (options: any): IWidgetConfig => {
+const autoComplete = (options?: any): IWidgetConfig => {
     const defaultConfig = {
         template: '#github-card',
         sortBy: 'stars', // possible: 'stars', 'updateTime'
@@ -21,14 +21,14 @@ const autoComplete = (options: any): IWidgetConfig => {
 class GitHubCard {
     private $template: HTMLElement;
     private profileData: IApiProfile;
-    private repos;
+    private repos; // IApiRepository[]
     private url: IApiUrls;
 
     constructor(options) {
         options = autoComplete(options);
         this.$template = <HTMLElement> document.querySelector(options.template);
 
-        username = options.userName || this.$template.dataset['username'];
+        username = options.username || this.$template.dataset['username'];
 
         this.profileData = null;
         this.repos = {};
@@ -37,19 +37,18 @@ class GitHubCard {
         this.init(options);
     }
 
-    init(options) {
+    init(options: IWidgetConfig): void {
         const apiLoader = new GitHubApiLoader(username);
-        const self = this;
         apiLoader.getData(err => {
-            self.profileData = apiLoader.getProfile();
-            self.repos = apiLoader.getRepos();
-            self.url = apiLoader.getURLs();
-            self.render(options, err);
+            this.profileData = apiLoader.getProfile();
+            this.repos = apiLoader.getRepos();
+            this.url = apiLoader.getURLs();
+            this.render(options, err);
         });
         this.$template.className = 'gh-profile-card';
     }
 
-    getTopLanguages(callback: Function) {
+    getTopLanguages(callback: (rank) => void) {
         const langStats = []; // array of URL strings
         const langUrls = this.url.langs;
 
@@ -61,8 +60,8 @@ class GitHubCard {
             request.send(null);
         });
 
-        function calcResponse(loadEvent) {
-            const response = loadEvent.target.responseText;
+        function calcResponse(loadEvent: Event): void {
+            const response = (<any> loadEvent.target).responseText;
             const repoLangs = JSON.parse(response);
             langStats.push(repoLangs);
 
@@ -73,7 +72,7 @@ class GitHubCard {
         }
     }
 
-    render(options: IWidgetConfig, error?: IApiError) {
+    render(options: IWidgetConfig, error?: IApiError): void {
         const $root = this.$template;
         const repositories = this.repos;
 
@@ -114,7 +113,7 @@ class GitHubCard {
 }
 
 // give rank (weights) to the language
-function calcPopularity(langStats) {
+function calcPopularity(langStats): any {
     const languagesRank = {};
 
     langStats.forEach(repoLangs => {

@@ -1,14 +1,12 @@
 class DOMOperator {
     public static clearChildren($parent: Node) {
         while ($parent.hasChildNodes()) {
-            $parent.removeChild(
-                $parent.firstChild
-            );
+            $parent.removeChild($parent.firstChild);
         }
     }
 
     public static createError(error: IApiError, username: string): HTMLDivElement {
-        var $error = document.createElement('div');
+        const $error = document.createElement('div');
         $error.className = 'error';
         $error.innerHTML = `<span>${error.message}</span>`;
 
@@ -25,34 +23,32 @@ class DOMOperator {
         return $error;
     }
 
-    public static createProfile(data: IApiProfile) {
-        var $followButton = followButton(data.login, data.html_url);
-        var $followers = followers(data.followers_url, data.followers);
-        var $followContainer = followContainer([$followButton, $followers]);
+    public static createProfile(data: IApiProfile): HTMLDivElement {
+        const $followButton = followButton(data.login, data.html_url);
+        let $followers = followers(data.followers_url, data.followers);
+        const $followContainer = followContainer([$followButton, $followers]);
 
-        var $avatar = avatar(data.avatar_url);
-        var $name = name(data.html_url, data.name);
+        const $avatar = avatar(data.avatar_url);
+        const $name = name(data.html_url, data.name);
 
         return profile([$avatar, $name, $followContainer]);
 
         //////////////////
 
-        function appendChildren($parent, nodes) {
-            nodes.forEach(function ($node) {
-                $parent.appendChild($node);
-            });
+        function appendChildren($parent: HTMLElement, nodes: HTMLElement[]): void {
+            nodes.forEach($parent.appendChild);
         }
 
-        function profile(children) {
-            var $profile = document.createElement('div');
+        function profile(children: HTMLElement[]): HTMLDivElement {
+            const $profile = document.createElement('div');
             $profile.classList.add('profile');
             appendChildren($profile, children);
 
             return $profile;
         }
 
-        function name(profileUrl, name) {
-            var $name = document.createElement('a');
+        function name(profileUrl, name): HTMLAnchorElement {
+            const $name = document.createElement('a');
             $name.href = profileUrl;
             $name.className = 'name';
             $name.appendChild(document.createTextNode(name));
@@ -61,7 +57,7 @@ class DOMOperator {
         }
 
         function avatar(avatarUrl) {
-            var $avatar = document.createElement('img');
+            const $avatar = document.createElement('img');
             $avatar.src = avatarUrl;
             $avatar.className = 'avatar';
 
@@ -69,7 +65,7 @@ class DOMOperator {
         }
 
         function followButton(username: string, followUrl: string) {
-            var $followButton = document.createElement('a');
+            const $followButton = document.createElement('a');
             $followButton.href = followUrl;
             $followButton.className = 'follow-button';
             $followButton.innerHTML = 'Follow @' + username;
@@ -87,7 +83,7 @@ class DOMOperator {
         }
 
         function followContainer(children) {
-            var $followContainer = document.createElement('div');
+            const $followContainer = document.createElement('div');
             $followContainer.className = 'followMe';
             appendChildren(
                 $followContainer,

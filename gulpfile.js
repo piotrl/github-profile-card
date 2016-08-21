@@ -42,7 +42,6 @@ gulp.task('scripts', function () {
   return gulp.src(paths.scripts)
 	  .pipe(ts({
 		  noImplicitAny: false,
-		  out: 'output.js',
 		  target: 'ES5'
 	  }))
 

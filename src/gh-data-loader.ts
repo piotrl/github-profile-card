@@ -1,14 +1,13 @@
-
 const API_USERS_URL = 'https://api.github.com/users/';
 
 class GitHubApiLoader {
     private userName: string;
     private url: IApiUrls;
     private error: IApiError;
-    private repos;
+    private repos: IApiRepository[];
     private profile: IApiProfile;
 
-    constructor(userName) {
+    constructor(userName: string) {
         this.userName = userName;
         this.url = {
             api: API_USERS_URL + userName,
@@ -17,7 +16,7 @@ class GitHubApiLoader {
         this.error = null;
     }
 
-    getRepos() {
+    getRepos(): IApiRepository[] {
         return this.repos;
     }
 
@@ -29,26 +28,23 @@ class GitHubApiLoader {
         return this.url;
     }
 
-    getData(callback) {
+    getData(callback): void {
         const context = this;
-        const handler = loadJSON(this.url.api);
+        const xhrHandler = loadJSON(this.url.api);
 
-        handler.success(result => {
+        xhrHandler.success(result => {
             context.profile = result;
 
-            loadJSON(result.repos_url)
+            loadJSON(context.profile.repos_url)
                 .success(repos => {
                     context.repos = repos;
-                    context.url.langs = getLangURLs(repos);
+                    context.url.langs = getLangURLs(context.repos);
                     callback();
                 });
         });
 
-        handler.error((result, request) => {
-            const error = {
-                message: result.message
-            };
-            checkSpecifiedError(error, request);
+        xhrHandler.error((result, request) => {
+            const error = checkSpecifiedError(result, request);
             callback(error);
         });
     }
@@ -58,7 +54,11 @@ class GitHubApiLoader {
 // Private
 //
 
-function checkSpecifiedError(error: IApiError, request: XMLHttpRequest) {
+function checkSpecifiedError(result: any, request: XMLHttpRequest): IApiError {
+    const error: IApiError = {
+        message: result.message
+    };
+
     if (request.status === 404) {
         error.isWrongUser = true;
     }
@@ -66,25 +66,21 @@ function checkSpecifiedError(error: IApiError, request: XMLHttpRequest) {
     const limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
     if (Number(limitRequests) === 0) {
         // API is blocked
-        const resetTime: string = request.getResponseHeader('X-RateLimit-Reset');
+        const resetTime = request.getResponseHeader('X-RateLimit-Reset');
         error.resetDate = new Date(parseInt(resetTime, 10) * 1000);
 
         // full message is too long, leave only important thing
         error.message = error.message.split('(')[0];
     }
+
+    return error;
 }
 
-function getLangURLs(repos) {
-    const langApiUrls = [];
-
-    for (const k in repos) {
-        langApiUrls.push(repos[k].languages_url);
-    }
-
-    return langApiUrls;
+function getLangURLs(profileRepositories: IApiRepository[]): string[] {
+    return profileRepositories.map(repository => repository.languages_url);
 }
 
-function loadJSON(url) {
+function loadJSON(url): IJqueryDefferedLike {
     const request = getURL(url);
 
     return {
@@ -106,7 +102,7 @@ function loadJSON(url) {
     };
 }
 
-function getURL(url) {
+function getURL(url: string): XMLHttpRequest {
     const request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.send();
