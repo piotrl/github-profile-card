@@ -25,7 +25,7 @@ class DOMOperator {
 
     public static createProfile(data: IApiProfile): HTMLDivElement {
         const $followButton = followButton(data.login, data.html_url);
-        let $followers = followers(data.followers_url, data.followers);
+        const $followers = followers(data.followers);
         const $followContainer = followContainer([$followButton, $followers]);
 
         const $avatar = avatar(data.avatar_url);
@@ -56,7 +56,7 @@ class DOMOperator {
             return $name;
         }
 
-        function avatar(avatarUrl) {
+        function avatar(avatarUrl: string): HTMLImageElement {
             const $avatar = document.createElement('img');
             $avatar.src = avatarUrl;
             $avatar.className = 'avatar';
@@ -64,7 +64,7 @@ class DOMOperator {
             return $avatar;
         }
 
-        function followButton(username: string, followUrl: string) {
+        function followButton(username: string, followUrl: string): HTMLAnchorElement {
             const $followButton = document.createElement('a');
             $followButton.href = followUrl;
             $followButton.className = 'follow-button';
@@ -73,16 +73,15 @@ class DOMOperator {
             return $followButton;
         }
 
-        function followers(followersUrl: string, followersAmount: number) {
-            $followers = document.createElement('span');
-            $followers.href = followersUrl;
+        function followers(followersAmount: number): HTMLSpanElement {
+            const $followers = document.createElement('span');
             $followers.className = 'followers';
             $followers.innerHTML = followersAmount;
 
             return $followers;
         }
 
-        function followContainer(children) {
+        function followContainer(children: HTMLElement[]): HTMLDivElement {
             const $followContainer = document.createElement('div');
             $followContainer.className = 'followMe';
             appendChildren(
@@ -94,7 +93,7 @@ class DOMOperator {
         }
     }
 
-    public static createTopLanguages(langs) {
+    public static createTopLanguages(langs): HTMLUListElement {
         var topLangs = [];
         for (var k in langs) {
             topLangs.push([k, langs[k]]);
@@ -106,48 +105,46 @@ class DOMOperator {
         // generating HTML structure
         var $langsList = document.createElement('ul');
         $langsList.className = 'languages';
-        for (var i = 0; i < 3 && topLangs[i]; i++) {
-            $langsList.innerHTML += '<li>' + topLangs[i][0] + '</li>';
+        for (let i = 0; i < 3 && topLangs[i]; i++) {
+            $langsList.innerHTML += `<li> ${topLangs[i][0]} </li>`;
         }
 
         return $langsList;
     }
 
-    public static createReposHeader(headerText) {
-        var $reposHeader = document.createElement('span');
-        $reposHeader.className = 'header';
-        $reposHeader.appendChild(
-            document.createTextNode(headerText + ' repositories')
+    public static createRepositoriesHeader(headerText): HTMLSpanElement {
+        var $repositoriesHeader = document.createElement('span');
+        $repositoriesHeader.className = 'header';
+        $repositoriesHeader.appendChild(
+            document.createTextNode(`${headerText} repositories`)
         );
 
-        return $reposHeader;
+        return $repositoriesHeader;
     }
 
-    public static createReposList(repos, sortyBy, maxRepos) {
-        repos.sort(function (a, b) {
-            // sorted by last commit
-            if (sortyBy === 'stars') {
-                return b.stargazers_count - a.stargazers_count;
-            } else {
-                return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-            }
-        });
-
+    public static createRepositoriesList(repos: IApiRepository[], maxRepos: number): HTMLDivElement {
         var $reposList = document.createElement('div');
         $reposList.className = 'repos';
         for (var i = 0; i < maxRepos && repos[i]; i++) {
-            var updated = new Date(repos[i].updated_at),
-                $repoLink = document.createElement('a');
-
-            $repoLink.href = repos[i].html_url;
-            $repoLink.title = repos[i].description;
-            $repoLink.innerHTML += '<span class="repo-name">' + repos[i].name + '</span>';
-            $repoLink.innerHTML += '<span class="updated">Updated: ' + updated.toLocaleDateString() + '</span>';
-            $repoLink.innerHTML += '<span class="star">' + repos[i].stargazers_count + '</span>';
+            const updated = new Date(repos[i].updated_at);
+            const $repoLink = this.createRepositoryElement(repos[i], updated);
 
             $reposList.appendChild($repoLink);
         }
 
         return $reposList;
+    }
+
+    private static createRepositoryElement(repository: IApiRepository, updated: Date) {
+        const $repoLink = document.createElement('a');
+
+        $repoLink.href = repository.html_url;
+        $repoLink.title = repository.description;
+        $repoLink.innerHTML = `
+                <span class="repo-name"> ${repository.name} </span>
+                <span class="updated">Updated: ${updated.toLocaleDateString()} </span>
+                <span class="star"> ${repository.stargazers_count} </span>
+        `;
+        return $repoLink;
     }
 }

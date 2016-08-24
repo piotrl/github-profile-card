@@ -1,9 +1,14 @@
 interface IWidgetConfig {
+    username?: string;
     template: string;
     sortBy: string;
     reposHeaderText: string;
     maxRepos: number;
     githubIcon: boolean;
+}
+
+interface IMap<T> {
+    [K: string]: T;
 }
 
 interface IApiUrls {
@@ -142,7 +147,7 @@ interface IApiRepository {
         default_branch: string;
 }
 
-interface IJqueryDefferedLike {
-    success: (callback: (result: any) => void) => void;
+interface IJqueryDeferredLike {
+    success: (callback: (result: any, request: XMLHttpRequest) => void) => void;
     error: (callback: (result: any, request: XMLHttpRequest) => void) => void;
 }

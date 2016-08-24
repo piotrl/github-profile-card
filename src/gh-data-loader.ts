@@ -29,83 +29,78 @@ class GitHubApiLoader {
     }
 
     getData(callback): void {
-        const context = this;
-        const xhrHandler = loadJSON(this.url.api);
+        const xhrHandler = this.loadJSON(this.url.api);
 
         xhrHandler.success(result => {
-            context.profile = result;
+            this.profile = result;
 
-            loadJSON(context.profile.repos_url)
+            this.loadJSON(this.profile.repos_url)
                 .success(repos => {
-                    context.repos = repos;
-                    context.url.langs = getLangURLs(context.repos);
+                    this.repos = repos;
+                    this.url.langs = this.getLangURLs(this.repos);
                     callback();
                 });
         });
 
         xhrHandler.error((result, request) => {
-            const error = checkSpecifiedError(result, request);
+            const error = this.checkSpecifiedError(result, request);
             callback(error);
         });
     }
-}
 
-/////////////////////////////
-// Private
-//
+    private checkSpecifiedError(result: any, request: XMLHttpRequest): IApiError {
+        const error: IApiError = {
+            message: result.message
+        };
 
-function checkSpecifiedError(result: any, request: XMLHttpRequest): IApiError {
-    const error: IApiError = {
-        message: result.message
-    };
-
-    if (request.status === 404) {
-        error.isWrongUser = true;
-    }
-
-    const limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
-    if (Number(limitRequests) === 0) {
-        // API is blocked
-        const resetTime = request.getResponseHeader('X-RateLimit-Reset');
-        error.resetDate = new Date(parseInt(resetTime, 10) * 1000);
-
-        // full message is too long, leave only important thing
-        error.message = error.message.split('(')[0];
-    }
-
-    return error;
-}
-
-function getLangURLs(profileRepositories: IApiRepository[]): string[] {
-    return profileRepositories.map(repository => repository.languages_url);
-}
-
-function loadJSON(url): IJqueryDefferedLike {
-    const request = getURL(url);
-
-    return {
-        success(callback) {
-            request.addEventListener('load', () => {
-                if (callback && request.status === 200) {
-                    callback(JSON.parse(request.responseText));
-                }
-            });
-        },
-        error(callback) {
-            request.addEventListener('load', () => {
-                if (callback && request.status !== 200) {
-                    const result = JSON.parse(request.responseText);
-                    callback(result, request);
-                }
-            });
+        if (request.status === 404) {
+            error.isWrongUser = true;
         }
-    };
+
+        const limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
+        if (Number(limitRequests) === 0) {
+            // API is blocked
+            const resetTime = request.getResponseHeader('X-RateLimit-Reset');
+            error.resetDate = new Date(Number(resetTime) * 1000);
+
+            // full message is too long, leave only important thing
+            error.message = error.message.split('(')[0];
+        }
+
+        return error;
+    }
+
+    private getLangURLs(profileRepositories: IApiRepository[]): string[] {
+        return profileRepositories.map(repository => repository.languages_url);
+    }
+
+    private loadJSON(url): IJqueryDeferredLike {
+        const request = this.getURL(url);
+
+        return {
+            success(callback) {
+                request.addEventListener('load', () => {
+                    if (request.status === 200) {
+                        callback(JSON.parse(request.responseText), request);
+                    }
+                });
+            },
+            error(callback) {
+                request.addEventListener('load', () => {
+                    if (request.status !== 200) {
+                        callback(JSON.parse(request.responseText), request);
+                    }
+                });
+            }
+        };
+    }
+
+    private getURL(url: string): XMLHttpRequest {
+        const request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.send();
+
+        return request;
+    }
 }
 
-function getURL(url: string): XMLHttpRequest {
-    const request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.send();
-
-    return request;
-}

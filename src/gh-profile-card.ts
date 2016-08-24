@@ -1,54 +1,61 @@
-let username;
-
-const autoComplete = (options?: any): IWidgetConfig => {
-    const defaultConfig = {
-        template: '#github-card',
-        sortBy: 'stars', // possible: 'stars', 'updateTime'
-        reposHeaderText: 'Most starred',
-        maxRepos: 5,
-        githubIcon: false
-    };
-    if (!options) {
-        return defaultConfig;
-    }
-    for (const key in defaultConfig) {
-        options[key] = options[key] || defaultConfig[key];
-    }
-
-    return options;
-};
-
 class GitHubCard {
     private $template: HTMLElement;
     private profileData: IApiProfile;
-    private repos; // IApiRepository[]
+    private repos: IApiRepository[];
     private url: IApiUrls;
 
-    constructor(options) {
-        options = autoComplete(options);
-        this.$template = <HTMLElement> document.querySelector(options.template);
+    constructor(options: IMap<any>) {
+        const widgetConfig = this.completeConfiguration(options);
+        this.$template = this.findTemplate(widgetConfig);
 
-        username = options.username || this.$template.dataset['username'];
-
-        this.profileData = null;
-        this.repos = {};
-
-        // load resources and render widget
-        this.init(options);
+        this.init(widgetConfig);
     }
 
-    init(options: IWidgetConfig): void {
-        const apiLoader = new GitHubApiLoader(username);
+    private findTemplate(widgetConfig: IWidgetConfig) {
+        const $template = <HTMLElement> document.querySelector(widgetConfig.template);
+        if (!$template) {
+            throw `No template found for selector: ${widgetConfig.template}`;
+        }
+        $template.className = 'gh-profile-card';
+        return $template;
+    }
+
+    public refresh(options: IWidgetConfig) {
+        options = this.completeConfiguration(options);
+        this.render(options);
+    }
+
+    private completeConfiguration(options?: IMap<any>): IWidgetConfig {
+        const defaultConfig = {
+            username: null,
+            template: '#github-card',
+            sortBy: 'stars', // possible: 'stars', 'updateTime'
+            reposHeaderText: 'Most starred',
+            maxRepos: 5,
+            githubIcon: false
+        };
+        if (!options) {
+            return defaultConfig;
+        }
+        for (const key in defaultConfig) {
+            defaultConfig[key] = options[key] || defaultConfig[key];
+        }
+
+        return defaultConfig;
+    };
+
+
+    private init(options: IWidgetConfig): void {
+        const apiLoader = new GitHubApiLoader(options.username);
         apiLoader.getData(err => {
             this.profileData = apiLoader.getProfile();
             this.repos = apiLoader.getRepos();
             this.url = apiLoader.getURLs();
             this.render(options, err);
         });
-        this.$template.className = 'gh-profile-card';
     }
 
-    getTopLanguages(callback: (rank) => void) {
+    private getTopLanguages(callback: (rank: IMap<number>) => void) {
         const langStats = []; // array of URL strings
         const langUrls = this.url.langs;
 
@@ -62,17 +69,17 @@ class GitHubCard {
 
         function calcResponse(loadEvent: Event): void {
             const response = (<any> loadEvent.target).responseText;
-            const repoLangs = JSON.parse(response);
+            const repoLangs: IMap<number> = JSON.parse(response);
             langStats.push(repoLangs);
 
             if (langStats.length === langUrls.length) { // all requests were made
-                const languagesRank = calcPopularity(langStats);
+                const languagesRank = this.flattenLanguagesStats(langStats);
                 callback(languagesRank);
             }
         }
     }
 
-    render(options: IWidgetConfig, error?: IApiError): void {
+    public render(options: IWidgetConfig, error?: IApiError): void {
         const $root = this.$template;
         const repositories = this.repos;
 
@@ -80,7 +87,7 @@ class GitHubCard {
         DOMOperator.clearChildren($root);
 
         if (error) {
-            const $errorSection = DOMOperator.createError(error, username);
+            const $errorSection = DOMOperator.createError(error, options.username);
             $root.appendChild($errorSection);
 
             return;
@@ -98,33 +105,40 @@ class GitHubCard {
         $root.appendChild($profile);
 
         if (options.maxRepos > 0) {
-            const $reposHeader = DOMOperator.createReposHeader(options.reposHeaderText);
-            const $reposList = DOMOperator.createReposList(repositories, options.sortBy, options.maxRepos);
+            this.sortRepositories(repositories, options.sortBy);
+
+            const $reposHeader = DOMOperator.createRepositoriesHeader(options.reposHeaderText);
+            const $reposList = DOMOperator.createRepositoriesList(repositories, options.maxRepos);
             $reposList.insertBefore($reposHeader, $reposList.firstChild);
 
             $root.appendChild($reposList);
         }
     }
 
-    refresh(options: IWidgetConfig) {
-        options = autoComplete(options);
-        this.render(options);
+    private flattenLanguagesStats(langStats: IMap<number>[]): IMap<number> {
+        const languagesRank: IMap<number> = {};
+
+        langStats.forEach(repoLangs => {
+            let sum = 0;
+
+            for (const k in repoLangs) {
+                sum += repoLangs[k] || 0;
+                languagesRank[k] = languagesRank[k] || 0;
+                languagesRank[k] += repoLangs[k] / (sum * 1.00);
+            }
+        });
+
+        return languagesRank;
     }
-}
 
-// give rank (weights) to the language
-function calcPopularity(langStats): any {
-    const languagesRank = {};
-
-    langStats.forEach(repoLangs => {
-        let sum = 0;
-
-        for (const k in repoLangs) {
-            sum += repoLangs[k] || 0;
-            languagesRank[k] = languagesRank[k] || 0;
-            languagesRank[k] += repoLangs[k] / (sum * 1.00);
-        }
-    });
-
-    return languagesRank;
+    private sortRepositories(repos: IApiRepository[], sortyBy: string): void {
+        repos.sort(function (a, b) {
+            // sorted by last commit
+            if (sortyBy === 'stars') {
+                return b.stargazers_count - a.stargazers_count;
+            } else {
+                return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+            }
+        });
+    }
 }
