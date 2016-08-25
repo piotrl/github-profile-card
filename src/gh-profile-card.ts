@@ -7,17 +7,9 @@ class GitHubCard {
     constructor(options: IMap<any>) {
         const widgetConfig = this.completeConfiguration(options);
         this.$template = this.findTemplate(widgetConfig);
+        this.setUsername(widgetConfig, this.$template);
 
         this.init(widgetConfig);
-    }
-
-    private findTemplate(widgetConfig: IWidgetConfig) {
-        const $template = <HTMLElement> document.querySelector(widgetConfig.template);
-        if (!$template) {
-            throw `No template found for selector: ${widgetConfig.template}`;
-        }
-        $template.className = 'gh-profile-card';
-        return $template;
     }
 
     public refresh(options: IWidgetConfig) {
@@ -44,6 +36,22 @@ class GitHubCard {
         return defaultConfig;
     };
 
+    private findTemplate(widgetConfig: IWidgetConfig): HTMLElement {
+        const $template = <HTMLElement> document.querySelector(widgetConfig.template);
+        if (!$template) {
+            throw `No template found for selector: ${widgetConfig.template}`;
+        }
+        $template.className = 'gh-profile-card';
+        return $template;
+    }
+
+    private setUsername(widgetConfig: IWidgetConfig, $template: HTMLElement): void {
+        widgetConfig.username = widgetConfig.username || $template.dataset['username'];
+
+        if (!widgetConfig.username) {
+            throw 'Not provided username';
+        }
+    }
 
     private init(options: IWidgetConfig): void {
         const apiLoader = new GitHubApiLoader(options.username);
@@ -55,9 +63,8 @@ class GitHubCard {
         });
     }
 
-    private getTopLanguages(callback: (rank: IMap<number>) => void) {
+    private getTopLanguages(langUrls: string[], callback: (rank: IMap<number>[]) => void) {
         const langStats = []; // array of URL strings
-        const langUrls = this.url.langs;
 
         // get URLs with language stats for each repository
         langUrls.forEach(apiURL => {
@@ -73,8 +80,7 @@ class GitHubCard {
             langStats.push(repoLangs);
 
             if (langStats.length === langUrls.length) { // all requests were made
-                const languagesRank = this.flattenLanguagesStats(langStats);
-                callback(languagesRank);
+                callback(langStats);
             }
         }
     }
@@ -96,9 +102,10 @@ class GitHubCard {
         // API doesn't return errors, try to built widget
         const $profile = DOMOperator.createProfile(this.profileData);
 
-        this.getTopLanguages(langs => {
+        this.getTopLanguages(this.url.langs, langStats => {
+            const languagesRank = this.flattenLanguagesStats(langStats);
             $profile.appendChild(
-                DOMOperator.createTopLanguages(langs)
+                DOMOperator.createTopLanguages(languagesRank)
             );
         });
 

@@ -82,8 +82,8 @@ interface IApiRepository {
         full_name: string;
         owner: IRepositoryOwner;
         private: boolean;
-        html_url: boolean;
-        description: boolean;
+        html_url: string;
+        description: string;
         fork: boolean;
         url: string;
         forks_url: string;

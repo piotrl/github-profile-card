@@ -76,7 +76,7 @@ class DOMOperator {
         function followers(followersAmount: number): HTMLSpanElement {
             const $followers = document.createElement('span');
             $followers.className = 'followers';
-            $followers.innerHTML = followersAmount;
+            $followers.innerHTML = '' + followersAmount;
 
             return $followers;
         }
@@ -93,21 +93,25 @@ class DOMOperator {
         }
     }
 
-    public static createTopLanguages(langs): HTMLUListElement {
+    public static createTopLanguages(langs: IMap<number>): HTMLUListElement {
         var topLangs = [];
         for (var k in langs) {
-            topLangs.push([k, langs[k]]);
+            topLangs.push({
+                name: k,
+                stat: langs[k]
+            });
         }
-        topLangs.sort(function (a, b) {
-            return b[1] - a[1];
-        });
 
-        // generating HTML structure
-        var $langsList = document.createElement('ul');
+        const languagesListTemplate = topLangs
+            .sort((a, b) => b.stat - a.stat)
+            .slice(0, 3)
+            .reduce((sum, lang) => {
+                return sum + `<li> ${lang.name} </li>`;
+            });
+
+        const $langsList = document.createElement('ul');
         $langsList.className = 'languages';
-        for (let i = 0; i < 3 && topLangs[i]; i++) {
-            $langsList.innerHTML += `<li> ${topLangs[i][0]} </li>`;
-        }
+        $langsList.innerHTML = languagesListTemplate;
 
         return $langsList;
     }
@@ -122,20 +126,19 @@ class DOMOperator {
         return $repositoriesHeader;
     }
 
-    public static createRepositoriesList(repos: IApiRepository[], maxRepos: number): HTMLDivElement {
+    public static createRepositoriesList(repositories: IApiRepository[], maxRepos: number): HTMLDivElement {
         var $reposList = document.createElement('div');
         $reposList.className = 'repos';
-        for (var i = 0; i < maxRepos && repos[i]; i++) {
-            const updated = new Date(repos[i].updated_at);
-            const $repoLink = this.createRepositoryElement(repos[i], updated);
 
-            $reposList.appendChild($repoLink);
-        }
+        repositories.slice(0, maxRepos)
+            .map(this.createRepositoryElement)
+            .forEach($reposList.appendChild);
 
         return $reposList;
     }
 
-    private static createRepositoryElement(repository: IApiRepository, updated: Date) {
+    private static createRepositoryElement(repository: IApiRepository): HTMLAnchorElement {
+        const updated = new Date(repository.updated_at);
         const $repoLink = document.createElement('a');
 
         $repoLink.href = repository.html_url;
