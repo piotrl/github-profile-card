@@ -63,6 +63,7 @@ class GitHubCard {
         });
     }
 
+    // TODO: Load only languages for repositories listed in page. See #5
     private getTopLanguages(langUrls: string[], callback: (rank: IMap<number>[]) => void) {
         const langStats = []; // array of URL strings
 

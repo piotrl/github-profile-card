@@ -36,7 +36,7 @@ class DOMOperator {
         //////////////////
 
         function appendChildren($parent: HTMLElement, nodes: HTMLElement[]): void {
-            nodes.forEach($parent.appendChild);
+            nodes.forEach(node => $parent.appendChild(node));
         }
 
         function profile(children: HTMLElement[]): HTMLDivElement {
@@ -105,8 +105,9 @@ class DOMOperator {
         const languagesListTemplate = topLangs
             .sort((a, b) => b.stat - a.stat)
             .slice(0, 3)
-            .reduce((sum, lang) => {
-                return sum + `<li> ${lang.name} </li>`;
+            .map(lang => `<li>${lang.name}</li>`)
+            .reduce((sum, langElement) => {
+                return sum + langElement;
             });
 
         const $langsList = document.createElement('ul');
@@ -132,7 +133,7 @@ class DOMOperator {
 
         repositories.slice(0, maxRepos)
             .map(this.createRepositoryElement)
-            .forEach($reposList.appendChild);
+            .forEach(el => $reposList.appendChild(el));
 
         return $reposList;
     }
