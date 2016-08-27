@@ -3,7 +3,7 @@
 Widget shows your GitHub profile directly on your website!  
 Show your current projects — always up to date.
 
-![Screenshot](./demo/screenshot.png)
+![Screenshot](./docs/screenshot.png)
 
 ### Main features
 - Top languages statistic
@@ -12,7 +12,7 @@ Show your current projects — always up to date.
 - No jQuery and other libraries required
 
 
-**Live [demo](http://piotrl.github.io/github-profile-card/)** with configuration sample
+**Live [demo](http://codepen.io/piotrl/full/cwbgJ/)** with configuration sample
 
 ---
 
