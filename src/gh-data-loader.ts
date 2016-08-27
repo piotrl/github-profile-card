@@ -1,50 +1,23 @@
-const API_USERS_URL = 'https://api.github.com/users/';
-
 class GitHubApiLoader {
-    private userName: string;
-    private url: IApiUrls;
-    private error: IApiError;
-    private repos: IApiRepository[];
-    private profile: IApiProfile;
+    private apiBase: string = 'https://api.github.com';
 
-    constructor(userName: string) {
-        this.userName = userName;
-        this.url = {
-            api: API_USERS_URL + userName,
-            langs: []
-        };
-        this.error = null;
+    constructor() {
     }
 
-    getRepos(): IApiRepository[] {
-        return this.repos;
-    }
+    getData(username: string, callback: IApiCallback<IUserData>): void {
+        const request = this.apiGet(`${this.apiBase}/users/${username}`);
 
-    getProfile(): IApiProfile {
-        return this.profile;
-    }
-
-    getURLs(): IApiUrls {
-        return this.url;
-    }
-
-    getData(callback): void {
-        const xhrHandler = this.loadJSON(this.url.api);
-
-        xhrHandler.success(result => {
-            this.profile = result;
-
-            this.loadJSON(this.profile.repos_url)
-                .success(repos => {
-                    this.repos = repos;
-                    this.url.langs = this.getLangURLs(this.repos);
-                    callback();
+        request.success(profile => {
+            this.apiGet(profile.repos_url)
+                .success(repositories => {
+                    const languagesUrls = this.extractLangURLs(repositories);
+                    callback({ profile, repositories, languagesUrls}, null);
                 });
         });
 
-        xhrHandler.error((result, request) => {
+        request.error((result, request) => {
             const error = this.checkSpecifiedError(result, request);
-            callback(error);
+            callback(null, error);
         });
     }
 
@@ -70,11 +43,11 @@ class GitHubApiLoader {
         return error;
     }
 
-    private getLangURLs(profileRepositories: IApiRepository[]): string[] {
+    private extractLangURLs(profileRepositories: IApiRepository[]): string[] {
         return profileRepositories.map(repository => repository.languages_url);
     }
 
-    private loadJSON(url): IJqueryDeferredLike {
+    private apiGet(url): IJqueryDeferredLike<any> {
         const request = this.getURL(url);
 
         return {
@@ -97,10 +70,9 @@ class GitHubApiLoader {
 
     private getURL(url: string): XMLHttpRequest {
         const request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', url);
         request.send();
 
         return request;
     }
 }
-

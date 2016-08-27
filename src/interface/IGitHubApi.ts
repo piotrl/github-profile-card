@@ -1,26 +1,8 @@
-interface IWidgetConfig {
-    username?: string;
-    template: string;
-    sortBy: string;
-    reposHeaderText: string;
-    maxRepos: number;
-    githubIcon: boolean;
-}
-
-interface IMap<T> {
-    [K: string]: T;
-}
-
-interface IApiUrls {
-    api: string;
-    langs: string[];
-}
-
-interface IApiError {
-    message: string;
-    isWrongUser?: boolean;
-    resetDate?: Date;
-}
+/**
+ * GitHub API interfaces based on documentation
+ *
+ * @see https://developer.github.com/v3/
+ */
 
 interface IApiProfile {
     name: string;
@@ -145,9 +127,4 @@ interface IApiRepository {
         open_issues: number;
         watchers: number;
         default_branch: string;
-}
-
-interface IJqueryDeferredLike {
-    success: (callback: (result: any, request: XMLHttpRequest) => void) => void;
-    error: (callback: (result: any, request: XMLHttpRequest) => void) => void;
 }

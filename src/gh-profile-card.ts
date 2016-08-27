@@ -1,13 +1,11 @@
 class GitHubCard {
     private $template: HTMLElement;
-    private profileData: IApiProfile;
-    private repos: IApiRepository[];
-    private url: IApiUrls;
+    private userData: IUserData;
 
     constructor(options: IMap<any>) {
         const widgetConfig = this.completeConfiguration(options);
         this.$template = this.findTemplate(widgetConfig);
-        this.setUsername(widgetConfig, this.$template);
+        this.extractUsername(widgetConfig, this.$template);
 
         this.init(widgetConfig);
     }
@@ -45,7 +43,7 @@ class GitHubCard {
         return $template;
     }
 
-    private setUsername(widgetConfig: IWidgetConfig, $template: HTMLElement): void {
+    private extractUsername(widgetConfig: IWidgetConfig, $template: HTMLElement): void {
         widgetConfig.username = widgetConfig.username || $template.dataset['username'];
 
         if (!widgetConfig.username) {
@@ -54,11 +52,9 @@ class GitHubCard {
     }
 
     private init(options: IWidgetConfig): void {
-        const apiLoader = new GitHubApiLoader(options.username);
-        apiLoader.getData(err => {
-            this.profileData = apiLoader.getProfile();
-            this.repos = apiLoader.getRepos();
-            this.url = apiLoader.getURLs();
+        const apiLoader = new GitHubApiLoader();
+        apiLoader.getData(options.username, (data, err) => {
+            this.userData = data;
             this.render(options, err);
         });
     }
@@ -88,7 +84,7 @@ class GitHubCard {
 
     public render(options: IWidgetConfig, error?: IApiError): void {
         const $root = this.$template;
-        const repositories = this.repos;
+        const repositories = this.userData.repositories;
 
         // clear root template element to prepare space for widget
         DOMOperator.clearChildren($root);
@@ -101,9 +97,9 @@ class GitHubCard {
         }
 
         // API doesn't return errors, try to built widget
-        const $profile = DOMOperator.createProfile(this.profileData);
+        const $profile = DOMOperator.createProfile(this.userData.profile);
 
-        this.getTopLanguages(this.url.langs, langStats => {
+        this.getTopLanguages(this.userData.languagesUrls, langStats => {
             const languagesRank = this.flattenLanguagesStats(langStats);
             $profile.appendChild(
                 DOMOperator.createTopLanguages(languagesRank)
