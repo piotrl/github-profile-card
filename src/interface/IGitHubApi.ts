@@ -4,61 +4,73 @@
  * @see https://developer.github.com/v3/
  */
 
-interface IApiProfile {
-    name: string;
-    avatar_url: string;
-    followers: number;
-    followers_url: string;
-    html_url: string;
-    login: string;
+namespace GitHubCard {
 
-    id: number;
-    gravatar_id: string;
-    url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    type: string;
-    site_admin: boolean;
-    company: string;
-    blog: string;
-    location: string;
-    email: string;
-    hireable: boolean;
-    bio: string;
-    public_repos: number;
-    public_gists: number;
-    following: number;
-    created_at: string;
-    updated_at: string;
-}
+    export interface IApiCallback<T> {
+        (data: T, error: IApiError): void
+    }
 
-interface IRepositoryOwner {
-    login: string;
-    id: number;
-    avatar_url: string;
-    gravatar_id: string;
-    url: string;
-    html_url: string;
-    followers_url: string;
-    following_url: string;
-    gists_url: string;
-    starred_url: string;
-    subscriptions_url: string;
-    organizations_url: string;
-    repos_url: string;
-    events_url: string;
-    received_events_url: string;
-    type: string;
-    site_admin: boolean;
-}
+    export interface IApiError {
+        message: string;
+        isWrongUser?: boolean;
+        resetDate?: Date;
+    }
 
-interface IApiRepository {
+    export interface IApiProfile {
+        name: string;
+        avatar_url: string;
+        followers: number;
+        followers_url: string;
+        html_url: string;
+        login: string;
+
+        id: number;
+        gravatar_id: string;
+        url: string;
+        following_url: string;
+        gists_url: string;
+        starred_url: string;
+        subscriptions_url: string;
+        organizations_url: string;
+        repos_url: string;
+        events_url: string;
+        received_events_url: string;
+        type: string;
+        site_admin: boolean;
+        company: string;
+        blog: string;
+        location: string;
+        email: string;
+        hireable: boolean;
+        bio: string;
+        public_repos: number;
+        public_gists: number;
+        following: number;
+        created_at: string;
+        updated_at: string;
+    }
+
+    export interface IRepositoryOwner {
+        login: string;
+        id: number;
+        avatar_url: string;
+        gravatar_id: string;
+        url: string;
+        html_url: string;
+        followers_url: string;
+        following_url: string;
+        gists_url: string;
+        starred_url: string;
+        subscriptions_url: string;
+        organizations_url: string;
+        repos_url: string;
+        events_url: string;
+        received_events_url: string;
+        type: string;
+        site_admin: boolean;
+    }
+
+    export interface IApiRepository {
         id: number;
         name: string;
         full_name: string;
@@ -127,4 +139,5 @@ interface IApiRepository {
         open_issues: number;
         watchers: number;
         default_branch: string;
+    }
 }

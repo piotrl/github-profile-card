@@ -1,14 +1,15 @@
 // General helper interfaces
+namespace GitHubCard {
+    export interface IMap<T> {
+        [K: string]: T;
+    }
 
-interface IMap<T> {
-    [K: string]: T;
-}
+    export interface ICallback<T> {
+        (data: T): void
+    }
 
-interface ICallback<T> {
-    (data: T): void
-}
-
-interface IJqueryDeferredLike<T> {
-    success: (callback: (result: T, request: XMLHttpRequest) => void) => void;
-    error: (callback: (result: T, request: XMLHttpRequest) => void) => void;
+    export interface IJqueryDeferredLike<T> {
+        success: (callback: (result: T, request: XMLHttpRequest) => void) => void;
+        error: (callback: (result: T, request: XMLHttpRequest) => void) => void;
+    }
 }

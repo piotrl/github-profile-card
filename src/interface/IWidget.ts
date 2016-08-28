@@ -2,27 +2,20 @@
  * Widget interfaces
  */
 
-interface IWidgetConfig {
-    username?: string;
-    template: string;
-    sortBy: string;
-    reposHeaderText: string;
-    maxRepos: number;
-    githubIcon: boolean;
-}
+namespace GitHubCard {
 
-interface IUserData {
-    profile: IApiProfile;
-    repositories: IApiRepository[];
-    languagesUrls: string[];
-}
+    export interface IWidgetConfig {
+        username?: string;
+        template: string;
+        sortBy: string;
+        reposHeaderText: string;
+        maxRepos: number;
+        githubIcon: boolean;
+    }
 
-interface IApiCallback<T> {
-    (data: T, error: IApiError): void
-}
-
-interface IApiError {
-    message: string;
-    isWrongUser?: boolean;
-    resetDate?: Date;
+    export interface IUserData {
+        profile: IApiProfile;
+        repositories: IApiRepository[];
+        languagesUrls: string[];
+    }
 }
