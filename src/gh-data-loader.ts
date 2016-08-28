@@ -35,7 +35,7 @@ namespace GitHubCard {
                 const resetTime = request.getResponseHeader('X-RateLimit-Reset');
                 error.resetDate = new Date(Number(resetTime) * 1000);
 
-                // full message is too long, leave only important thing
+                // full message is too long, leave only general message
                 error.message = error.message.split('(')[0];
             }
 
@@ -47,19 +47,27 @@ namespace GitHubCard {
         }
 
         private apiGet(url): IJqueryDeferredLike<any> {
-            const request = this.getURL(url);
+            const request = this.buildRequest(url);
 
             return {
                 success(callback) {
                     request.addEventListener('load', () => {
+                        if (request.status === 304) {
+                            callback(CacheStorage.get(url).data, request);
+                        }
                         if (request.status === 200) {
-                            callback(JSON.parse(request.responseText), request);
+                            const response = JSON.parse(request.responseText);
+                            CacheStorage.add(url, {
+                                lastModified: request.getResponseHeader('Last-Modified'),
+                                data: response
+                            });
+                            callback(response, request);
                         }
                     });
                 },
                 error(callback) {
                     request.addEventListener('load', () => {
-                        if (request.status !== 200) {
+                        if (request.status !== 200 && request.status !== 304) {
                             callback(JSON.parse(request.responseText), request);
                         }
                     });
@@ -67,12 +75,22 @@ namespace GitHubCard {
             };
         }
 
-        private getURL(url: string): XMLHttpRequest {
+        private buildRequest(url: string): XMLHttpRequest {
             const request = new XMLHttpRequest();
             request.open('GET', url);
+            this.buildApiHeaders(request, url);
             request.send();
 
             return request;
+        }
+
+        private buildApiHeaders(request: XMLHttpRequest, url: string) {
+            request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+
+            const urlCache = CacheStorage.get(url);
+            if (urlCache) {
+                request.setRequestHeader('If-Modified-Since', urlCache.lastModified);
+            }
         }
     }
 }
