@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		reposHeaderText: 'Most starred',
 		maxRepos: 5
 	};
-	var widget = new GitHubCard(options);
+	var widget = new GitHubCard.GitHubCard(options);
 
 	// Sort repository acording to
 	// radio inputs on website
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		$submit = document.getElementById('gh-uname-submit');
 
 	$submit.addEventListener('click', function (element) {
-		widget = new GitHubCard({ userName: $input.value });
+		widget = new GitHubCard.GitHubCard({ userName: $input.value });
 
 		element.preventDefault();
 	});

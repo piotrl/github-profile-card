@@ -3,7 +3,7 @@ tmp/
 *.iml
 node_modules/
 bower_components/
-src/*.js
+src/**/*.js
 
 # SASS
 .sass-cache
