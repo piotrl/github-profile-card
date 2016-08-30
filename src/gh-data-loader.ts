@@ -21,16 +21,17 @@ namespace GitHubCard {
             });
         }
 
-
         public loadRepositoriesLanguages(langUrls: string[], callback: (rank: IMap<number>[]) => void): void {
             const langStats = [];
+            let requestsAmount = langUrls.length;
 
             langUrls
                 .map(repoLangUrl => this.apiGet(repoLangUrl))
                 .forEach(request => {
+                    request.error(request => requestsAmount--);
                     request.success((repoLangs: IMap<number>) => {
                         langStats.push(repoLangs);
-                        if (langStats.length === langUrls.length) { // all requests were made
+                        if (langStats.length === requestsAmount) { // all requests were made
                             callback(langStats);
                         }
                     });
