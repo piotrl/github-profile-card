@@ -7,7 +7,7 @@
 namespace GitHubCard {
 
     export interface IApiCallback<T> {
-        (data: T, error: IApiError): void
+        (data: T, error: IApiError): void;
     }
 
     export interface IApiError {

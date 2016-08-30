@@ -5,7 +5,7 @@ namespace GitHubCard {
     }
 
     export interface ICallback<T> {
-        (data: T): void
+        (data: T): void;
     }
 
     export interface IJqueryDeferredLike<T> {

@@ -16,7 +16,7 @@ namespace GitHubCard {
                 $error.innerHTML = `<span>Not found user: ${username}</span>`;
             }
             if (error.resetDate) {
-                var remainingTime = error.resetDate.getMinutes() - new Date().getMinutes();
+                let remainingTime = error.resetDate.getMinutes() - new Date().getMinutes();
                 remainingTime = (remainingTime < 0) ? 60 + remainingTime : remainingTime;
 
                 $error.innerHTML += `<span class="remain">Come back after ${remainingTime} minutes</span>`;
@@ -96,8 +96,8 @@ namespace GitHubCard {
         }
 
         public static createTopLanguages(langs: IMap<number>): HTMLUListElement {
-            var topLangs = [];
-            for (var k in langs) {
+            const topLangs = [];
+            for (let k in langs) {
                 topLangs.push({
                     name: k,
                     stat: langs[k]
@@ -118,7 +118,7 @@ namespace GitHubCard {
         }
 
         public static createRepositoriesHeader(headerText): HTMLSpanElement {
-            var $repositoriesHeader = document.createElement('span');
+            const $repositoriesHeader = document.createElement('span');
             $repositoriesHeader.className = 'header';
             $repositoriesHeader.appendChild(
                 document.createTextNode(`${headerText} repositories`)
@@ -128,7 +128,7 @@ namespace GitHubCard {
         }
 
         public static createRepositoriesList(repositories: IApiRepository[], maxRepos: number): HTMLDivElement {
-            var $reposList = document.createElement('div');
+            const $reposList = document.createElement('div');
             $reposList.className = 'repos';
 
             repositories.slice(0, maxRepos)
