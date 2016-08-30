@@ -1,9 +1,10 @@
 namespace GitHubCard {
 
+    import IApiError = GitHubCard.IApiError;
     export class GitHubApiLoader {
         private apiBase: string = 'https://api.github.com';
 
-        getData(username: string, callback: IApiCallback<IUserData>): void {
+        public loadUserData(username: string, callback: IApiCallback<IUserData>): void {
             const request = this.apiGet(`${this.apiBase}/users/${username}`);
 
             request.success(profile => {
@@ -15,12 +16,28 @@ namespace GitHubCard {
             });
 
             request.error((result, request) => {
-                const error = this.checkSpecifiedError(result, request);
+                const error = this.identifyError(result, request);
                 callback(null, error);
             });
         }
 
-        private checkSpecifiedError(result: any, request: XMLHttpRequest): IApiError {
+
+        public loadRepositoriesLanguages(langUrls: string[], callback: (rank: IMap<number>[]) => void): void {
+            const langStats = [];
+
+            langUrls
+                .map(repoLangUrl => this.apiGet(repoLangUrl))
+                .forEach(request => {
+                    request.success((repoLangs: IMap<number>) => {
+                        langStats.push(repoLangs);
+                        if (langStats.length === langUrls.length) { // all requests were made
+                            callback(langStats);
+                        }
+                    });
+                });
+        }
+
+        private identifyError(result: any, request: XMLHttpRequest): IApiError {
             const error: IApiError = {
                 message: result.message
             };
@@ -31,7 +48,6 @@ namespace GitHubCard {
 
             const limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
             if (Number(limitRequests) === 0) {
-                // API is blocked
                 const resetTime = request.getResponseHeader('X-RateLimit-Reset');
                 error.resetDate = new Date(Number(resetTime) * 1000);
 

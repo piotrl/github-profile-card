@@ -1,6 +1,7 @@
 namespace GitHubCard {
 
     export class GitHubCard {
+        private apiLoader: GitHubApiLoader = new GitHubApiLoader();
         private $template: HTMLElement;
         private userData: IUserData;
 
@@ -34,7 +35,7 @@ namespace GitHubCard {
             }
 
             return defaultConfig;
-        };
+        }
 
         private findTemplate(widgetConfig: IWidgetConfig): HTMLElement {
             const $template = <HTMLElement> document.querySelector(widgetConfig.template);
@@ -54,39 +55,14 @@ namespace GitHubCard {
         }
 
         private init(options: IWidgetConfig): void {
-            const apiLoader = new GitHubApiLoader();
-            apiLoader.getData(options.username, (data, err) => {
+            this.apiLoader.loadUserData(options.username, (data, err) => {
                 this.userData = data;
                 this.render(options, err);
             });
         }
 
-        // TODO: Load only languages for repositories listed in page. See #5
-        private getTopLanguages(langUrls: string[], callback: (rank: IMap<number>[]) => void) {
-            const langStats = []; // array of URL strings
-
-            // get URLs with language stats for each repository
-            langUrls.forEach(apiURL => {
-                const request = new XMLHttpRequest();
-                request.addEventListener('load', calcResponse, false);
-                request.open('GET', apiURL, true);
-                request.send(null);
-            });
-
-            function calcResponse(loadEvent: Event): void {
-                const response = (<any> loadEvent.target).responseText;
-                const repoLangs: IMap<number> = JSON.parse(response);
-                langStats.push(repoLangs);
-
-                if (langStats.length === langUrls.length) { // all requests were made
-                    callback(langStats);
-                }
-            }
-        }
-
-        public render(options: IWidgetConfig, error?: IApiError): void {
+        private render(options: IWidgetConfig, error?: IApiError): void {
             const $root = this.$template;
-            const repositories = this.userData.repositories;
 
             // clear root template element to prepare space for widget
             DOMOperator.clearChildren($root);
@@ -101,7 +77,7 @@ namespace GitHubCard {
             // API doesn't return errors, try to built widget
             const $profile = DOMOperator.createProfile(this.userData.profile);
 
-            this.getTopLanguages(this.userData.languagesUrls, langStats => {
+            this.apiLoader.loadRepositoriesLanguages(this.userData.languagesUrls, langStats => {
                 const languagesRank = this.flattenLanguagesStats(langStats);
                 $profile.appendChild(
                     DOMOperator.createTopLanguages(languagesRank)
@@ -111,6 +87,7 @@ namespace GitHubCard {
             $root.appendChild($profile);
 
             if (options.maxRepos > 0) {
+                const repositories = this.userData.repositories;
                 this.sortRepositories(repositories, options.sortBy);
 
                 const $reposHeader = DOMOperator.createRepositoriesHeader(options.reposHeaderText);
