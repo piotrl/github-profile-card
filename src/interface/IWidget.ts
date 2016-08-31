@@ -16,6 +16,5 @@ namespace GitHubCard {
     export interface IUserData {
         profile: IApiProfile;
         repositories: IApiRepository[];
-        languagesUrls: string[];
     }
 }

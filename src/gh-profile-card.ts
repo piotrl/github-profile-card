@@ -76,8 +76,11 @@ namespace GitHubCard {
 
             // API doesn't return errors, try to built widget
             const $profile = DOMOperator.createProfile(this.userData.profile);
+            const repositories = this.userData.repositories;
+            this.sortRepositories(repositories, options.sortBy);
 
-            this.apiLoader.loadRepositoriesLanguages(this.userData.languagesUrls, langStats => {
+            this.apiLoader.loadRepositoriesLanguages(repositories.slice(0, 10), langStats => {
+
                 const languagesRank = this.flattenLanguagesStats(langStats);
                 $profile.appendChild(
                     DOMOperator.createTopLanguages(languagesRank)
@@ -87,9 +90,6 @@ namespace GitHubCard {
             $root.appendChild($profile);
 
             if (options.maxRepos > 0) {
-                const repositories = this.userData.repositories;
-                this.sortRepositories(repositories, options.sortBy);
-
                 const $reposHeader = DOMOperator.createRepositoriesHeader(options.reposHeaderText);
                 const $reposList = DOMOperator.createRepositoriesList(repositories, options.maxRepos);
                 $reposList.insertBefore($reposHeader, $reposList.firstChild);

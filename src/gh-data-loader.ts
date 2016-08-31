@@ -10,8 +10,7 @@ namespace GitHubCard {
             request.success(profile => {
                 this.apiGet(profile.repos_url)
                     .success(repositories => {
-                        const languagesUrls = this.extractLangURLs(repositories);
-                        callback({profile, repositories, languagesUrls}, null);
+                        callback({profile, repositories}, null);
                     });
             });
 
@@ -21,11 +20,13 @@ namespace GitHubCard {
             });
         }
 
-        public loadRepositoriesLanguages(langUrls: string[], callback: (rank: IMap<number>[]) => void): void {
-            const langStats = [];
-            let requestsAmount = langUrls.length;
+        public loadRepositoriesLanguages(repositories: IApiRepository[], callback: (rank: IMap<number>[]) => void): void {
+            const languagesUrls = this.extractLangURLs(repositories);
 
-            langUrls
+            const langStats = [];
+            let requestsAmount = languagesUrls.length;
+
+            languagesUrls
                 .map(repoLangUrl => this.apiGet(repoLangUrl))
                 .forEach(request => {
                     request.error(request => requestsAmount--);
