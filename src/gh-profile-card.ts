@@ -75,17 +75,11 @@ namespace GitHubCard {
             }
 
             // API doesn't return errors, try to built widget
-            const $profile = DOMOperator.createProfile(this.userData.profile);
             const repositories = this.userData.repositories;
             this.sortRepositories(repositories, options.sortBy);
 
-            this.apiLoader.loadRepositoriesLanguages(repositories.slice(0, 10), langStats => {
-                const languagesRank = this.groupLanguagesUsage(langStats);
-                $profile.appendChild(
-                    DOMOperator.createTopLanguages(languagesRank)
-                );
-            });
-
+            const $profile = DOMOperator.createProfile(this.userData.profile);
+            $profile.appendChild(this.createTopLanguagesSection(repositories));
             $root.appendChild($profile);
 
             if (options.maxRepos > 0) {
@@ -97,16 +91,22 @@ namespace GitHubCard {
             }
         }
 
+        private createTopLanguagesSection(repositories: IApiRepository[]): HTMLUListElement {
+            const $topLanguages = DOMOperator.createTopLanguagesSection();
+            this.apiLoader.loadRepositoriesLanguages(repositories.slice(0, 10), langStats => {
+                const languagesRank = this.groupLanguagesUsage(langStats);
+                $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(languagesRank);
+            });
+            return $topLanguages;
+        }
+
         private groupLanguagesUsage(langStats: IMap<number>[]): IMap<number> {
             const languagesRank: IMap<number> = {};
 
             langStats.forEach(repoLangs => {
-                let sum = 0;
-
-                for (const k in repoLangs) {
-                    sum += repoLangs[k] || 0;
-                    languagesRank[k] = languagesRank[k] || 0;
-                    languagesRank[k] += repoLangs[k] / (sum * 1.00);
+                for (const language in repoLangs) {
+                    languagesRank[language] = languagesRank[language] || 0;
+                    languagesRank[language] += repoLangs[language];
                 }
             });
 

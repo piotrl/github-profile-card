@@ -95,26 +95,24 @@ namespace GitHubCard {
             }
         }
 
-        public static createTopLanguages(langs: IMap<number>): HTMLUListElement {
-            const topLangs = [];
-            for (let k in langs) {
-                topLangs.push({
-                    name: k,
-                    stat: langs[k]
-                });
-            }
+        public static createTopLanguagesSection(): HTMLUListElement {
+            const $langsList = document.createElement('ul');
+            $langsList.className = 'languages';
 
-            const languagesListTemplate = topLangs
+            return $langsList;
+        }
+
+
+        public static createTopLanguagesList(langs: IMap<number>): string {
+            return Object.keys(langs)
+                .map(language => ({
+                    name: language,
+                    stat: langs[language]
+                }))
                 .sort((a, b) => b.stat - a.stat)
                 .slice(0, 3)
                 .map(lang => `<li>${lang.name}</li>`)
-                .reduce((sum, langElement) => sum + langElement);
-
-            const $langsList = document.createElement('ul');
-            $langsList.className = 'languages';
-            $langsList.innerHTML = languagesListTemplate;
-
-            return $langsList;
+                .reduce((list, nextElement) => list + nextElement);
         }
 
         public static createRepositoriesHeader(headerText): HTMLSpanElement {
