@@ -60,6 +60,7 @@ gulp.task('scripts', function () {
 
 // Re-run the task when files are changing
 gulp.task('watch', function () {
+    gulp.start('styles', 'scripts');
     gulp.watch(paths.scripts, ['scripts']);
     gulp.watch(paths.styles, ['styles']);
 });
