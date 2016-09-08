@@ -80,8 +80,7 @@ namespace GitHubCard {
             this.sortRepositories(repositories, options.sortBy);
 
             this.apiLoader.loadRepositoriesLanguages(repositories.slice(0, 10), langStats => {
-
-                const languagesRank = this.flattenLanguagesStats(langStats);
+                const languagesRank = this.groupLanguagesUsage(langStats);
                 $profile.appendChild(
                     DOMOperator.createTopLanguages(languagesRank)
                 );
@@ -98,7 +97,7 @@ namespace GitHubCard {
             }
         }
 
-        private flattenLanguagesStats(langStats: IMap<number>[]): IMap<number> {
+        private groupLanguagesUsage(langStats: IMap<number>[]): IMap<number> {
             const languagesRank: IMap<number> = {};
 
             langStats.forEach(repoLangs => {
@@ -115,14 +114,19 @@ namespace GitHubCard {
         }
 
         private sortRepositories(repos: IApiRepository[], sortyBy: string): void {
-            repos.sort(function (a, b) {
-                // sorted by last commit
+            repos.sort((firstRepo, secondRepo) => {
                 if (sortyBy === 'stars') {
-                    return b.stargazers_count - a.stargazers_count;
-                } else {
-                    return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+                    const starDifference = secondRepo.stargazers_count - firstRepo.stargazers_count;
+                    if (starDifference !== 0) {
+                        return starDifference;
+                    }
                 }
+                return this.dateDifference(secondRepo.updated_at, firstRepo.updated_at);
             });
+        }
+
+        private dateDifference(first: string, second: string) {
+            return new Date(first).getTime() - new Date(second).getTime();
         }
     }
 }

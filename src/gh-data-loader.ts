@@ -27,8 +27,8 @@ namespace GitHubCard {
             let requestsAmount = languagesUrls.length;
 
             languagesUrls
-                .map(repoLangUrl => this.apiGet(repoLangUrl))
-                .forEach(request => {
+                .forEach(repoLangUrl => {
+                    const request = this.apiGet(repoLangUrl);
                     request.error(request => requestsAmount--);
                     request.success((repoLangs: IMap<number>) => {
                         langStats.push(repoLangs);
