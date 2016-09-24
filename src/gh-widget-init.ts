@@ -1,8 +1,13 @@
 namespace GitHubCard {
 
     interface WidgetPublicAPI extends Window {
-        GitHubCard: GitHubCard;
+        GitHubCard: GitHubCardWidget;
     }
 
-    (<WidgetPublicAPI> window).GitHubCard = GitHubCard;
+    (<WidgetPublicAPI> window).GitHubCard = GitHubCardWidget;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const widget = new GitHubCardWidget();
+        widget.init();
+    };
 }

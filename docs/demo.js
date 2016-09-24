@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		$submit = document.getElementById('gh-uname-submit');
 
 	$submit.addEventListener('click', function (element) {
-		widget = new GitHubCard({ userName: $input.value });
+		widget = new GitHubCard({ username: $input.value });
 
 		element.preventDefault();
 	});

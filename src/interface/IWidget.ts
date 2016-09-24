@@ -6,7 +6,7 @@ namespace GitHubCard {
 
     export interface IWidgetConfig {
         username?: string;
-        template: string;
+        template?: string;
         sortBy: string;
         reposHeaderText: string;
         maxRepos: number;

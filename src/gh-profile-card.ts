@@ -1,21 +1,27 @@
 namespace GitHubCard {
 
-    export class GitHubCard {
+    export class GitHubCardWidget {
         private apiLoader: GitHubApiLoader = new GitHubApiLoader();
         private $template: HTMLElement;
         private userData: IUserData;
+        private options: IWidgetConfig;
 
         constructor(options: IMap<any>) {
-            const widgetConfig = this.completeConfiguration(options);
-            this.$template = this.findTemplate(widgetConfig);
-            this.extractUsername(widgetConfig, this.$template);
+            this.options = this.completeConfiguration(options);
+            this.$template = this.findTemplate(this.options);
+            this.extractUsername(this.options, this.$template);
+        }
 
-            this.init(widgetConfig);
+        public init(): void {
+            this.apiLoader.loadUserData(this.options.username, (data, err) => {
+                this.userData = data;
+                this.render(this.options, err);
+            });
         }
 
         public refresh(options: IWidgetConfig) {
-            options = this.completeConfiguration(options);
-            this.render(options);
+            this.options = this.completeConfiguration(options);
+            this.render(this.options);
         }
 
         private completeConfiguration(options?: IMap<any>): IWidgetConfig {
@@ -52,13 +58,6 @@ namespace GitHubCard {
             if (!widgetConfig.username) {
                 throw 'Not provided username';
             }
-        }
-
-        private init(options: IWidgetConfig): void {
-            this.apiLoader.loadUserData(options.username, (data, err) => {
-                this.userData = data;
-                this.render(options, err);
-            });
         }
 
         private render(options: IWidgetConfig, error?: IApiError): void {
