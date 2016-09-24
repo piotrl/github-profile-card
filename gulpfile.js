@@ -11,7 +11,8 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     del = require('del'),
     ts = require('gulp-typescript'),
-    tslint = require('gulp-tslint');
+    tslint = require('gulp-tslint'),
+    wrap = require('gulp-wrap');
 
 
 var paths = {
@@ -51,6 +52,7 @@ gulp.task('scripts', function () {
             target: 'ES5'
         }))
         .pipe(concat('gh-profile-card.js'))
+        .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
         .pipe(gulp.dest(paths.dist))
         .pipe(rename({suffix: '.min'}))
         .pipe(uglify())

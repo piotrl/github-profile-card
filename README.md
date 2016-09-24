@@ -61,7 +61,7 @@ Attribute  | Options                   | Default             | Description
 `username` | *string*				   | `—`                | GitHub profile username
 `template` | *string*                  | `#github-card`    | DOM selector of your widget in HTML
 `sortBy`   | `stars`, `updateTime`     | `stars`             | Repositories sorting method
-`maxRepos` | *int*			           | `5`				 | Amount of showed repositories. `0` Shows anything.
+`maxRepos` | *int*			           | `5`				 | Amount of listed repositories. `0` disables section.
 `reposHeaderText`     | *string*       | `Most starred`      | Text label above repositories list                           
 
 ##[Changelog](https://github.com/piotrl/github-profile-card/releases)

@@ -146,7 +146,7 @@ namespace GitHubCard {
                 <span class="repo-name"> ${repository.name} </span>
                 <span class="updated">Updated: ${updated.toLocaleDateString()} </span>
                 <span class="star"> ${repository.stargazers_count} </span>
-        `;
+            `;
             return $repoLink;
         }
     }
