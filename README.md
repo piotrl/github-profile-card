@@ -58,7 +58,7 @@ new GitHubCard({
 
 Attribute  | Options                   | Default             | Description
 ---        | ---                       | ---                 | ---
-`username` | *string*				   | `—`                | GitHub profile username
+`userName` | *string*				   | `—`                | GitHub profile username
 `template` | *string*                  | `#github-card`    | DOM selector of your widget in HTML
 `sortBy`   | `stars`, `updateTime`     | `stars`             | Repositories sorting method
 `maxRepos` | *int*			           | `5`				 | Amount of listed repositories. `0` disables section.
