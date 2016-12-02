@@ -21,7 +21,11 @@ With *bower* or just clone this repository.
 ```
 bower install github-profile-card
 ```
-You will find important files in `/dist/` directory.
+With *npm*
+```
+npm install github-profile-card --save
+```
+Important files are in `/dist/` directory.
 
 ## Installation
 
