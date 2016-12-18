@@ -1,423 +1,359 @@
-var GitHubApiLoader = (function() {
-	'use strict';
-
-	var API_USERS_URL = 'https://api.github.com/users/';
-
-	var ghLoader = function (userName) {
-		this.userName = userName;
-		this.url = {
-			api: API_USERS_URL + userName,
-			langs: []
-		};
-		this.error = null;
-	};
-
-	ghLoader.prototype = {
-		getData: fetchProfileData,
-		getRepos: function () {
-			return this.repos;
-		},
-		getProfile: function () {
-			return this.profile;
-		},
-		getURLs: function () {
-			return this.url;
-		}
-	};
-
-	return ghLoader;
-
-	// call GitHub API to get profile data
-	//
-	function fetchProfileData(callback) {
-		var context = this;
-		var handler = loadJSON(this.url.api);
-
-		handler.success(function(result) {
-			context.profile = result;
-
-			loadJSON(result.repos_url)
-				.success(function (repos) {
-					context.repos = repos;
-					context.url.langs = getLangURLs(repos);
-					callback();
-				});
-		});
-
-		handler.error(function (result, request) {
-			var error = {
-				message: result.message
-			};
-			checkSpecifiedError(error, request);
-			callback(error);
-		});
-	}
-
-	/////////////////////////////
-	// Private
-	//
-
-	function checkSpecifiedError(error, request) {
-		if (request.status === 404) {
-			error.isWrongUser = true;
-		}
-
-		var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
-		if (Number(limitRequests) === 0) {
-			// API is blocked
-			var resetTime = request.getResponseHeader('X-RateLimit-Reset');
-			error.resetDate = new Date(resetTime * 1000);
-
-			// full message is too long, leave only important thing
-			error.message = error.message.split('(')[0];
-		}
-	}
-
-	function getLangURLs(repos) {
-		var langApiUrls = [];
-
-		for (var k in repos) {
-			langApiUrls.push(repos[k].languages_url);
-		}
-
-		return langApiUrls;
-	}
-
-	function loadJSON(url) {
-		var request = getURL(url);
-
-		return {
-			success: function(callback) {
-				request.addEventListener('load', function () {
-					if (callback && request.status === 200) {
-						callback(JSON.parse(request.responseText));
-					}
-				});
-			},
-			error: function(callback) {
-				request.addEventListener('load', function () {
-					if (callback && request.status !== 200) {
-						var result = JSON.parse(request.responseText);
-						callback(result, request);
-					}
-				});
-			}
-		};
-	}
-
-	function getURL(url) {
-		var request = new XMLHttpRequest();
-		request.open('GET', url, true);
-		request.send();
-
-		return request;
-	}
-
-}());
-var DOMOperator = (function() {
-    'use strict';
-
-    return {
-        clearChildren: clearElementFromChildren,
-        createError: createErrorSection,
-        createProfile: createProfileSection,
-        createTopLanguages: createTopLangsSection,
-        createReposHeader: createReposHeader,
-        createReposList: createReposListSection
-    };
-
-    ///////////////////
-
-    function clearElementFromChildren($parent) {
-        while($parent.hasChildNodes()) {
-            $parent.removeChild(
-                $parent.firstChild
-            );
-        }
+/** GitHub Profile Card - v2.0.0 **/ 
+(function(){
+"use strict";
+var CacheStorage = (function () {
+    function CacheStorage() {
     }
+    CacheStorage.get = function (key) {
+        return CacheStorage.requestCache[key];
+    };
+    CacheStorage.add = function (url, entry) {
+        CacheStorage.requestCache[url] = entry;
+        window.localStorage.setItem(CacheStorage.cacheName, JSON.stringify(CacheStorage.requestCache));
+    };
+    CacheStorage.getCache = function () {
+        return JSON.parse(window.localStorage.getItem(CacheStorage.cacheName));
+    };
+    return CacheStorage;
+}());
+CacheStorage.cacheName = 'github-request-cache';
+CacheStorage.requestCache = CacheStorage.getCache() || {};
 
-    function createErrorSection(error, username) {
+var GitHubApiLoader = (function () {
+    function GitHubApiLoader() {
+        this.apiBase = 'https://api.github.com';
+    }
+    GitHubApiLoader.prototype.loadUserData = function (username, callback) {
+        var _this = this;
+        var request = this.apiGet(this.apiBase + "/users/" + username);
+        request.success(function (profile) {
+            _this.apiGet(profile.repos_url)
+                .success(function (repositories) {
+                callback({ profile: profile, repositories: repositories }, null);
+            });
+        });
+        request.error(function (result, request) {
+            var error = _this.identifyError(result, request);
+            callback(null, error);
+        });
+    };
+    GitHubApiLoader.prototype.loadRepositoriesLanguages = function (repositories, callback) {
+        var _this = this;
+        var languagesUrls = this.extractLangURLs(repositories);
+        var langStats = [];
+        var requestsAmount = languagesUrls.length;
+        languagesUrls
+            .forEach(function (repoLangUrl) {
+            var request = _this.apiGet(repoLangUrl);
+            request.error(function (request) { return requestsAmount--; });
+            request.success(function (repoLangs) {
+                langStats.push(repoLangs);
+                if (langStats.length === requestsAmount) {
+                    callback(langStats);
+                }
+            });
+        });
+    };
+    GitHubApiLoader.prototype.identifyError = function (result, request) {
+        var error = {
+            message: result.message
+        };
+        if (request.status === 404) {
+            error.isWrongUser = true;
+        }
+        var limitRequests = request.getResponseHeader('X-RateLimit-Remaining');
+        if (Number(limitRequests) === 0) {
+            var resetTime = request.getResponseHeader('X-RateLimit-Reset');
+            error.resetDate = new Date(Number(resetTime) * 1000);
+            // full message is too long, leave only general message
+            error.message = error.message.split('(')[0];
+        }
+        return error;
+    };
+    GitHubApiLoader.prototype.extractLangURLs = function (profileRepositories) {
+        return profileRepositories.map(function (repository) { return repository.languages_url; });
+    };
+    GitHubApiLoader.prototype.apiGet = function (url) {
+        var request = this.buildRequest(url);
+        return {
+            success: function (callback) {
+                request.addEventListener('load', function () {
+                    if (request.status === 304) {
+                        callback(CacheStorage.get(url).data, request);
+                    }
+                    if (request.status === 200) {
+                        var response = JSON.parse(request.responseText);
+                        CacheStorage.add(url, {
+                            lastModified: request.getResponseHeader('Last-Modified'),
+                            data: response
+                        });
+                        callback(response, request);
+                    }
+                });
+            },
+            error: function (callback) {
+                request.addEventListener('load', function () {
+                    if (request.status !== 200 && request.status !== 304) {
+                        callback(JSON.parse(request.responseText), request);
+                    }
+                });
+            }
+        };
+    };
+    GitHubApiLoader.prototype.buildRequest = function (url) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url);
+        this.buildApiHeaders(request, url);
+        request.send();
+        return request;
+    };
+    GitHubApiLoader.prototype.buildApiHeaders = function (request, url) {
+        request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+        var urlCache = CacheStorage.get(url);
+        if (urlCache) {
+            request.setRequestHeader('If-Modified-Since', urlCache.lastModified);
+        }
+    };
+    return GitHubApiLoader;
+}());
+
+var DOMOperator = (function () {
+    function DOMOperator() {
+    }
+    DOMOperator.clearChildren = function ($parent) {
+        while ($parent.hasChildNodes()) {
+            $parent.removeChild($parent.firstChild);
+        }
+    };
+    DOMOperator.createError = function (error, username) {
         var $error = document.createElement('div');
         $error.className = 'error';
-        $error.innerHTML = '<span>' + error.message + '</span>';
-
+        $error.innerHTML = "<span>" + error.message + "</span>";
         if (error.isWrongUser) {
-            $error.innerHTML = '<span>Not found user: ' + username + '</span>';
+            $error.innerHTML = "<span>Not found user: " + username + "</span>";
         }
         if (error.resetDate) {
             var remainingTime = error.resetDate.getMinutes() - new Date().getMinutes();
             remainingTime = (remainingTime < 0) ? 60 + remainingTime : remainingTime;
-
-            $error.innerHTML += '<span class="remain">Come back after ' + remainingTime + ' minutes</span>';
+            $error.innerHTML += "<span class=\"remain\">Come back after " + remainingTime + " minutes</span>";
         }
-
         return $error;
-    }
-
-    function createProfileSection (data) {
+    };
+    DOMOperator.createProfile = function (data) {
         var $followButton = followButton(data.login, data.html_url);
-        var $followers = followers(data.followers_url, data.followers);
+        var $followers = followers(data.followers);
         var $followContainer = followContainer([$followButton, $followers]);
-
         var $avatar = avatar(data.avatar_url);
         var $name = name(data.html_url, data.name);
-
-        return profile([ $avatar, $name, $followContainer ]);
-
+        return profile([$avatar, $name, $followContainer]);
         //////////////////
-
         function appendChildren($parent, nodes) {
-            nodes.forEach(function($node) {
-                $parent.appendChild($node);
-            });
+            nodes.forEach(function (node) { return $parent.appendChild(node); });
         }
-
         function profile(children) {
             var $profile = document.createElement('div');
             $profile.classList.add('profile');
             appendChildren($profile, children);
-
             return $profile;
         }
-
         function name(profileUrl, name) {
             var $name = document.createElement('a');
             $name.href = profileUrl;
             $name.className = 'name';
             $name.appendChild(document.createTextNode(name));
-
             return $name;
         }
-
         function avatar(avatarUrl) {
             var $avatar = document.createElement('img');
             $avatar.src = avatarUrl;
             $avatar.className = 'avatar';
-
             return $avatar;
         }
-
         function followButton(username, followUrl) {
             var $followButton = document.createElement('a');
             $followButton.href = followUrl;
             $followButton.className = 'follow-button';
             $followButton.innerHTML = 'Follow @' + username;
-
             return $followButton;
         }
-
-        function followers(followersUrl, followersAmount) {
-            $followers = document.createElement('span');
-            $followers.href = followersUrl;
+        function followers(followersAmount) {
+            var $followers = document.createElement('span');
             $followers.className = 'followers';
-            $followers.innerHTML = followersAmount;
-
+            $followers.innerHTML = '' + followersAmount;
             return $followers;
         }
-
         function followContainer(children) {
             var $followContainer = document.createElement('div');
             $followContainer.className = 'followMe';
-            appendChildren(
-                $followContainer,
-                children
-            );
-
+            appendChildren($followContainer, children);
             return $followContainer;
         }
-    }
-
-    function createTopLangsSection (langs) {
-        var topLangs = [];
-        for (var k in langs) {
-            topLangs.push([k, langs[k]]);
-        }
-        topLangs.sort(function (a, b) {
-            return b[1] - a[1];
-        });
-
-        // generating HTML structure
+    };
+    DOMOperator.createTopLanguagesSection = function () {
         var $langsList = document.createElement('ul');
         $langsList.className = 'languages';
-        for (var i = 0; i < 3 && topLangs[i]; i++) {
-            $langsList.innerHTML += '<li>' + topLangs[i][0] + '</li>';
-        }
-
         return $langsList;
-    }
-
-    function createReposHeader(headerText) {
-        var $reposHeader = document.createElement('span');
-        $reposHeader.className = 'header';
-        $reposHeader.appendChild(
-            document.createTextNode(headerText + ' repositories')
-        );
-
-        return $reposHeader;
-    }
-
-    function createReposListSection (repos, sortyBy, maxRepos) {
-        repos.sort(function (a, b) {
-            // sorted by last commit
-            if (sortyBy === 'stars') {
-                return b.stargazers_count - a.stargazers_count;
-            } else {
-                return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-            }
-        });
-
+    };
+    DOMOperator.createTopLanguagesList = function (langs) {
+        return Object.keys(langs)
+            .map(function (language) { return ({
+            name: language,
+            stat: langs[language]
+        }); })
+            .sort(function (a, b) { return b.stat - a.stat; })
+            .slice(0, 3)
+            .map(function (lang) { return "<li>" + lang.name + "</li>"; })
+            .reduce(function (list, nextElement) { return list + nextElement; });
+    };
+    DOMOperator.createRepositoriesHeader = function (headerText) {
+        var $repositoriesHeader = document.createElement('span');
+        $repositoriesHeader.className = 'header';
+        $repositoriesHeader.appendChild(document.createTextNode("" + headerText));
+        return $repositoriesHeader;
+    };
+    DOMOperator.createRepositoriesList = function (repositories, maxRepos) {
         var $reposList = document.createElement('div');
         $reposList.className = 'repos';
-        for (var i = 0; i < maxRepos && repos[i]; i++) {
-            var updated = new Date(repos[i].updated_at),
-                $repoLink = document.createElement('a');
-
-            $repoLink.href = repos[i].html_url;
-            $repoLink.title = repos[i].description;
-            $repoLink.innerHTML += '<span class="repo-name">' + repos[i].name + '</span>';
-            $repoLink.innerHTML += '<span class="updated">Updated: ' + updated.toLocaleDateString() + '</span>';
-            $repoLink.innerHTML += '<span class="star">' + repos[i].stargazers_count + '</span>';
-
-            $reposList.appendChild($repoLink);
-        }
-
+        repositories.slice(0, maxRepos)
+            .map(this.createRepositoryElement)
+            .forEach(function (el) { return $reposList.appendChild(el); });
         return $reposList;
+    };
+    DOMOperator.createRepositoryElement = function (repository) {
+        var updated = new Date(repository.updated_at);
+        var $repoLink = document.createElement('a');
+        $repoLink.href = repository.html_url;
+        $repoLink.title = repository.description;
+        $repoLink.innerHTML = "\n                <span class=\"repo-name\"> " + repository.name + " </span>\n                <span class=\"updated\">Updated: " + updated.toLocaleDateString() + " </span>\n                <span class=\"star\"> " + repository.stargazers_count + " </span>\n            ";
+        return $repoLink;
+    };
+    return DOMOperator;
+}());
+
+var GitHubCardWidget = (function () {
+    function GitHubCardWidget(options) {
+        if (options === void 0) { options = {}; }
+        this.apiLoader = new GitHubApiLoader();
+        this.$template = this.findTemplate(options.template);
+        this.extractHtmlConfig(options, this.$template);
+        this.options = this.completeConfiguration(options);
     }
-})();
-var GitHubCard = (function() {
-	'use strict';
-	
-	var username;
+    GitHubCardWidget.prototype.init = function () {
+        var _this = this;
+        this.apiLoader.loadUserData(this.options.username, function (data, err) {
+            _this.userData = data;
+            _this.render(_this.options, err);
+        });
+    };
+    GitHubCardWidget.prototype.refresh = function (options) {
+        this.options = this.completeConfiguration(options);
+        this.render(this.options);
+    };
+    GitHubCardWidget.prototype.completeConfiguration = function (options) {
+        var defaultConfig = {
+            username: null,
+            template: '#github-card',
+            sortBy: 'stars',
+            headerText: 'Most starred repositories',
+            maxRepos: 5
+        };
+        for (var key in defaultConfig) {
+            defaultConfig[key] = options[key] || defaultConfig[key];
+        }
+        return defaultConfig;
+    };
+    GitHubCardWidget.prototype.findTemplate = function (templateCssSelector) {
+        if (templateCssSelector === void 0) { templateCssSelector = '#github-card'; }
+        var $template = document.querySelector(templateCssSelector);
+        if (!$template) {
+            throw "No template found for selector: " + templateCssSelector;
+        }
+        $template.className = 'gh-profile-card';
+        return $template;
+    };
+    GitHubCardWidget.prototype.extractHtmlConfig = function (widgetConfig, $template) {
+        widgetConfig.username = widgetConfig.username || $template.dataset['username'];
+        widgetConfig.sortBy = widgetConfig.sortBy || $template.dataset['sortBy'];
+        widgetConfig.headerText = widgetConfig.headerText || $template.dataset['headerText'];
+        widgetConfig.maxRepos = widgetConfig.maxRepos || parseInt($template.dataset['maxRepos'], 10);
+        if (!widgetConfig.username) {
+            throw 'Not provided username';
+        }
+    };
+    GitHubCardWidget.prototype.render = function (options, error) {
+        var $root = this.$template;
+        // clear root template element to prepare space for widget
+        DOMOperator.clearChildren($root);
+        if (error) {
+            var $errorSection = DOMOperator.createError(error, options.username);
+            $root.appendChild($errorSection);
+            return;
+        }
+        // API doesn't return errors, try to built widget
+        var repositories = this.userData.repositories;
+        this.sortRepositories(repositories, options.sortBy);
+        var $profile = DOMOperator.createProfile(this.userData.profile);
+        $profile.appendChild(this.createTopLanguagesSection(repositories));
+        $root.appendChild($profile);
+        if (options.maxRepos > 0) {
+            var $reposHeader = DOMOperator.createRepositoriesHeader(options.headerText);
+            var $reposList = DOMOperator.createRepositoriesList(repositories, options.maxRepos);
+            $reposList.insertBefore($reposHeader, $reposList.firstChild);
+            $root.appendChild($reposList);
+        }
+    };
+    GitHubCardWidget.prototype.createTopLanguagesSection = function (repositories) {
+        var _this = this;
+        var $topLanguages = DOMOperator.createTopLanguagesSection();
+        this.apiLoader.loadRepositoriesLanguages(repositories.slice(0, 10), function (langStats) {
+            var languagesRank = _this.groupLanguagesUsage(langStats);
+            $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(languagesRank);
+        });
+        return $topLanguages;
+    };
+    GitHubCardWidget.prototype.groupLanguagesUsage = function (langStats) {
+        var languagesRank = {};
+        langStats.forEach(function (repoLangs) {
+            for (var language in repoLangs) {
+                languagesRank[language] = languagesRank[language] || 0;
+                languagesRank[language] += repoLangs[language];
+            }
+        });
+        return languagesRank;
+    };
+    GitHubCardWidget.prototype.sortRepositories = function (repos, sortyBy) {
+        var _this = this;
+        repos.sort(function (firstRepo, secondRepo) {
+            if (sortyBy === 'stars') {
+                var starDifference = secondRepo.stargazers_count - firstRepo.stargazers_count;
+                if (starDifference !== 0) {
+                    return starDifference;
+                }
+            }
+            return _this.dateDifference(secondRepo.updated_at, firstRepo.updated_at);
+        });
+    };
+    GitHubCardWidget.prototype.dateDifference = function (first, second) {
+        return new Date(first).getTime() - new Date(second).getTime();
+    };
+    return GitHubCardWidget;
+}());
 
-	var autoComplete = function (options) {
-		var defaultConfig = {
-			template: '#github-card',
-			sortBy: 'stars', // possible: 'stars', 'updateTime'
-			reposHeaderText: 'Most starred',
-			maxRepos: 5,
-			githubIcon: false
-		};
-		if (!options) {
-			return defaultConfig;
-		}
-		for(var key in defaultConfig) {
-			options[key] = options[key] || defaultConfig[key];
-		}
-		
-		return options;
-	};
+window.GitHubCard = GitHubCardWidget;
+document.addEventListener('DOMContentLoaded', function () {
+    var $defaultTemplate = document.querySelector('#github-card');
+    if ($defaultTemplate) {
+        var widget = new GitHubCardWidget();
+        widget.init();
+    }
+});
 
-	var GitHubCard = function (options) {
-		options = autoComplete(options);
-		this.$template = document.querySelector(options.template);
+/**
+ * GitHub API interfaces based on documentation
+ *
+ * @see https://developer.github.com/v3/
+ */
 
-		username = options.userName || this.$template.dataset.username;
 
-		this.profileData = null;
-		this.repos = {};
 
-		// load resources and render widget
-		this.init(options);
-	};
-
-	GitHubCard.prototype = {
-		init: init,
-		getTopLanguages: getTopLanguages,
-		render: render,
-		refresh: refresh
-	};
-
-	return GitHubCard;
-
-	function init(options) {
-		var apiLoader = new GitHubApiLoader(username);
-		var self = this;
-		apiLoader.getData(function(err) {
-			self.profileData = apiLoader.getProfile();
-			self.repos = apiLoader.getRepos();
-			self.url = apiLoader.getURLs();
-			self.render(options, err);
-		});
-		this.$template.className = 'gh-profile-card';
-	}
-
-	// give rank (weights) to the language
-	function calcPopularity(langStats) {
-		var languagesRank = {};
-
-		langStats.forEach(function(repoLangs) {
-			var sum = 0;
-
-			for (var k in repoLangs) {
-				sum += repoLangs[k] || 0;
-				languagesRank[k] = languagesRank[k] || 0;
-				languagesRank[k] += repoLangs[k] / (sum * 1.00);
-			}
-		});
-
-		return languagesRank;
-	}
-
-	function getTopLanguages(callback) {
-		var langStats = []; // array of URL strings
-		var langUrls = this.url.langs;
-
-		// get URLs with language stats for each repository
-		langUrls.forEach(function (apiURL) {
-			var request = new XMLHttpRequest();
-			request.addEventListener('load', calcResponse, false);
-			request.open('GET', apiURL, true);
-			request.send(null);
-		});
-
-		function calcResponse(loadEvent) {
-			var response = loadEvent.target.responseText;
-			var repoLangs = JSON.parse(response);
-			langStats.push(repoLangs);
-
-			if (langStats.length === langUrls.length) { // all requests were made
-				var languagesRank = calcPopularity(langStats);
-				callback(languagesRank);
-			}
-		}
-	}
-
-	function render(options, error) {
-		var $root = this.$template;
-		var repositories = this.repos;
-
-		// clear root template element to prepare space for widget
-		DOMOperator.clearChildren($root);
-
-		if (error) {
-			var $errorSection = DOMOperator.createError(error, username);
-			$root.appendChild($errorSection);
-	
-			return;
-		}
-
-		// API doesn't return errors, try to built widget
-		var $profile = DOMOperator.createProfile(this.profileData);
-
-		this.getTopLanguages(function (langs) {
-			$profile.appendChild(
-				DOMOperator.createTopLanguages(langs)
-			);
-		});
-
-		$root.appendChild($profile);
-
-		if (options.maxRepos > 0) {
-			var $reposHeader = DOMOperator.createReposHeader(options.reposHeaderText);
-			var $reposList = DOMOperator.createReposList(repositories, options.sortBy, options.maxRepos);
-			$reposList.insertBefore($reposHeader, $reposList.firstChild);
-
-			$root.appendChild($reposList);
-		}
-	}
-
-	function refresh(options) {
-		options = autoComplete(options);
-		this.render(options);
-	}
 })();
