@@ -35,7 +35,7 @@ Include script and style inside of your `<head>` tag:
 <script type="text/javascript" src="dist/gh-profile-card.min.js"></script>
 ```
 
-Include HTML tag anywhere you would like to place widget: 
+Include HTML code anywhere you would like to place widget: 
 ```
 <div id="github-card"
      data-username="YOUR_GITHUB_USERNAME">
@@ -44,7 +44,7 @@ Include HTML tag anywhere you would like to place widget:
 
 Great! Widget will autoload. We're done here.
 
-## Configuration
+## Advanced configuration
 
 Configure widget in HTML:
 ```

@@ -5,7 +5,6 @@ class GitHubCardWidget {
     private options: IWidgetConfig;
 
     constructor(options: IWidgetConfig = {}) {
-        options.template = options.template || '#github-card';
         this.$template = this.findTemplate(options.template);
         this.extractHtmlConfig(options, this.$template);
         this.options = this.completeConfiguration(options);
@@ -26,6 +25,7 @@ class GitHubCardWidget {
     private completeConfiguration(options: IWidgetConfig): IWidgetConfig {
         const defaultConfig = {
             username: null,
+            template: '#github-card',
             sortBy: 'stars', // possible: 'stars', 'updateTime'
             headerText: 'Most starred repositories',
             maxRepos: 5
@@ -37,7 +37,7 @@ class GitHubCardWidget {
         return defaultConfig;
     }
 
-    private findTemplate(templateCssSelector: string): HTMLElement {
+    private findTemplate(templateCssSelector: string = '#github-card'): HTMLElement {
         const $template = <HTMLElement> document.querySelector(templateCssSelector);
         if (!$template) {
             throw `No template found for selector: ${templateCssSelector}`;
