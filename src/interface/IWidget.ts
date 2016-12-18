@@ -2,7 +2,7 @@ interface IWidgetConfig {
     username?: string;
     template?: string;
     sortBy?: string;
-    reposHeaderText?: string;
+    headerText?: string;
     maxRepos?: number;
 }
 

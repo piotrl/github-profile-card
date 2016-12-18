@@ -5,7 +5,7 @@
         var options = {
             template: '#github-card-demo',
             sortBy: 'stars', // possible: 'stars', 'updateTime'
-            reposHeaderText: 'Most starred',
+            headerText: 'Most starred repositories',
             maxRepos: 5
         };
 

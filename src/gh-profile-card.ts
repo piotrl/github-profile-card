@@ -4,10 +4,11 @@ class GitHubCardWidget {
     private userData: IUserData;
     private options: IWidgetConfig;
 
-    constructor(options?: IWidgetConfig) {
+    constructor(options: IWidgetConfig = {}) {
+        options.template = options.template || '#github-card';
+        this.$template = this.findTemplate(options.template);
+        this.extractHtmlConfig(options, this.$template);
         this.options = this.completeConfiguration(options);
-        this.$template = this.findTemplate(this.options);
-        this.extractUsername(this.options, this.$template);
     }
 
     public init(): void {
@@ -22,17 +23,13 @@ class GitHubCardWidget {
         this.render(this.options);
     }
 
-    private completeConfiguration(options?: IWidgetConfig): IWidgetConfig {
+    private completeConfiguration(options: IWidgetConfig): IWidgetConfig {
         const defaultConfig = {
             username: null,
-            template: '#github-card',
             sortBy: 'stars', // possible: 'stars', 'updateTime'
-            reposHeaderText: 'Most starred',
+            headerText: 'Most starred repositories',
             maxRepos: 5
         };
-        if (!options) {
-            return defaultConfig;
-        }
         for (const key in defaultConfig) {
             defaultConfig[key] = options[key] || defaultConfig[key];
         }
@@ -40,17 +37,20 @@ class GitHubCardWidget {
         return defaultConfig;
     }
 
-    private findTemplate(widgetConfig: IWidgetConfig): HTMLElement {
-        const $template = <HTMLElement> document.querySelector(widgetConfig.template);
+    private findTemplate(templateCssSelector: string): HTMLElement {
+        const $template = <HTMLElement> document.querySelector(templateCssSelector);
         if (!$template) {
-            throw `No template found for selector: ${widgetConfig.template}`;
+            throw `No template found for selector: ${templateCssSelector}`;
         }
         $template.className = 'gh-profile-card';
         return $template;
     }
 
-    private extractUsername(widgetConfig: IWidgetConfig, $template: HTMLElement): void {
+    private extractHtmlConfig(widgetConfig: IWidgetConfig, $template: HTMLElement): void {
         widgetConfig.username = widgetConfig.username || $template.dataset['username'];
+        widgetConfig.sortBy = widgetConfig.sortBy || $template.dataset['sortBy'];
+        widgetConfig.headerText = widgetConfig.headerText || $template.dataset['headerText'];
+        widgetConfig.maxRepos = widgetConfig.maxRepos || parseInt($template.dataset['maxRepos'], 10);
 
         if (!widgetConfig.username) {
             throw 'Not provided username';
@@ -79,7 +79,7 @@ class GitHubCardWidget {
         $root.appendChild($profile);
 
         if (options.maxRepos > 0) {
-            const $reposHeader = DOMOperator.createRepositoriesHeader(options.reposHeaderText);
+            const $reposHeader = DOMOperator.createRepositoriesHeader(options.headerText);
             const $reposList = DOMOperator.createRepositoriesList(repositories, options.maxRepos);
             $reposList.insertBefore($reposHeader, $reposList.firstChild);
 

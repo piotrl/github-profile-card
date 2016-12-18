@@ -31,42 +31,54 @@ Important files are in `/dist/` directory.
 
 Include script and style inside of your `<head>` tag:
 ```
-<script type="text/javascript" src="gh-profile-card.js"></script>
-<link rel="stylesheet" href="gh-profile-card.css" />
+<link rel="stylesheet" href="dist/gh-profile-card.min.css" />
+<script type="text/javascript" src="dist/gh-profile-card.min.js"></script>
 ```
 
 Include HTML tag anywhere you would like to place widget: 
 ```
-<div id="github-card"></div>
-```
-You can also add attribute data-username with `YOUR_GITHUB_USERNAME`.
-
-```
-<div id="github-card" data-username="YOUR_GITHUB_USERNAME"></div>
+<div id="github-card"
+     data-username="YOUR_GITHUB_USERNAME">
+</div>
 ```
 
-We are almost done. You only need to init your new widget:
+Great! Widget will autoload. We're done here.
 
 ## Configuration
-Example of use
+
+Configure widget in HTML:
 ```
-new GitHubCard({
-	template: '#github-card',
-	sortBy: 'stars',
-	reposHeaderText: 'Most starred',
-	maxRepos: 5
+<div id="github-card"
+     data-username="YOUR_GITHUB_USERNAME"
+     data-max-repos="3"
+     data-sort-by="stars"
+     data-header-text="Most starred repositories">
+</div>
+```
+
+For special usages, it is possible to configure widget(s) in JavaScript.
+You have to use different template than `#github-card`.
+```
+var widget = new GitHubCard({
+    username: 'YOUR_GITHUB_USERNAME'
+    template: '#github-card-demo',
+    sortBy: 'stars',
+    reposHeaderText: 'Most starred',
+    maxRepos: 5
 });
+
+widget.init();
 ```
 
 ## Configuration options   
 
-Attribute  | Options                   | Default             | Description
----        | ---                       | ---                 | ---
-`userName` | *string*				   | `—`                | GitHub profile username
-`template` | *string*                  | `#github-card`    | DOM selector of your widget in HTML
-`sortBy`   | `stars`, `updateTime`     | `stars`             | Repositories sorting method
-`maxRepos` | *int*			           | `5`				 | Amount of listed repositories. `0` disables section.
-`reposHeaderText`     | *string*       | `Most starred`      | Text label above repositories list                           
+HTML option       | JavaScript option | Type                 | Default        | Details
+---               | ---               | ---                  | ---            | ---
+`data-username`   | `username`        | *string*			 | `—`            | GitHub profile username
+`—`               | `template`        | *string*             | `#github-card` | DOM selector of your widget in HTML
+`data-sort-by`    | `sortBy`          | `stars`, `updateTime`| `stars`        | Repositories sorting method
+`data-max-repos`  | `maxRepos`        | *int*			     | `5`			  | Amount of listed repositories. `0` disables section
+`data-header-text`| `headerText`      | *string*             | `Most starred repositories` | Text label above repositories list                           
 
 ##[Changelog](https://github.com/piotrl/github-profile-card/releases)
 

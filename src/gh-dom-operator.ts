@@ -117,7 +117,7 @@ class DOMOperator {
         const $repositoriesHeader = document.createElement('span');
         $repositoriesHeader.className = 'header';
         $repositoriesHeader.appendChild(
-            document.createTextNode(`${headerText} repositories`)
+            document.createTextNode(`${headerText}`)
         );
 
         return $repositoriesHeader;
