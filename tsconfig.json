@@ -11,8 +11,7 @@
     "inlineSources": true,
     "newLine": "LF"
   },
-  "files": [
-    "src/bin.ts",
-    "typings/index.d.ts"
+  "include": [
+    "src/**/**/*.ts"
   ]
 }
