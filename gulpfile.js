@@ -44,7 +44,11 @@ gulp.task('styles', function () {
 gulp.task('scripts', function () {
     var tsProject = ts.createProject("tsconfig.json");
 
-    return tslint()
+    return gulp.src(paths.scripts)
+        .pipe(tslint({
+            formatter: 'prose'
+        }))
+        .pipe(tslint.report())
         .pipe(tsProject()).js
         .pipe(concat('gh-profile-card.js'))
         .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
@@ -57,7 +61,7 @@ gulp.task('scripts', function () {
 
 // Re-run the task when files are changing
 gulp.task('watch', function () {
-    gulp.start('styles', 'scripts');
+    gulp.start('default');
     gulp.watch(paths.scripts, ['scripts']);
     gulp.watch(paths.styles, ['styles']);
 });
@@ -66,11 +70,3 @@ gulp.task('watch', function () {
 gulp.task('default', ['clean'], function () {
     gulp.start('styles', 'scripts');
 });
-
-function tslint() {
-    return gulp.src(paths.scripts)
-        .pipe(tslint({
-            formatter: 'prose'
-        }))
-        .pipe(tslint.report());
-};

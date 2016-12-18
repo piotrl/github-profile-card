@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "outDir": "dist/",
     "module": "None",
-    "declaration": true,
     "noImplicitAny": false,
-    "removeComments": true,
+    "removeComments": false,
     "sourceMap": true,
     "inlineSources": true,
     "newLine": "LF"
   },
   "include": [
-    "src/**/**/*.ts"
+    "src/**/*.ts"
   ]
 }
