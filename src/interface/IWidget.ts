@@ -1,6 +1,4 @@
-import {IApiProfile, IApiRepository} from './IGitHubApi';
-
-export interface IWidgetConfig {
+interface IWidgetConfig {
     username?: string;
     template?: string;
     sortBy: string;
@@ -9,7 +7,7 @@ export interface IWidgetConfig {
     githubIcon: boolean;
 }
 
-export interface IUserData {
+interface IUserData {
     profile: IApiProfile;
     repositories: IApiRepository[];
 }

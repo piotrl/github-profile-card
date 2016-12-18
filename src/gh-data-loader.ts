@@ -1,9 +1,4 @@
-import {IApiCallback, IApiRepository, IApiError} from './interface/IGitHubApi';
-import {IMap, IJqueryDeferredLike} from './interface/IShared';
-import {IUserData} from './interface/IWidget';
-import {CacheStorage} from './gh-cache-storage';
-
-export class GitHubApiLoader {
+class GitHubApiLoader {
     private apiBase: string = 'https://api.github.com';
 
     public loadUserData(username: string, callback: IApiCallback<IUserData>): void {

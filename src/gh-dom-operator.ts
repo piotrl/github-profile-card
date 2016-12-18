@@ -1,7 +1,4 @@
-import {IApiRepository, IApiError, IApiProfile} from './interface/IGitHubApi';
-import {IMap} from './interface/IShared';
-
-export class DOMOperator {
+class DOMOperator {
     public static clearChildren($parent: Node) {
         while ($parent.hasChildNodes()) {
             $parent.removeChild($parent.firstChild);

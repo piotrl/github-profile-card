@@ -7,7 +7,7 @@ interface ICacheEntry {
     data: any;
 }
 
-export class CacheStorage {
+class CacheStorage {
     private static cacheName: string = 'github-request-cache';
     private static requestCache: ICache = CacheStorage.getCache() || {};
 

@@ -4,17 +4,17 @@
  * @see https://developer.github.com/v3/
  */
 
-export interface IApiCallback<T> {
+interface IApiCallback<T> {
     (data: T, error: IApiError): void;
 }
 
-export interface IApiError {
+interface IApiError {
     message: string;
     isWrongUser?: boolean;
     resetDate?: Date;
 }
 
-export interface IApiProfile {
+interface IApiProfile {
     name: string;
     avatar_url: string;
     followers: number;
@@ -48,7 +48,7 @@ export interface IApiProfile {
     updated_at: string;
 }
 
-export interface IRepositoryOwner {
+interface IRepositoryOwner {
     login: string;
     id: number;
     avatar_url: string;
@@ -68,7 +68,7 @@ export interface IRepositoryOwner {
     site_admin: boolean;
 }
 
-export interface IApiRepository {
+interface IApiRepository {
     id: number;
     name: string;
     full_name: string;

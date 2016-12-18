@@ -1,13 +1,13 @@
 // General helper interfaces
-export interface IMap<T> {
+interface IMap<T> {
     [K: string]: T;
 }
 
-export interface ICallback<T> {
+interface ICallback<T> {
     (data: T): void;
 }
 
-export interface IJqueryDeferredLike<T> {
+interface IJqueryDeferredLike<T> {
     success: (callback: (result: T, request: XMLHttpRequest) => void) => void;
     error: (callback: (result: T, request: XMLHttpRequest) => void) => void;
 }

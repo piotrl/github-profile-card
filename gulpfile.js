@@ -42,15 +42,10 @@ gulp.task('styles', function () {
 });
 
 gulp.task('scripts', function () {
-    return gulp.src(paths.scripts)
-        .pipe(tslint({
-            formatter: 'prose'
-        }))
-        .pipe(tslint.report())
-        .pipe(ts({
-            noImplicitAny: false,
-            target: 'ES5'
-        }))
+    var tsProject = ts.createProject("tsconfig.json");
+
+    return tslint()
+        .pipe(tsProject()).js
         .pipe(concat('gh-profile-card.js'))
         .pipe(wrap('(function(){\n"use strict";\n<%= contents %>\n})();'))
         .pipe(gulp.dest(paths.dist))
@@ -71,3 +66,11 @@ gulp.task('watch', function () {
 gulp.task('default', ['clean'], function () {
     gulp.start('styles', 'scripts');
 });
+
+function tslint() {
+    return gulp.src(paths.scripts)
+        .pipe(tslint({
+            formatter: 'prose'
+        }))
+        .pipe(tslint.report());
+};
