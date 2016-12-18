@@ -1,60 +1,81 @@
+(function (GitHubCard) {
 
-// Generating new widget from user input
-document.addEventListener('DOMContentLoaded', function() {
-	var options = {
-		sortBy: 'stars', // possible: 'stars', 'updateTime'
-		reposHeaderText: 'Most starred',
-		maxRepos: 5
-	};
-	var widget = new GitHubCard(options);
+	// Generating new widget from user input
+    document.addEventListener('DOMContentLoaded', function() {
+        var options = {
+            template: '#github-card-demo',
+            sortBy: 'stars', // possible: 'stars', 'updateTime'
+            reposHeaderText: 'Most starred',
+            maxRepos: 5
+        };
 
-	// Sort repository acording to
-	// radio inputs on website
+        var widget = new GitHubCard(options);
+        widget.init();
 
-	var $sortingRadios = document.querySelectorAll('.choose-repo-sorting label');
+        initSortingControl(options, refreshWidget);
+        initRepositoriesControl(options, refreshWidget);
+        initUserControl(options, initWidget);
 
-	// sort by update time
-	$sortingRadios[0].addEventListener('click', function (element) {
-		element.target.classList.add('active');
-		$sortingRadios[1].classList.remove('active');
+        function initWidget(options) {
+            widget = new GitHubCard(options);
+            widget.init();
+        }
 
-		options.sortBy = 'updateTime';
-		options.reposHeaderText = element.target.textContent;
+        function refreshWidget(updatedOptions) {
+            widget.refresh(updatedOptions);
+        }
+    });
 
-		widget.refresh(options);
+    // Sort repository acording to
+    // radio inputs on website
+    function initSortingControl(options, refreshWidget) {
+        var $sortingRadios = document.querySelectorAll('.choose-repo-sorting label');
 
-	});
+        // sort by update time
+        $sortingRadios[0].addEventListener('click', function (element) {
+            element.target.classList.add('active');
+            $sortingRadios[1].classList.remove('active');
 
-	// sort by starrgazers
-	$sortingRadios[1].addEventListener('click', function (element) {
-		element.target.classList.add('active');
-		$sortingRadios[0].classList.remove('active');
+            options.sortBy = 'updateTime';
+            options.reposHeaderText = element.target.textContent;
 
-		options.sortBy = 'stars';
-		options.reposHeaderText = element.target.textContent;
+            refreshWidget(options);
+        });
 
-		widget.refresh(options);
-	});
+        // sort by starrgazers
+        $sortingRadios[1].addEventListener('click', function (element) {
+            element.target.classList.add('active');
+            $sortingRadios[0].classList.remove('active');
 
-	// Manipulating the number of repositories
+            options.sortBy = 'stars';
+            options.reposHeaderText = element.target.textContent;
 
-	var $inputNumber = document.getElementById('gh-reposNum');
+            refreshWidget(options);
+        });
+    }
 
-	$inputNumber.onchange = function() {
-		options.maxRepos = $inputNumber.value;
+    // Manipulating the number of repositories
+    function initRepositoriesControl(options, refreshWidget) {
+        var $inputNumber = document.getElementById('gh-reposNum');
 
-		widget.refresh(options);
-	};
+        $inputNumber.onchange = function() {
+            options.maxRepos = $inputNumber.value;
 
-	// Creating brand new widget instance
-	// for user that we type in input
+            refreshWidget(options);
+        };
+    }
 
-	var	$input = document.getElementById('gh-uname'),
-		$submit = document.getElementById('gh-uname-submit');
+    // Creating brand new widget instance
+    // for user that we type in input
+    function initUserControl(options, fn) {
+        var	$input = document.getElementById('gh-uname'),
+            $submit = document.getElementById('gh-uname-submit');
 
-	$submit.addEventListener('click', function (element) {
-		widget = new GitHubCard({ username: $input.value });
+        $submit.addEventListener('click', function (element) {
+            options.username = $input.value;
+            fn(options);
 
-		element.preventDefault();
-	});
- });
+            element.preventDefault();
+        });
+    }
+})(window.GitHubCard);

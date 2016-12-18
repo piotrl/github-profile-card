@@ -4,7 +4,7 @@ class GitHubCardWidget {
     private userData: IUserData;
     private options: IWidgetConfig;
 
-    constructor(options?: IMap<any>) {
+    constructor(options?: IWidgetConfig) {
         this.options = this.completeConfiguration(options);
         this.$template = this.findTemplate(this.options);
         this.extractUsername(this.options, this.$template);
@@ -22,14 +22,13 @@ class GitHubCardWidget {
         this.render(this.options);
     }
 
-    private completeConfiguration(options?: IMap<any>): IWidgetConfig {
+    private completeConfiguration(options?: IWidgetConfig): IWidgetConfig {
         const defaultConfig = {
             username: null,
             template: '#github-card',
             sortBy: 'stars', // possible: 'stars', 'updateTime'
             reposHeaderText: 'Most starred',
-            maxRepos: 5,
-            githubIcon: false
+            maxRepos: 5
         };
         if (!options) {
             return defaultConfig;
