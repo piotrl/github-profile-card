@@ -13,9 +13,7 @@ Show your current projects — always up to date.
 - No jQuery and other libraries required
 
 
-**Live [**demo**](http://codepen.io/piotrl/full/cwbgJ/)** with configuration sample
-
----
+### Live [demo](http://codepen.io/piotrl/full/cwbgJ/)
 
 ## Download
 With *bower* or just clone this repository.
@@ -96,6 +94,6 @@ I love feedback, send me one!
 - on twitter: [@constjs](https://twitter.com/constjs) 
 - create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
 
-Remember no other libraries required. It's like gluten free ;)
+Remember no other libraries required. It's like gluten free 😉
 
 ![gluten-free](http://forthebadge.com/images/badges/gluten-free.svg)
