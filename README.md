@@ -5,6 +5,8 @@ Show your current projects — always up to date.
 
 ![Screenshot](./docs/screenshot.png)
 
+### Live [demo](http://codepen.io/piotrl/full/cwbgJ/)
+
 ### Main features
 
 - Top languages statistic
@@ -12,31 +14,13 @@ Show your current projects — always up to date.
 - Amount of followers
 - No jQuery and other libraries required
 
-
-### Live [demo](http://codepen.io/piotrl/full/cwbgJ/)
-
-## Download
-With *bower* or just clone this repository.
-
-```
-bower install github-profile-card
-```
-
-With [*npm*](https://www.npmjs.com/package/github-profile-card)
-
-```
-npm install github-profile-card --save
-```
-
-Important files are in `/dist/` directory.
-
-## Installation
+## Quick install
 
 Include script and style inside of your `<head>` tag:
 
 ```
-<link rel="stylesheet" href="dist/gh-profile-card.min.css" />
-<script type="text/javascript" src="dist/gh-profile-card.min.js"></script>
+<link rel="stylesheet" href="https://piotrl.github.io/github-profile-card/dist/gh-profile-card.min.css" />
+<script type="text/javascript" src="https://piotrl.github.io/github-profile-card/dist/gh-profile-card.min.js"></script>
 ```
 
 Include HTML code anywhere you would like to place widget: 
@@ -48,6 +32,22 @@ Include HTML code anywhere you would like to place widget:
 ```
 
 Great! Widget will autoload. We're done here.
+
+## Download
+
+With *bower*
+
+```
+bower install github-profile-card
+```
+
+With [*npm*](https://www.npmjs.com/package/github-profile-card)
+
+```
+npm install github-profile-card --save
+```
+
+Main files are in `/dist/` directory.
 
 ## Advanced configuration
 
