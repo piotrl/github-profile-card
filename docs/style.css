@@ -9,6 +9,7 @@ body {
   max-width: 650px;
   margin: 10px auto;
   font-family: Helvetica, serif;
+  font-size: 18px;
 }
 
 .config-section-left,
@@ -21,12 +22,30 @@ body {
   float: left;
 }
 
+.content-section .choose-user {
+  margin-bottom: 10px;
+}
+
+.content-section .tooltip {
+  margin: 15px 0;
+  position: relative;
+}
+
+.content-section .tooltip::before {
+  display: none;
+}
+
+.content-section input[type="text"] {
+  max-width: 220px;
+  width: 220px;
+}
+
 .tooltip {
   position: relative;
   display: block;
-  box-shadow: 0 0 3px 1px #BBB;
+  box-shadow: 0 0 1px 1px #FFF;
   background: #FFF;
-  border: 1px solid #999;
+  border: 1px solid #DDD;
   padding: 2px 7px;
   margin-top: 15px;
   margin-right: 15px;
@@ -68,11 +87,15 @@ body {
   border-color: inherit;
 }
 
+input {
+  outline: none;
+}
+
 input[type="text"],
 input[type="number"] {
   border: none;
   max-width: 100px;
-  padding-right: 5px;
+  padding: 5px;
   font-size: 0.7em;
 }
 
@@ -94,7 +117,8 @@ label {
 }
 .choose-repo-sorting {
   position: relative;
-  top: 80px;
+  top: 180px;
+  min-width: 100px;
 }
 
 .choose-repo-sorting [type="radio"] {

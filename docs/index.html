@@ -10,11 +10,6 @@
 
 <!-- Load your own profile -->
 <div class="config-section-left">
-    <form action="" class="tooltip choose-user">
-        <input type="text" placeholder="GitHub username" id="gh-uname"/>
-        <input type="submit" id="gh-uname-submit" value="send"/>
-    </form>
-
     <form action="" class="tooltip choose-repo-sorting">
         <input type="radio" name="repo-sorting" id="last-updated" value=""/>
         <label for="last-updated">Last updated</label>
@@ -26,11 +21,16 @@
 
 <div class="content-section">
 
+    <form action="" class="tooltip choose-user">
+        <input type="text" placeholder="Your GitHub username" id="gh-uname"/>
+        <input type="submit" id="gh-uname-submit" value="send"/>
+    </form>
+
     <!-- Widget template -->
     <div id="github-card-demo" data-username="piotrl"></div>
     <div class="readme">
         <p>You can use it on your website!
-            Installation guide on <a href="https://github.com/piotrl/github-profile-card">GitHub page</a></p>
+            Installation guide on <a href="http://github-profile.com/">GitHub page</a></p>
     </div>
 </div>
 

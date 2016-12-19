@@ -5,7 +5,7 @@ Show your current projects — always up to date.
 
 ![Screenshot](./docs/screenshot.png)
 
-### Live [demo](http://codepen.io/piotrl/full/cwbgJ/)
+### Live [demo](http://github-profile.com/docs/)
 
 ### Main features
 
@@ -19,8 +19,8 @@ Show your current projects — always up to date.
 Include script and style inside of your `<head>` tag:
 
 ```
-<link rel="stylesheet" href="https://piotrl.github.io/github-profile-card/dist/gh-profile-card.min.css" />
-<script type="text/javascript" src="https://piotrl.github.io/github-profile-card/dist/gh-profile-card.min.js"></script>
+<link rel="stylesheet" href="http://github-profile.com/dist/gh-profile-card.min.css" />
+<script type="text/javascript" src="http://github-profile.com/dist/gh-profile-card.min.js"></script>
 ```
 
 Include HTML code anywhere you would like to place widget: 
