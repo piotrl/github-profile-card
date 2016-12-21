@@ -1,11 +1,11 @@
-# GitHub profile card
+# GitHub Profile Card
 
 Widget shows your GitHub profile directly on your website!  
 Show your current projects — always up to date.
 
-![Screenshot](./docs/screenshot.png)
+![Screenshot](./demo/screenshot.png)
 
-### Live [demo](http://github-profile.com/docs/)
+### Live [demo](http://github-profile.com/demo/)
 
 ### Main features
 
