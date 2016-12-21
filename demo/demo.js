@@ -46,7 +46,7 @@
             $sortingRadios[1].classList.remove('active');
 
             options.sortBy = 'updateTime';
-            options.reposHeaderText = element.target.textContent;
+            options.headerText = element.target.textContent + ' repositories';
 
             refreshWidget(options);
         });
@@ -57,7 +57,7 @@
             $sortingRadios[0].classList.remove('active');
 
             options.sortBy = 'stars';
-            options.reposHeaderText = element.target.textContent;
+            options.headerText = element.target.textContent + ' repositories';
 
             refreshWidget(options);
         });
