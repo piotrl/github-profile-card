@@ -5,14 +5,39 @@
 }
 
 body {
-  background-color: #F4EADE;
   max-width: 500px;
   margin: 10px auto;
-  font-family: Helvetica, serif;
   font-size: 18px;
+
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #232323;
+  background-color: #FBFAF7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h1, h2, h3 {
+  display: block;
+  font-family: Arvo, Monaco, serif;
+  line-height: 1.3;
+  font-weight: normal;
+  color: #232323;
+  margin: 36px 0 10px;
+
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+h1 a, h2 a, h3 a {
+  color: #4183C4;
+  text-decoration: none;
 }
 
 .row {
+    padding: 5px;
     margin-top: 20px;
     overflow: hidden;
 }
@@ -147,17 +172,4 @@ label {
 
 .active {
   font-weight: bold;
-}
-
-.readme {
-  max-width: 280px;
-  line-height: 1.5;
-  color: #666;
-
-  padding: 0 10px;
-}
-
-.readme a {
-  color: #4183C4;
-  text-decoration: none;
 }
