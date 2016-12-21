@@ -6,10 +6,15 @@
 
 body {
   background-color: #F4EADE;
-  max-width: 650px;
+  max-width: 500px;
   margin: 10px auto;
   font-family: Helvetica, serif;
   font-size: 18px;
+}
+
+.row {
+    margin-top: 20px;
+    overflow: hidden;
 }
 
 .config-section-left,
@@ -38,6 +43,25 @@ body {
 .content-section input[type="text"] {
   max-width: 220px;
   width: 220px;
+}
+
+.pre {
+    border: 1px solid #dddfe2;
+    border-radius: 3px;
+    background-color: #f6f7f9;
+}
+
+.pre textarea {
+    background: none;
+    border: none;
+    box-sizing: border-box;
+    color: #4b4f56;
+    font-family: Menlo,Monaco,Andale Mono,Courier New,monospace;
+    font-size: 14px;
+    height: auto;
+    line-height: 20px;
+    padding: 12px;
+    min-width: 100%;
 }
 
 .tooltip {
@@ -92,15 +116,16 @@ input {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+textarea {
   border: none;
-  max-width: 100px;
+  max-width: 125px;
   padding: 5px;
   font-size: 0.7em;
 }
 
 input[type="number"] {
-  max-width: 50px;
+  width: 85px;
 }
 
 input[type="submit"] {
@@ -114,11 +139,6 @@ input[type="submit"] {
 
 label {
   font-size: 0.7em;
-}
-.choose-repo-sorting {
-  position: relative;
-  top: 180px;
-  min-width: 100px;
 }
 
 .choose-repo-sorting [type="radio"] {

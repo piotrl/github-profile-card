@@ -7,41 +7,52 @@
     <link rel="stylesheet" href="../dist/gh-profile-card.css"/>
 </head>
 <body>
+<div class="row">
+    <!-- Load your own profile -->
+    <div class="config-section-left">
+        <!-- Widget template -->
+        <form action="" class="tooltip choose-user">
+            <input type="text" placeholder="GitHub username" id="gh-uname"/>
+            <input type="submit" id="gh-uname-submit" value="send"/>
+        </form>
 
-<!-- Load your own profile -->
-<div class="config-section-left">
-    <form action="" class="tooltip choose-repo-sorting">
-        <input type="radio" name="repo-sorting" id="last-updated" value=""/>
-        <label for="last-updated">Last updated</label>
-        <br/>
-        <input type="radio" name="repo-sorting" id="most-starred" value="" checked/>
-        <label for="most-starred" class="active">Most starred</label>
-    </form>
+        <form action="" class="tooltip choose-repos-num">
+            <label for="gh-reposNum">repositories: </label>
+            <input type="number" min="0" max="10" value="5" id="gh-reposNum"/>
+        </form>
+
+        <form action="" class="tooltip choose-repo-sorting">
+            <input type="radio" name="repo-sorting" id="last-updated" value=""/>
+            <label for="last-updated">Last updated</label>
+            <br/>
+            <input type="radio" name="repo-sorting" id="most-starred" value="" checked/>
+            <label for="most-starred" class="active">Most starred</label>
+        </form>
+
+        <div class="readme">
+            <p>Use it on your website! <br />
+                Install guide on <a href="http://github-profile.com/">GitHub page</a></p>
+        </div>
+
+    </div>
+
+    <div class="content-section">
+        <div id="github-card-demo" data-username="piotrl"></div>
+    </div>
 </div>
-
-<div class="content-section">
-
-    <form action="" class="tooltip choose-user">
-        <input type="text" placeholder="Your GitHub username" id="gh-uname"/>
-        <input type="submit" id="gh-uname-submit" value="send"/>
-    </form>
-
-    <!-- Widget template -->
-    <div id="github-card-demo" data-username="piotrl"></div>
-    <div class="readme">
-        <p>You can use it on your website!
-            Installation guide on <a href="http://github-profile.com/">GitHub page</a></p>
+<div class="row">
+    <div class="pre">
+        <textarea id="install-code"
+                  readonly="1"
+                  rows="6"
+                  spellcheck="false"
+                  onclick="this.focus(); this.select()">
+        </textarea>
     </div>
 </div>
 
-<div class="config-section-right">
-    <form action="" class="tooltip choose-repos-num">
-        <label for="gh-reposNum">repositories: </label>
-        <input type="number" min="0" max="10" value="5" id="gh-reposNum"/>
-    </form>
-</div>
-
 <script type="text/javascript" src="../dist/gh-profile-card.js"></script>
+<script type="text/javascript" src="widget-generator.js"></script>
 <script type="text/javascript" src="demo.js"></script>
 </body>
 </html>

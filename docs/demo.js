@@ -1,4 +1,5 @@
-(function (GitHubCard) {
+(function (GitHubCard, widgetGenerator) {
+    "use strict";
 
 	// Generating new widget from user input
     document.addEventListener('DOMContentLoaded', function() {
@@ -11,6 +12,7 @@
 
         var widget = new GitHubCard(options);
         widget.init();
+        regenerate(options);
 
         initSortingControl(options, refreshWidget);
         initRepositoriesControl(options, refreshWidget);
@@ -19,10 +21,17 @@
         function initWidget(options) {
             widget = new GitHubCard(options);
             widget.init();
+            regenerate(options);
         }
 
         function refreshWidget(updatedOptions) {
             widget.refresh(updatedOptions);
+            regenerate(updatedOptions);
+        }
+
+        function regenerate(updatedOptions) {
+            var textarea = document.getElementById("install-code");
+            textarea.value = widgetGenerator.regenerate(updatedOptions);
         }
     });
 
@@ -78,4 +87,4 @@
             element.preventDefault();
         });
     }
-})(window.GitHubCard);
+})(window.GitHubCard, window.widgetGenerator);
