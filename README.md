@@ -3,9 +3,8 @@
 Widget shows your GitHub profile directly on your website!  
 Show your current projects — always up to date.
 
+### :octocat: Live [demo](http://github-profile.com/demo/)
 ![Screenshot](./demo/screenshot.png)
-
-### Live [demo](http://github-profile.com/demo/)
 
 ### Main features
 
