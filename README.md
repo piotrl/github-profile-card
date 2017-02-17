@@ -3,15 +3,16 @@
 Widget shows your GitHub profile directly on your website!  
 Show your current projects — always up to date.
 
-### :octocat: Live [demo](http://github-profile.com/demo/)
+### :octocat: Live [demo and configuration](http://github-profile.com/demo/)
 ![Screenshot](./demo/screenshot.png)
 
 ### Main features
 
-- Top languages statistic
-- Configurable list of repositories by most starred or last updated
-- Amount of followers
-- No jQuery and other libraries required
+- Top languages statistics
+- Last updated repositories
+- Configurable in HTML
+- Copy-Paste installation
+- No jQuery and any other libraries required
 
 ## Quick install
 
@@ -78,13 +79,13 @@ widget.init();
 
 ## Configuration options   
 
-HTML option       | JavaScript option | Type                 | Default        | Details
+HTML option (`data-` prefix)      | JavaScript option | Type                 | Default        | Details
 ---               | ---               | ---                  | ---            | ---
-`data-username`   | `username`        | *string*			 | `—`            | GitHub profile username
+`username`   | `username`        | *string*			 | `—`            | GitHub profile username
 `—`               | `template`        | *string*             | `#github-card` | DOM selector of your widget in HTML
-`data-sort-by`    | `sortBy`          | `stars`, `updateTime`| `stars`        | Repositories sorting method
-`data-max-repos`  | `maxRepos`        | *int*			     | `5`			  | Amount of listed repositories. `0` disables section
-`data-header-text`| `headerText`      | *string*             | `Most starred repositories` | Text label above repositories list                           
+`sort-by`    | `sortBy`          | `stars`, `updateTime`| `stars`        | Repositories sorting method
+`max-repos`  | `maxRepos`        | *int*			     | `5`			  | Amount of listed repositories. `0` disables section
+`header-text`| `headerText`      | *string*             | `Most starred repositories` | Text label above repositories list                           
 
 ## [Changelog](https://github.com/piotrl/github-profile-card/releases)
 
