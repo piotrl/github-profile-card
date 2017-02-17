@@ -14,7 +14,7 @@ var gulp = require('gulp'),
     tslint = require('gulp-tslint'),
     wrap = require('gulp-wrap');
 
-var version = 'v2.0.0';
+var version = 'v2.0.1';
 
 var paths = {
     scripts: [

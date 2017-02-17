@@ -1,4 +1,4 @@
-/** GitHub Profile Card - v2.0.0 **/ 
+/** GitHub Profile Card - v2.0.1 **/ 
 (function(){
 "use strict";
 var CacheStorage = (function () {
