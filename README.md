@@ -105,10 +105,11 @@ HTML option (`data-` prefix)      | JavaScript option | Type                 | D
 
 Consider ignoring them with .gitattributes: [My repository is detected as the wrong language](https://github.com/github/linguist#overrides)
 
-** How language statistic is build?**
+**How language statistic is build?**
 
 It is sum of all characters written in language you use.
 One big repository in `C#` will be ranked higher than many small `JavaScript` repositories.
+
 It is based on 10 last updated repositories, to represent your current interests.
   
 
