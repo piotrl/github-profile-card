@@ -3,6 +3,18 @@
 Widget shows your GitHub profile directly on your website!  
 Show your current projects — always up to date.
 
+## Table of contents
+
+  * [GitHub Profile Card](#github-profile-card)
+     * [Live demo and configuration](#live-demo-and-configuration)
+     * [Main features](#main-features)
+  * [Quick install](#quick-install)
+    * [Download](#download)
+    * [Advanced configuration](#advanced-configuration)
+    * [Configuration options](#configuration-options)
+  * [FAQ](#faq)
+  * [Changelog](#changelog)
+
 ## Live [demo and configuration](http://github-profile.com/demo/)
 ![Screenshot](./demo/screenshot.png)
 
@@ -86,6 +98,12 @@ HTML option (`data-` prefix)      | JavaScript option | Type                 | D
 `sort-by`    | `sortBy`          | `stars`, `updateTime`| `stars`        | Repositories sorting method
 `max-repos`  | `maxRepos`        | *int*			     | `5`			  | Amount of listed repositories. `0` disables section
 `header-text`| `headerText`      | *string*             | `Most starred repositories` | Text label above repositories list                           
+
+## FAQ
+
+- Q: My language statistic is broken by libraries and dependencies
+
+  A: Consider ignoring them with .gitattributes: [My repository is detected as the wrong language](https://github.com/github/linguist#overrides)
 
 ## [Changelog](https://github.com/piotrl/github-profile-card/releases)
 
