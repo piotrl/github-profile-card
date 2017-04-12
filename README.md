@@ -117,7 +117,8 @@ HTML option (`data-` prefix)      | JavaScript option | Type                 | D
 
 I love feedback, send me one!
 
-- on twitter: [@constjs](https://twitter.com/constjs) 
+- show me website on which you're using this widget: [leave comment](https://github.com/piotrl/github-profile-card/issues/15)
+- ping me on twitter: [@constjs](https://twitter.com/constjs) 
 - create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
 
 Remember no other libraries required. It's like gluten free 😉
