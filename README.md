@@ -117,6 +117,21 @@ HTML option (`data-` prefix)      | JavaScript option | Type                 | D
 
   It is based on 10 last updated repositories, to represent your current interests.
 
+  
+- **How to show two or more profiles on page?**
+  
+  You have to create two widgets with different ID, then initialize each manually in JS.
+  
+  e.g.
+  ```
+  <div id="github-card-1" data-username="user1"></div>
+  <div id="github-card-2" data-username="user2"></div>
+  
+  <script>
+      new GitHubCard({ template: '#github-card-1' }).init();      
+      new GitHubCard({ template: '#github-card-2' }).init();
+  </script>
+  ```
 ## Feedback
 
 I love feedback, send me one!
