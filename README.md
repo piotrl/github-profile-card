@@ -3,20 +3,21 @@
 > Widget shows your GitHub profile directly on your website.  
 Show your current projects — always up to date.
 
+![Screenshot](./demo/screenshot.png)
+
 ## Contents
 
   * [GitHub Profile Card](#github-profile-card)
-     * [Live demo and configuration](#live-demo-and-configuration)
      * [Main features](#main-features)
+     * [Live demo and configuration](#live-demo-and-configuration)
+     * [Changelog](#changelog)
   * [Quick install](#quick-install)
     * [Download](#download)
     * [Advanced configuration](#advanced-configuration)
     * [Configuration options](#configuration-options)
   * [FAQ](#faq)
-  * [Changelog](#changelog)
+  * [Feedback](#feedback)
 
-## Live [demo and configuration](http://github-profile.com/demo/)
-![Screenshot](./demo/screenshot.png)
 
 ### Main features
 
@@ -25,6 +26,10 @@ Show your current projects — always up to date.
 - Configurable in HTML
 - Copy-Paste installation
 - No jQuery and any other libraries required
+
+### Live [demo and configuration](http://github-profile.com/demo/)
+
+### [Changelog](https://github.com/piotrl/github-profile-card/releases)
 
 ## Quick install
 
@@ -111,9 +116,8 @@ HTML option (`data-` prefix)      | JavaScript option | Type                 | D
  One big repository in `C#` will be ranked higher than many small `JavaScript` repositories.
 
   It is based on 10 last updated repositories, to represent your current interests.
-  
 
-## [Changelog](https://github.com/piotrl/github-profile-card/releases)
+## Feedback
 
 I love feedback, send me one!
 
