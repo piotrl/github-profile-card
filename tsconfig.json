@@ -9,6 +9,11 @@
     "newLine": "LF"
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+  "types": [
+    "mocha",
+    "chai"
   ]
 }
