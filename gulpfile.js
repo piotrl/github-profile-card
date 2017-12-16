@@ -1,5 +1,5 @@
 var gulp = require('gulp'),
-    sass = require('gulp-sass'),
+    // sass = require('gulp-sass'),
     autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-minify-css'),
     jshint = require('gulp-jshint'),
@@ -34,7 +34,7 @@ gulp.task('clean', function () {
 gulp.task('styles', function () {
     return gulp.src(paths.styles)
         .pipe(rename({basename: 'gh-profile-card'}))
-        .pipe(sass())
+        // .pipe(sass())
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(wrap(header(version) + '<%= contents %>'))
         .pipe(gulp.dest(paths.dist))
