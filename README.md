@@ -5,6 +5,8 @@ Show your current projects — always up to date.
 
 ![Screenshot](./demo/screenshot.png)
 
+## Live [demo and configuration](http://github-profile.com/demo/)
+
 ## Contents
 
   * [GitHub Profile Card](#github-profile-card)
@@ -26,8 +28,6 @@ Show your current projects — always up to date.
 - Configurable in HTML
 - Copy-Paste installation
 - No jQuery and any other libraries required
-
-### Live [demo and configuration](http://github-profile.com/demo/)
 
 ### [Changelog](https://github.com/piotrl/github-profile-card/releases)
 
