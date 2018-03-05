@@ -92,7 +92,8 @@
     function overrideOptionsByUrlParams(options) {
         const queryParameters = new URL(document.location).searchParams;
         for (const [key, value] of queryParameters) {
-            options[key] = options[key] && value;
+            options[key] = value;
         }
     }
+
 })(window.GitHubCard, window.widgetGenerator);
