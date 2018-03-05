@@ -1,9 +1,9 @@
 (function (GitHubCard, widgetGenerator) {
-    "use strict";
+    'use strict';
 
 	// Generating new widget from user input
-    document.addEventListener('DOMContentLoaded', function() {
-        var options = {
+    document.addEventListener('DOMContentLoaded', () => {
+        const options = {
             template: '#github-card-demo',
             sortBy: 'stars', // possible: 'stars', 'updateTime'
             headerText: 'Most starred repositories',
@@ -11,9 +11,9 @@
         };
         overrideOptionsByUrlParams(options);
 
-        var widget = new GitHubCard(options);
+        let widget = new GitHubCard(options);
         widget.init();
-        regenerate(options);
+        refreshConfigTextarea(options);
 
         initSortingControl(options, refreshWidget);
         initRepositoriesControl(options, refreshWidget);
@@ -22,19 +22,19 @@
         function initWidget(options) {
             widget = new GitHubCard(options);
             widget.init();
-            regenerate(options);
+            refreshConfigTextarea(options);
         }
 
         function refreshWidget(updatedOptions) {
             widget.refresh(updatedOptions);
-            regenerate(updatedOptions);
-        }
-
-        function regenerate(updatedOptions) {
-            var textarea = document.getElementById("install-code");
-            textarea.value = widgetGenerator.regenerate(updatedOptions);
+            refreshConfigTextarea(updatedOptions);
         }
     });
+
+    function refreshConfigTextarea(updatedOptions) {
+        const textarea = document.getElementById('install-code');
+        textarea.value = widgetGenerator.regenerate(updatedOptions);
+    }
 
     // Sort repository acording to
     // radio inputs on website
@@ -42,23 +42,23 @@
         var $sortingRadios = document.querySelectorAll('.choose-repo-sorting label');
 
         // sort by update time
-        $sortingRadios[0].addEventListener('click', function (element) {
-            element.target.classList.add('active');
+        $sortingRadios[0].addEventListener('click', event => {
+            event.target.classList.add('active');
             $sortingRadios[1].classList.remove('active');
 
             options.sortBy = 'updateTime';
-            options.headerText = element.target.textContent + ' repositories';
+            options.headerText = event.target.textContent + ' repositories';
 
             refreshWidget(options);
         });
 
         // sort by starrgazers
-        $sortingRadios[1].addEventListener('click', function (element) {
-            element.target.classList.add('active');
+        $sortingRadios[1].addEventListener('click', event => {
+            event.target.classList.add('active');
             $sortingRadios[0].classList.remove('active');
 
             options.sortBy = 'stars';
-            options.headerText = element.target.textContent + ' repositories';
+            options.headerText = event.target.textContent + ' repositories';
 
             refreshWidget(options);
         });
@@ -66,26 +66,25 @@
 
     // Manipulating the number of repositories
     function initRepositoriesControl(options, refreshWidget) {
-        var $inputNumber = document.getElementById('gh-reposNum');
+        const $inputNumber = document.getElementById('gh-reposNum');
 
-        $inputNumber.onchange = function() {
+        $inputNumber.onchange = () => {
             options.maxRepos = $inputNumber.value;
-
             refreshWidget(options);
         };
     }
 
     // Creating brand new widget instance
     // for user that we type in input
-    function initUserControl(options, fn) {
-        var	$input = document.getElementById('gh-uname'),
-            $submit = document.getElementById('gh-uname-submit');
+    function initUserControl(options, cb) {
+        const $input = document.getElementById('gh-uname');
+        const $submit = document.getElementById('gh-uname-submit');
 
-        $submit.addEventListener('click', function (element) {
+        $submit.addEventListener('click', event => {
             options.username = $input.value;
-            fn(options);
+            cb(options);
 
-            element.preventDefault();
+            event.preventDefault();
         });
     }
 
