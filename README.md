@@ -5,7 +5,7 @@ Show your current projects — always up to date.
 
 ![Screenshot](./demo/screenshot.png)
 
-## Live [demo and configuration](http://github-profile.com/demo/)
+## Live [demo and configuration](http://github-profile.com/demo?username=piotrl)
 
 ## Contents
 
