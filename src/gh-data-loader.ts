@@ -5,7 +5,7 @@ import {IJqueryDeferredLike, IMap} from "./interface/IShared";
 
 export class GitHubApiLoader {
     private apiBase: string = 'https://api.github.com';
-    private cache = new CacheStorage();
+    private cache = new CacheStorage(window.localStorage);
 
     public loadUserData(username: string, callback: IApiCallback<IUserData>): void {
         const request = this.apiGet(`${this.apiBase}/users/${username}`);
