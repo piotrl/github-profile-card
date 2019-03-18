@@ -1,5 +1,7 @@
 import {GitHubCardWidget} from "./gh-profile-card";
 
+import './css/base.scss';
+
 interface WidgetPublicAPI extends Window {
     GitHubCard: typeof GitHubCardWidget;
 }
