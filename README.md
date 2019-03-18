@@ -33,10 +33,9 @@ Show your current projects — always up to date.
 
 ## Quick install
 
-Include script and style inside of your `<head>` tag:
+Include script and style just before `</body>` tag:
 
 ```
-<link rel="stylesheet" href="http://github-profile.com/dist/gh-profile-card.min.css" />
 <script type="text/javascript" src="http://github-profile.com/dist/gh-profile-card.min.js"></script>
 ```
 
@@ -52,19 +51,11 @@ Great! Widget will autoload. We're done here.
 
 ## Download
 
-With *bower*
-
-```
-bower install github-profile-card
-```
-
 With [*npm*](https://www.npmjs.com/package/github-profile-card)
 
 ```
 npm install github-profile-card --save
 ```
-
-Main files are in `/dist/` directory.
 
 ## Advanced configuration
 
