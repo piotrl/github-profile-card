@@ -13,7 +13,5 @@
     "test/**/*.ts"
   ],
   "types": [
-    "mocha",
-    "chai"
   ]
 }
