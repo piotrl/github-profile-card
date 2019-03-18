@@ -21,8 +21,10 @@
     "webpack-cli": "3.3.0"
   },
   "scripts": {
-    "build": "webpack",
-    "test": "jest"
+    "build": "WEBPACK_ENV=build webpack",
+    "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
