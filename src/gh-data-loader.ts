@@ -1,5 +1,11 @@
-class GitHubApiLoader {
+import {CacheStorage} from "./gh-cache-storage";
+import {IUserData} from "./interface/IWidget";
+import {IApiCallback, IApiError, IApiRepository} from "./interface/IGitHubApi";
+import {IJqueryDeferredLike, IMap} from "./interface/IShared";
+
+export class GitHubApiLoader {
     private apiBase: string = 'https://api.github.com';
+    private cache = new CacheStorage();
 
     public loadUserData(username: string, callback: IApiCallback<IUserData>): void {
         const request = this.apiGet(`${this.apiBase}/users/${username}`);
@@ -65,14 +71,14 @@ class GitHubApiLoader {
         const request = this.buildRequest(url);
 
         return {
-            success(callback) {
+            success: (callback) => {
                 request.addEventListener('load', () => {
                     if (request.status === 304) {
-                        callback(CacheStorage.get(url).data, request);
+                        callback(this.cache.get(url).data, request);
                     }
                     if (request.status === 200) {
                         const response = JSON.parse(request.responseText);
-                        CacheStorage.add(url, {
+                        this.cache.add(url, {
                             lastModified: request.getResponseHeader('Last-Modified'),
                             data: response
                         });
@@ -80,7 +86,7 @@ class GitHubApiLoader {
                     }
                 });
             },
-            error(callback) {
+            error: (callback) => {
                 request.addEventListener('load', () => {
                     if (request.status !== 200 && request.status !== 304) {
                         callback(JSON.parse(request.responseText), request);
@@ -102,7 +108,7 @@ class GitHubApiLoader {
     private buildApiHeaders(request: XMLHttpRequest, url: string) {
         request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
 
-        const urlCache = CacheStorage.get(url);
+        const urlCache = this.cache.get(url);
         if (urlCache) {
             request.setRequestHeader('If-Modified-Since', urlCache.lastModified);
         }

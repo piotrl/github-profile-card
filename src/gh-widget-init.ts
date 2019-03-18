@@ -1,3 +1,5 @@
+import {GitHubCardWidget} from "./gh-profile-card";
+
 interface WidgetPublicAPI extends Window {
     GitHubCard: typeof GitHubCardWidget;
 }

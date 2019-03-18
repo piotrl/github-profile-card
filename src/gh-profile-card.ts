@@ -1,4 +1,10 @@
-class GitHubCardWidget {
+import {GitHubApiLoader} from "./gh-data-loader";
+import {DOMOperator} from "./gh-dom-operator";
+import {IUserData, IWidgetConfig} from "./interface/IWidget";
+import {IApiError, IApiRepository} from "./interface/IGitHubApi";
+import {IMap} from "./interface/IShared";
+
+export class GitHubCardWidget {
     private apiLoader: GitHubApiLoader = new GitHubApiLoader();
     private $template: HTMLElement;
     private userData: IUserData;

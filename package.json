@@ -10,22 +10,19 @@
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "4.0.0",
     "gulp-clean": "0.3.2",
-    "gulp-concat": "2.6.1",
-    "gulp-livereload": "3.8.1",
     "gulp-minify-css": "1.2.4",
-    "gulp-notify": "3.0.0",
-    "gulp-rename": "1.2.2",
-    "gulp-tslint": "8.1.1",
-    "gulp-typescript": "3.1.7",
-    "gulp-uglify": "3.0.0",
     "gulp-wrap": "0.13.0",
     "jest": "24.5.0",
     "ts-jest": "24.0.0",
+    "ts-loader": "5.3.3",
     "ts-node": "8.0.3",
     "tslint": "5.14.0",
-    "typescript": "3.3.3333"
+    "typescript": "3.3.3333",
+    "webpack": "4.29.6",
+    "webpack-cli": "3.3.0"
   },
   "scripts": {
+    "build": "webpack",
     "test": "jest"
   },
   "repository": {

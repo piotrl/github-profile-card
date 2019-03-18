@@ -1,4 +1,6 @@
-interface IWidgetConfig {
+import {IApiProfile, IApiRepository} from "./IGitHubApi";
+
+export interface IWidgetConfig {
     username?: string;
     template?: string;
     sortBy?: string;
@@ -6,7 +8,7 @@ interface IWidgetConfig {
     maxRepos?: number;
 }
 
-interface IUserData {
+export interface IUserData {
     profile: IApiProfile;
     repositories: IApiRepository[];
 }

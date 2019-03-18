@@ -1,5 +1,8 @@
-class DOMOperator {
-    public static clearChildren($parent: Node) {
+import {IApiError, IApiProfile, IApiRepository} from "./interface/IGitHubApi";
+import {IMap} from "./interface/IShared";
+
+export class DOMOperator {
+    public static clearChildren($parent: HTMLElement) {
         while ($parent.hasChildNodes()) {
             $parent.removeChild($parent.firstChild);
         }

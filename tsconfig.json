@@ -1,17 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "None",
+    "outDir": "./dist/",
     "noImplicitAny": false,
-    "removeComments": false,
+    "module": "es2015",
+    "target": "es5",
     "sourceMap": true,
-    "inlineSources": true,
-    "newLine": "LF"
-  },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ],
-  "types": [
-  ]
+    "allowJs": true
+  }
 }
