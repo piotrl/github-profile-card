@@ -6,7 +6,7 @@ interface Cache {
 
 export interface CacheEntry {
   lastModified: string;
-  data: object;
+  data: any;
 }
 
 export class CacheStorage {
@@ -15,7 +15,7 @@ export class CacheStorage {
 
   constructor(private readonly storage: BrowserStorage) {}
 
-  public get(key: string): CacheEntry {
+  public get(key: string): CacheEntry | undefined {
     return this.requestCache[key];
   }
 

@@ -4,10 +4,6 @@
  * @see https://developer.github.com/v3/
  */
 
-export interface ApiCallback<T> {
-  (data: T, error: ApiError): void;
-}
-
 export interface ApiError {
   message: string;
   isWrongUser?: boolean;
