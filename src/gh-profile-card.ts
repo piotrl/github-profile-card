@@ -16,10 +16,15 @@ export class GitHubCardWidget {
   }
 
   public init(): void {
-    this.apiLoader.loadUserData(this.options.username, (data, err) => {
-      this.userData = data;
-      this.render(this.options, err);
-    });
+    this.apiLoader
+      .loadUserData(this.options.username)
+      .then((data) => {
+        this.userData = data;
+        this.render(this.options);
+      })
+      .catch((err) => {
+        this.render(this.options, err);
+      });
   }
 
   public refresh(options: WidgetConfig): void {
