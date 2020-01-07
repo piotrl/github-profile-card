@@ -5,7 +5,7 @@ Show your current projects — always up to date.
 
 ![Screenshot](./demo/screenshot.png)
 
-## Live [demo and configuration](http://github-profile.com/demo?username=piotrl)
+## Live [demo and configuration](https://github-profile.com/demo?username=piotrl)
 
 ## Contents
 
@@ -36,7 +36,7 @@ Show your current projects — always up to date.
 Include script and style just before `</body>` tag:
 
 ```
-<script type="text/javascript" src="http://github-profile.com/dist/gh-profile-card.min.js"></script>
+<script type="text/javascript" src="https://github-profile.com/dist/gh-profile-card.min.js"></script>
 ```
 
 Include HTML code anywhere you would like to place widget: 
