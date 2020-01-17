@@ -34,7 +34,8 @@ export class GitHubCardWidget {
             template: '#github-card',
             sortBy: 'stars', // possible: 'stars', 'updateTime'
             headerText: 'Most starred repositories',
-            maxRepos: 5
+            maxRepos: 5,
+            hideTopLanguages: false,
         };
         for (const key in defaultConfig) {
             defaultConfig[key] = options[key] || defaultConfig[key];
@@ -57,6 +58,7 @@ export class GitHubCardWidget {
         widgetConfig.sortBy = widgetConfig.sortBy || $template.dataset['sortBy'];
         widgetConfig.headerText = widgetConfig.headerText || $template.dataset['headerText'];
         widgetConfig.maxRepos = widgetConfig.maxRepos || parseInt($template.dataset['maxRepos'], 10);
+        widgetConfig.hideTopLanguages = widgetConfig.hideTopLanguages || $template.dataset['hideTopLanguages'] === "true";
 
         if (!widgetConfig.username) {
             throw 'Not provided username';
@@ -81,7 +83,9 @@ export class GitHubCardWidget {
         this.sortRepositories(repositories, options.sortBy);
 
         const $profile = DOMOperator.createProfile(this.userData.profile);
-        $profile.appendChild(this.createTopLanguagesSection(repositories));
+        if(!options.hideTopLanguages) {
+            $profile.appendChild(this.createTopLanguagesSection(repositories));
+        }
         $root.appendChild($profile);
 
         if (options.maxRepos > 0) {
