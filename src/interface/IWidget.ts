@@ -6,6 +6,7 @@ export interface IWidgetConfig {
     sortBy?: string;
     headerText?: string;
     maxRepos?: number;
+    hideTopLanguages?: boolean;
 }
 
 export interface IUserData {
