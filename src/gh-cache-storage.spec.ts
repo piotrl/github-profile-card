@@ -1,13 +1,16 @@
-import {CacheStorage, ICacheEntry} from "./gh-cache-storage";
-import {InMemoryStorage} from "./testing/in-memory-storage";
-import {BrowserStorage} from "./interface/storage";
+import { CacheStorage, ICacheEntry } from './gh-cache-storage';
+import { InMemoryStorage } from './testing/in-memory-storage';
+import { BrowserStorage } from './interface/storage';
 
 describe('CacheStorage', () => {
-    const url = 'https://api.github.com/repos/piotrl/github-profile-card/languages';
+    const url =
+        'https://api.github.com/repos/piotrl/github-profile-card/languages';
     const cacheData: ICacheEntry = {
         lastModified: 'Mon, 18 Mar 2019 20:40:35 GMT',
         data: {
-            TypeScript: 19766, CSS: 3790, JavaScript: 1350,
+            TypeScript: 19766,
+            CSS: 3790,
+            JavaScript: 1350
         }
     };
 
@@ -35,7 +38,6 @@ describe('CacheStorage', () => {
         cache.add(url, cacheData);
         const result = cache.get(url);
 
-
         // then
         expect(result).toEqual(cacheData);
     });
@@ -43,9 +45,12 @@ describe('CacheStorage', () => {
     it('should initialize with existing entries', () => {
         // given
         const cacheName = 'github-request-cache';
-        storage.setItem(cacheName, JSON.stringify({
-            [url]: cacheData,
-        }));
+        storage.setItem(
+            cacheName,
+            JSON.stringify({
+                [url]: cacheData
+            })
+        );
         const cache = new CacheStorage(storage);
 
         // when

@@ -1,8 +1,8 @@
-import {GitHubApiLoader} from "./gh-data-loader";
-import {DOMOperator} from "./gh-dom-operator";
-import {IUserData, IWidgetConfig} from "./interface/IWidget";
-import {IApiError, IApiRepository} from "./interface/IGitHubApi";
-import {IMap} from "./interface/IShared";
+import { GitHubApiLoader } from './gh-data-loader';
+import { DOMOperator } from './gh-dom-operator';
+import { IUserData, IWidgetConfig } from './interface/IWidget';
+import { IApiError, IApiRepository } from './interface/IGitHubApi';
+import { IMap } from './interface/IShared';
 
 export class GitHubCardWidget {
     private apiLoader: GitHubApiLoader = new GitHubApiLoader();
@@ -35,7 +35,7 @@ export class GitHubCardWidget {
             sortBy: 'stars', // possible: 'stars', 'updateTime'
             headerText: 'Most starred repositories',
             maxRepos: 5,
-            hideTopLanguages: false,
+            hideTopLanguages: false
         };
         for (const key in defaultConfig) {
             defaultConfig[key] = options[key] || defaultConfig[key];
@@ -44,8 +44,12 @@ export class GitHubCardWidget {
         return defaultConfig;
     }
 
-    private findTemplate(templateCssSelector: string = '#github-card'): HTMLElement {
-        const $template = <HTMLElement> document.querySelector(templateCssSelector);
+    private findTemplate(
+        templateCssSelector: string = '#github-card'
+    ): HTMLElement {
+        const $template = <HTMLElement>(
+            document.querySelector(templateCssSelector)
+        );
         if (!$template) {
             throw `No template found for selector: ${templateCssSelector}`;
         }
@@ -53,12 +57,22 @@ export class GitHubCardWidget {
         return $template;
     }
 
-    private extractHtmlConfig(widgetConfig: IWidgetConfig, $template: HTMLElement): void {
-        widgetConfig.username = widgetConfig.username || $template.dataset['username'];
-        widgetConfig.sortBy = widgetConfig.sortBy || $template.dataset['sortBy'];
-        widgetConfig.headerText = widgetConfig.headerText || $template.dataset['headerText'];
-        widgetConfig.maxRepos = widgetConfig.maxRepos || parseInt($template.dataset['maxRepos'], 10);
-        widgetConfig.hideTopLanguages = widgetConfig.hideTopLanguages || $template.dataset['hideTopLanguages'] === "true";
+    private extractHtmlConfig(
+        widgetConfig: IWidgetConfig,
+        $template: HTMLElement
+    ): void {
+        widgetConfig.username =
+            widgetConfig.username || $template.dataset['username'];
+        widgetConfig.sortBy =
+            widgetConfig.sortBy || $template.dataset['sortBy'];
+        widgetConfig.headerText =
+            widgetConfig.headerText || $template.dataset['headerText'];
+        widgetConfig.maxRepos =
+            widgetConfig.maxRepos ||
+            parseInt($template.dataset['maxRepos'], 10);
+        widgetConfig.hideTopLanguages =
+            widgetConfig.hideTopLanguages ||
+            $template.dataset['hideTopLanguages'] === 'true';
 
         if (!widgetConfig.username) {
             throw 'Not provided username';
@@ -72,7 +86,10 @@ export class GitHubCardWidget {
         DOMOperator.clearChildren($root);
 
         if (error) {
-            const $errorSection = DOMOperator.createError(error, options.username);
+            const $errorSection = DOMOperator.createError(
+                error,
+                options.username
+            );
             $root.appendChild($errorSection);
 
             return;
@@ -83,26 +100,38 @@ export class GitHubCardWidget {
         this.sortRepositories(repositories, options.sortBy);
 
         const $profile = DOMOperator.createProfile(this.userData.profile);
-        if(!options.hideTopLanguages) {
+        if (!options.hideTopLanguages) {
             $profile.appendChild(this.createTopLanguagesSection(repositories));
         }
         $root.appendChild($profile);
 
         if (options.maxRepos > 0) {
-            const $reposHeader = DOMOperator.createRepositoriesHeader(options.headerText);
-            const $reposList = DOMOperator.createRepositoriesList(repositories, options.maxRepos);
+            const $reposHeader = DOMOperator.createRepositoriesHeader(
+                options.headerText
+            );
+            const $reposList = DOMOperator.createRepositoriesList(
+                repositories,
+                options.maxRepos
+            );
             $reposList.insertBefore($reposHeader, $reposList.firstChild);
 
             $root.appendChild($reposList);
         }
     }
 
-    private createTopLanguagesSection(repositories: IApiRepository[]): HTMLUListElement {
+    private createTopLanguagesSection(
+        repositories: IApiRepository[]
+    ): HTMLUListElement {
         const $topLanguages = DOMOperator.createTopLanguagesSection();
-        this.apiLoader.loadRepositoriesLanguages(repositories.slice(0, 10), langStats => {
-            const languagesRank = this.groupLanguagesUsage(langStats);
-            $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(languagesRank);
-        });
+        this.apiLoader.loadRepositoriesLanguages(
+            repositories.slice(0, 10),
+            langStats => {
+                const languagesRank = this.groupLanguagesUsage(langStats);
+                $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(
+                    languagesRank
+                );
+            }
+        );
         return $topLanguages;
     }
 
@@ -122,12 +151,16 @@ export class GitHubCardWidget {
     private sortRepositories(repos: IApiRepository[], sortyBy: string): void {
         repos.sort((firstRepo, secondRepo) => {
             if (sortyBy === 'stars') {
-                const starDifference = secondRepo.stargazers_count - firstRepo.stargazers_count;
+                const starDifference =
+                    secondRepo.stargazers_count - firstRepo.stargazers_count;
                 if (starDifference !== 0) {
                     return starDifference;
                 }
             }
-            return this.dateDifference(secondRepo.updated_at, firstRepo.updated_at);
+            return this.dateDifference(
+                secondRepo.updated_at,
+                firstRepo.updated_at
+            );
         });
     }
 

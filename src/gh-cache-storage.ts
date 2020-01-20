@@ -1,4 +1,4 @@
-import {BrowserStorage} from "./interface/storage";
+import { BrowserStorage } from './interface/storage';
 
 interface ICache {
     [url: string]: ICacheEntry;
@@ -13,8 +13,7 @@ export class CacheStorage {
     private cacheName: string = 'github-request-cache';
     private requestCache: ICache = this.getCache() || {};
 
-    constructor(private readonly storage: BrowserStorage) {
-    }
+    constructor(private readonly storage: BrowserStorage) {}
 
     public get(key: string): ICacheEntry {
         return this.requestCache[key];

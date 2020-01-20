@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import {DOMOperator} from "./gh-dom-operator";
-import {IApiError} from "./interface/IGitHubApi";
+import { DOMOperator } from './gh-dom-operator';
+import { IApiError } from './interface/IGitHubApi';
 
 describe('DomOperator', () => {
     const initTemplate = `
@@ -39,7 +39,7 @@ describe('DomOperator', () => {
         it('should create API error', () => {
             // given
             const error: IApiError = {
-                message: 'Service not reachable',
+                message: 'Service not reachable'
             };
 
             // when
@@ -47,7 +47,7 @@ describe('DomOperator', () => {
             const message = $error.textContent;
 
             // then
-            expect(message).toBe(`Service not reachable`)
+            expect(message).toBe(`Service not reachable`);
         });
 
         it('should create 404 error', () => {
@@ -55,7 +55,7 @@ describe('DomOperator', () => {
             const username = 'piotrl-not-defined';
             const error: IApiError = {
                 isWrongUser: true,
-                message: 'Username not found',
+                message: 'Username not found'
             };
 
             // when
@@ -63,7 +63,7 @@ describe('DomOperator', () => {
             const message = $error.textContent;
 
             // then
-            expect(message).toBe(`Not found user: ${username}`)
+            expect(message).toBe(`Not found user: ${username}`);
         });
     });
 });

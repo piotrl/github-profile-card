@@ -1,5 +1,5 @@
-import {IApiError, IApiProfile, IApiRepository} from "./interface/IGitHubApi";
-import {IMap} from "./interface/IShared";
+import { IApiError, IApiProfile, IApiRepository } from './interface/IGitHubApi';
+import { IMap } from './interface/IShared';
 
 export class DOMOperator {
     public static clearChildren($parent: HTMLElement) {
@@ -8,7 +8,10 @@ export class DOMOperator {
         }
     }
 
-    public static createError(error: IApiError, username: string): HTMLDivElement {
+    public static createError(
+        error: IApiError,
+        username: string
+    ): HTMLDivElement {
         const $error = document.createElement('div');
         $error.className = 'error';
         $error.innerHTML = `<span>${error.message}</span>`;
@@ -17,8 +20,10 @@ export class DOMOperator {
             $error.innerHTML = `<span>Not found user: ${username}</span>`;
         }
         if (error.resetDate) {
-            let remainingTime = error.resetDate.getMinutes() - new Date().getMinutes();
-            remainingTime = (remainingTime < 0) ? 60 + remainingTime : remainingTime;
+            let remainingTime =
+                error.resetDate.getMinutes() - new Date().getMinutes();
+            remainingTime =
+                remainingTime < 0 ? 60 + remainingTime : remainingTime;
 
             $error.innerHTML += `<span class="remain">Come back after ${remainingTime} minutes</span>`;
         }
@@ -38,7 +43,10 @@ export class DOMOperator {
 
         //////////////////
 
-        function appendChildren($parent: HTMLElement, nodes: HTMLElement[]): void {
+        function appendChildren(
+            $parent: HTMLElement,
+            nodes: HTMLElement[]
+        ): void {
             nodes.forEach(node => $parent.appendChild(node));
         }
 
@@ -67,7 +75,10 @@ export class DOMOperator {
             return $avatar;
         }
 
-        function followButton(username: string, followUrl: string): HTMLAnchorElement {
+        function followButton(
+            username: string,
+            followUrl: string
+        ): HTMLAnchorElement {
             const $followButton = document.createElement('a');
             $followButton.href = followUrl;
             $followButton.className = 'follow-button';
@@ -87,10 +98,7 @@ export class DOMOperator {
         function followContainer(children: HTMLElement[]): HTMLDivElement {
             const $followContainer = document.createElement('div');
             $followContainer.className = 'followMe';
-            appendChildren(
-                $followContainer,
-                children
-            );
+            appendChildren($followContainer, children);
 
             return $followContainer;
         }
@@ -102,7 +110,6 @@ export class DOMOperator {
 
         return $langsList;
     }
-
 
     public static createTopLanguagesList(langs: IMap<number>): string {
         return Object.keys(langs)
@@ -126,18 +133,24 @@ export class DOMOperator {
         return $repositoriesHeader;
     }
 
-    public static createRepositoriesList(repositories: IApiRepository[], maxRepos: number): HTMLDivElement {
+    public static createRepositoriesList(
+        repositories: IApiRepository[],
+        maxRepos: number
+    ): HTMLDivElement {
         const $reposList = document.createElement('div');
         $reposList.className = 'repos';
 
-        repositories.slice(0, maxRepos)
+        repositories
+            .slice(0, maxRepos)
             .map(this.createRepositoryElement)
             .forEach(el => $reposList.appendChild(el));
 
         return $reposList;
     }
 
-    private static createRepositoryElement(repository: IApiRepository): HTMLAnchorElement {
+    private static createRepositoryElement(
+        repository: IApiRepository
+    ): HTMLAnchorElement {
         const updated = new Date(repository.updated_at);
         const $repoLink = document.createElement('a');
 
