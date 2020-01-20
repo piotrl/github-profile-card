@@ -79,7 +79,8 @@ var widget = new GitHubCard({
     template: '#github-card-demo',
     sortBy: 'stars',
     reposHeaderText: 'Most starred',
-    maxRepos: 5
+    maxRepos: 5,
+    hideTopLanguages: false,
 });
 
 widget.init();
@@ -94,6 +95,7 @@ HTML option (`data-` prefix)      | JavaScript option | Type                 | D
 `sort-by`    | `sortBy`          | `stars`, `updateTime`| `stars`        | Repositories sorting method
 `max-repos`  | `maxRepos`        | *int*			     | `5`			  | Amount of listed repositories. `0` disables section
 `header-text`| `headerText`      | *string*             | `Most starred repositories` | Text label above repositories list                           
+`hide-top-languages`| `hideTopLanguages`      | *boolean*             | `false` | Avoids heavy network traffic for calculating `Top Languages` section. Recommended for profiles with huge amount of repositories.
 
 ## FAQ
 
