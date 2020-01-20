@@ -1,40 +1,42 @@
 /* Demo styles */
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  max-width: 500px;
-  margin: 10px auto;
-  font-size: 18px;
+    max-width: 500px;
+    margin: 10px auto;
+    font-size: 18px;
 
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #232323;
-  background-color: #FBFAF7;
-  -webkit-font-smoothing: antialiased;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #232323;
+    background-color: #fbfaf7;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1 {
-  font-size: 30px;
+    font-size: 30px;
 }
 
-h1, h2, h3 {
-  display: block;
-  font-family: Arvo, Monaco, serif;
-  line-height: 1.3;
-  font-weight: normal;
-  color: #232323;
-  margin: 36px 0 10px;
+h1,
+h2,
+h3 {
+    display: block;
+    font-family: Arvo, Monaco, serif;
+    line-height: 1.3;
+    font-weight: normal;
+    color: #232323;
+    margin: 36px 0 10px;
 
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
 }
 
 a {
-  color: #C30000;
-  font-weight: 200;
-  text-decoration: none;
+    color: #c30000;
+    font-weight: 200;
+    text-decoration: none;
 }
 
 .row {
@@ -45,30 +47,30 @@ a {
 
 .config-section-left,
 .config-section-right {
-  float: left;
-  max-width: 200px;
+    float: left;
+    max-width: 200px;
 }
 
 .content-section {
-  float: left;
+    float: left;
 }
 
 .content-section .choose-user {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .content-section .tooltip {
-  margin: 15px 0;
-  position: relative;
+    margin: 15px 0;
+    position: relative;
 }
 
 .content-section .tooltip::before {
-  display: none;
+    display: none;
 }
 
-.content-section input[type="text"] {
-  max-width: 220px;
-  width: 220px;
+.content-section input[type='text'] {
+    max-width: 220px;
+    width: 220px;
 }
 
 .pre {
@@ -82,7 +84,7 @@ a {
     border: none;
     box-sizing: border-box;
     color: #4b4f56;
-    font-family: Menlo,Monaco,Andale Mono,Courier New,monospace;
+    font-family: Menlo, Monaco, Andale Mono, Courier New, monospace;
     font-size: 14px;
     height: auto;
     line-height: 20px;
@@ -91,86 +93,86 @@ a {
 }
 
 .tooltip {
-  position: relative;
-  display: block;
-  box-shadow: 0 0 1px 1px #FFF;
-  background: #FFF;
-  border: 1px solid #DDD;
-  padding: 2px 7px;
-  margin-top: 15px;
-  margin-right: 15px;
+    position: relative;
+    display: block;
+    box-shadow: 0 0 1px 1px #fff;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 2px 7px;
+    margin-top: 15px;
+    margin-right: 15px;
 }
 
 .tooltip::before {
-  content: '';
-  position: absolute;
-  display: block;
-  width: 10px;
-  height: 10px;
-  right: -6px;
-  top: 6px;
-  background: inherit;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
-  border-color: inherit;
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
+    content: '';
+    position: absolute;
+    display: block;
+    width: 10px;
+    height: 10px;
+    right: -6px;
+    top: 6px;
+    background: inherit;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    border-color: inherit;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
 }
 
 .config-section-right {
-  position: relative;
-  top: 180px;
+    position: relative;
+    top: 180px;
 }
 
 .config-section-right .tooltip {
-  margin-left: 15px;
+    margin-left: 15px;
 }
 
 .config-section-right .tooltip::before {
-  left: -6px;
-  right: auto;
+    left: -6px;
+    right: auto;
 
-  border: none;
-  border-top: 1px solid;
-  border-left: 1px solid;
-  border-color: inherit;
+    border: none;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-color: inherit;
 }
 
 input {
-  outline: none;
+    outline: none;
 }
 
-input[type="text"],
-input[type="number"],
+input[type='text'],
+input[type='number'],
 textarea {
-  border: none;
-  max-width: 125px;
-  padding: 5px;
-  font-size: 0.7em;
+    border: none;
+    max-width: 125px;
+    padding: 5px;
+    font-size: 0.7em;
 }
 
-input[type="number"] {
-  width: 85px;
+input[type='number'] {
+    width: 85px;
 }
 
-input[type="submit"] {
-  background: #D14836;
-  color: #FFF;
-  border: none;
-  border-radius: 3px;
-  padding: 3px 5px;
-  font-size: 0.7em;
+input[type='submit'] {
+    background: #d14836;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 5px;
+    font-size: 0.7em;
 }
 
 label {
-  font-size: 0.7em;
+    font-size: 0.7em;
 }
 
-.choose-repo-sorting [type="radio"] {
-  display: none;
+.choose-repo-sorting [type='radio'] {
+    display: none;
 }
 
 .active {
-  font-weight: bold;
+    font-weight: bold;
 }

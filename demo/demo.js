@@ -1,7 +1,7 @@
-(function (GitHubCard, widgetGenerator) {
+(function(GitHubCard, widgetGenerator) {
     'use strict';
 
-	// Generating new widget from user input
+    // Generating new widget from user input
     document.addEventListener('DOMContentLoaded', () => {
         const options = {
             template: '#github-card-demo',
@@ -39,7 +39,9 @@
     // Sort repository acording to
     // radio inputs on website
     function initSortingControl(options, refreshWidget) {
-        var $sortingRadios = document.querySelectorAll('.choose-repo-sorting label');
+        var $sortingRadios = document.querySelectorAll(
+            '.choose-repo-sorting label'
+        );
 
         // sort by update time
         $sortingRadios[0].addEventListener('click', event => {
@@ -94,5 +96,4 @@
             options[key] = value;
         }
     }
-
 })(window.GitHubCard, window.widgetGenerator);
