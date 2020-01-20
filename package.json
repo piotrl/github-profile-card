@@ -1,8 +1,8 @@
 {
   "name": "github-profile-card",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
-  "main": "github-profile-card.min.js",
+  "main": "dist/gh-profile-card.min.js",
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "24.0.11",
