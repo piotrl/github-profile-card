@@ -4,6 +4,7 @@
     "noImplicitAny": false,
     "module": "es2015",
     "target": "es5",
+    "importHelpers": true,
     "sourceMap": true,
     "allowJs": true
   }
