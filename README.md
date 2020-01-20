@@ -87,14 +87,14 @@ widget.init();
 
 ## Configuration options
 
-| HTML option (`data-` prefix) | JavaScript option  | Type                  | Default                     | Details                                                                                                                          |
-| ---------------------------- | ------------------ | --------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `username`                   | `username`         | _string_              | `—`                         | GitHub profile username                                                                                                          |
-| `—`                          | `template`         | _string_              | `#github-card`              | DOM selector of your widget in HTML                                                                                              |
-| `sort-by`                    | `sortBy`           | `stars`, `updateTime` | `stars`                     | Repositories sorting method                                                                                                      |
-| `max-repos`                  | `maxRepos`         | _int_                 | `5`                         | Amount of listed repositories. `0` disables section                                                                              |
-| `header-text`                | `headerText`       | _string_              | `Most starred repositories` | Text label above repositories list                                                                                               |
-| `hide-top-languages`         | `hideTopLanguages` | _boolean_             | `false`                     | Avoids heavy network traffic for calculating `Top Languages` section. Recommended for profiles with huge amount of repositories. |
+| HTML option (`data-` prefix) | JavaScript option  | Default                     | Details                                                                                                                          |
+| ---------------------------- | ------------------ | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `username`                   | `username`         | None                        | GitHub profile username                                                                                                          |
+| `—`                          | `template`         | `#github-card`              | DOM selector of your widget in HTML                                                                                              |
+| `sort-by`                    | `sortBy`           | `stars`                     | Repositories sorting method (`stars` or `updateTime`)                                                                            |
+| `max-repos`                  | `maxRepos`         | `5`                         | Amount of listed repositories. `0` disables section                                                                              |
+| `header-text`                | `headerText`       | `Most starred repositories` | Text label above repositories list                                                                                               |
+| `hide-top-languages`         | `hideTopLanguages` | `false`                     | Avoids heavy network traffic for calculating `Top Languages` section. Recommended for profiles with huge amount of repositories. |
 
 ## FAQ
 
