@@ -4,17 +4,17 @@
  * @see https://developer.github.com/v3/
  */
 
-export interface IApiCallback<T> {
-    (data: T, error: IApiError): void;
+export interface ApiCallback<T> {
+    (data: T, error: ApiError): void;
 }
 
-export interface IApiError {
+export interface ApiError {
     message: string;
     isWrongUser?: boolean;
     resetDate?: Date;
 }
 
-export interface IApiProfile {
+export interface ApiProfile {
     name: string;
     avatar_url: string;
     followers: number;
@@ -48,7 +48,7 @@ export interface IApiProfile {
     updated_at: string;
 }
 
-export interface IRepositoryOwner {
+export interface RepositoryOwner {
     login: string;
     id: number;
     avatar_url: string;
@@ -68,11 +68,11 @@ export interface IRepositoryOwner {
     site_admin: boolean;
 }
 
-export interface IApiRepository {
+export interface ApiRepository {
     id: number;
     name: string;
     full_name: string;
-    owner: IRepositoryOwner;
+    owner: RepositoryOwner;
     private: boolean;
     html_url: string;
     description: string;
@@ -125,13 +125,13 @@ export interface IApiRepository {
     size: number;
     stargazers_count: number;
     watchers_count: number;
-    language: any;
+    language: unknown;
     has_issues: boolean;
     has_downloads: boolean;
     has_wiki: boolean;
     has_pages: boolean;
     forks_count: number;
-    mirror_url?: any;
+    mirror_url?: unknown;
     open_issues_count: number;
     forks: number;
     open_issues: number;

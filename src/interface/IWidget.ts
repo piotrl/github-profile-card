@@ -1,6 +1,6 @@
-import {IApiProfile, IApiRepository} from "./IGitHubApi";
+import {ApiProfile, ApiRepository} from "./IGitHubApi";
 
-export interface IWidgetConfig {
+export interface WidgetConfig {
     username?: string;
     template?: string;
     sortBy?: string;
@@ -9,7 +9,7 @@ export interface IWidgetConfig {
     hideTopLanguages?: boolean;
 }
 
-export interface IUserData {
-    profile: IApiProfile;
-    repositories: IApiRepository[];
+export interface ApiUserData {
+    profile: ApiProfile;
+    repositories: ApiRepository[];
 }

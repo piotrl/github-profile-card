@@ -1,11 +1,11 @@
-import { CacheStorage, ICacheEntry } from './gh-cache-storage';
+import { CacheStorage, CacheEntry } from './gh-cache-storage';
 import { InMemoryStorage } from './testing/in-memory-storage';
 import { BrowserStorage } from './interface/storage';
 
 describe('CacheStorage', () => {
   const url =
     'https://api.github.com/repos/piotrl/github-profile-card/languages';
-  const cacheData: ICacheEntry = {
+  const cacheData: CacheEntry = {
     lastModified: 'Mon, 18 Mar 2019 20:40:35 GMT',
     data: {
       TypeScript: 19766,

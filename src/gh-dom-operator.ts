@@ -1,15 +1,14 @@
-import { IApiError, IApiProfile, IApiRepository } from './interface/IGitHubApi';
-import { IMap } from './interface/IShared';
+import { ApiError, ApiProfile, ApiRepository } from './interface/IGitHubApi';
 
 export class DOMOperator {
-  public static clearChildren($parent: HTMLElement) {
+  public static clearChildren($parent: HTMLElement): void {
     while ($parent.hasChildNodes()) {
       $parent.removeChild($parent.firstChild);
     }
   }
 
   public static createError(
-    error: IApiError,
+    error: ApiError,
     username: string
   ): HTMLDivElement {
     const $error = document.createElement('div');
@@ -30,7 +29,7 @@ export class DOMOperator {
     return $error;
   }
 
-  public static createProfile(data: IApiProfile): HTMLDivElement {
+  public static createProfile(data: ApiProfile): HTMLDivElement {
     const $followButton = followButton(data.login, data.html_url);
     const $followers = followers(data.followers);
     const $followContainer = followContainer([$followButton, $followers]);
@@ -107,7 +106,7 @@ export class DOMOperator {
     return $langsList;
   }
 
-  public static createTopLanguagesList(langs: IMap<number>): string {
+  public static createTopLanguagesList(langs: Record<string, number>): string {
     return Object.keys(langs)
       .map(language => ({
         name: language,
@@ -128,7 +127,7 @@ export class DOMOperator {
   }
 
   public static createRepositoriesList(
-    repositories: IApiRepository[],
+    repositories: ApiRepository[],
     maxRepos: number
   ): HTMLDivElement {
     const $reposList = document.createElement('div');
@@ -143,7 +142,7 @@ export class DOMOperator {
   }
 
   private static createRepositoryElement(
-    repository: IApiRepository
+    repository: ApiRepository
   ): HTMLAnchorElement {
     const updated = new Date(repository.updated_at);
     const $repoLink = document.createElement('a');

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { DOMOperator } from './gh-dom-operator';
-import { IApiError } from './interface/IGitHubApi';
+import { ApiError } from './interface/IGitHubApi';
 
 describe('DomOperator', () => {
   const initTemplate = `
@@ -38,7 +38,7 @@ describe('DomOperator', () => {
   describe('error handling', () => {
     it('should create API error', () => {
       // given
-      const error: IApiError = {
+      const error: ApiError = {
         message: 'Service not reachable'
       };
 
@@ -53,7 +53,7 @@ describe('DomOperator', () => {
     it('should create 404 error', () => {
       // given
       const username = 'piotrl-not-defined';
-      const error: IApiError = {
+      const error: ApiError = {
         isWrongUser: true,
         message: 'Username not found'
       };

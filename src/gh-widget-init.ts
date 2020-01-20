@@ -6,7 +6,7 @@ interface WidgetPublicAPI extends Window {
   GitHubCard: typeof GitHubCardWidget;
 }
 
-(<WidgetPublicAPI>window).GitHubCard = GitHubCardWidget;
+(window as WidgetPublicAPI).GitHubCard = GitHubCardWidget;
 
 document.addEventListener('DOMContentLoaded', () => {
   const $defaultTemplate = document.querySelector('#github-card');

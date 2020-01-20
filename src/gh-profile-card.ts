@@ -1,16 +1,15 @@
 import { GitHubApiLoader } from './gh-data-loader';
 import { DOMOperator } from './gh-dom-operator';
-import { IUserData, IWidgetConfig } from './interface/IWidget';
-import { IApiError, IApiRepository } from './interface/IGitHubApi';
-import { IMap } from './interface/IShared';
+import { ApiUserData, WidgetConfig } from './interface/IWidget';
+import { ApiError, ApiRepository } from './interface/IGitHubApi';
 
 export class GitHubCardWidget {
   private apiLoader: GitHubApiLoader = new GitHubApiLoader();
   private $template: HTMLElement;
-  private userData: IUserData;
-  private options: IWidgetConfig;
+  private userData: ApiUserData;
+  private options: WidgetConfig;
 
-  constructor(options: IWidgetConfig = {}) {
+  constructor(options: WidgetConfig = {}) {
     this.$template = this.findTemplate(options.template);
     this.extractHtmlConfig(options, this.$template);
     this.options = this.completeConfiguration(options);
@@ -23,12 +22,12 @@ export class GitHubCardWidget {
     });
   }
 
-  public refresh(options: IWidgetConfig) {
+  public refresh(options: WidgetConfig): void {
     this.options = this.completeConfiguration(options);
     this.render(this.options);
   }
 
-  private completeConfiguration(options: IWidgetConfig): IWidgetConfig {
+  private completeConfiguration(options: WidgetConfig): WidgetConfig {
     const defaultConfig = {
       username: null,
       template: '#github-card',
@@ -45,9 +44,9 @@ export class GitHubCardWidget {
   }
 
   private findTemplate(
-    templateCssSelector: string = '#github-card'
+    templateCssSelector = '#github-card'
   ): HTMLElement {
-    const $template = <HTMLElement>document.querySelector(templateCssSelector);
+    const $template = document.querySelector(templateCssSelector) as HTMLElement;
     if (!$template) {
       throw `No template found for selector: ${templateCssSelector}`;
     }
@@ -56,7 +55,7 @@ export class GitHubCardWidget {
   }
 
   private extractHtmlConfig(
-    widgetConfig: IWidgetConfig,
+    widgetConfig: WidgetConfig,
     $template: HTMLElement
   ): void {
     widgetConfig.username =
@@ -75,7 +74,7 @@ export class GitHubCardWidget {
     }
   }
 
-  private render(options: IWidgetConfig, error?: IApiError): void {
+  private render(options: WidgetConfig, error?: ApiError): void {
     const $root = this.$template;
 
     // clear root template element to prepare space for widget
@@ -113,7 +112,7 @@ export class GitHubCardWidget {
   }
 
   private createTopLanguagesSection(
-    repositories: IApiRepository[]
+    repositories: ApiRepository[]
   ): HTMLUListElement {
     const $topLanguages = DOMOperator.createTopLanguagesSection();
     this.apiLoader.loadRepositoriesLanguages(
@@ -128,8 +127,8 @@ export class GitHubCardWidget {
     return $topLanguages;
   }
 
-  private groupLanguagesUsage(langStats: IMap<number>[]): IMap<number> {
-    const languagesRank: IMap<number> = {};
+  private groupLanguagesUsage(langStats: Record<string, number>[]): Record<string, number> {
+    const languagesRank: Record<string, number> = {};
 
     langStats.forEach(repoLangs => {
       for (const language in repoLangs) {
@@ -141,7 +140,7 @@ export class GitHubCardWidget {
     return languagesRank;
   }
 
-  private sortRepositories(repos: IApiRepository[], sortyBy: string): void {
+  private sortRepositories(repos: ApiRepository[], sortyBy: string): void {
     repos.sort((firstRepo, secondRepo) => {
       if (sortyBy === 'stars') {
         const starDifference =
@@ -154,7 +153,7 @@ export class GitHubCardWidget {
     });
   }
 
-  private dateDifference(first: string, second: string) {
+  private dateDifference(first: string, second: string): number {
     return new Date(first).getTime() - new Date(second).getTime();
   }
 }

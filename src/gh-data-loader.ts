@@ -1,19 +1,19 @@
 import { CacheStorage } from './gh-cache-storage';
-import { IUserData } from './interface/IWidget';
+import { ApiUserData } from './interface/IWidget';
 import {
-  IApiCallback,
-  IApiError,
-  IApiRepository
+  ApiCallback,
+  ApiError,
+  ApiRepository
 } from './interface/IGitHubApi';
-import { IJqueryDeferredLike, IMap } from './interface/IShared';
+import { JqueryDeferred } from './interface/IShared';
 
 export class GitHubApiLoader {
-  private apiBase: string = 'https://api.github.com';
+  private apiBase = 'https://api.github.com';
   private cache = new CacheStorage(window.localStorage);
 
   public loadUserData(
     username: string,
-    callback: IApiCallback<IUserData>
+    callback: ApiCallback<ApiUserData>
   ): void {
     const request = this.apiGet(`${this.apiBase}/users/${username}`);
 
@@ -30,8 +30,8 @@ export class GitHubApiLoader {
   }
 
   public loadRepositoriesLanguages(
-    repositories: IApiRepository[],
-    callback: (rank: IMap<number>[]) => void
+    repositories: ApiRepository[],
+    callback: (rank: Record<string, number>[]) => void
   ): void {
     const languagesUrls = this.extractLangURLs(repositories);
 
@@ -40,8 +40,8 @@ export class GitHubApiLoader {
 
     languagesUrls.forEach(repoLangUrl => {
       const request = this.apiGet(repoLangUrl);
-      request.error(request => requestsAmount--);
-      request.success((repoLangs: IMap<number>) => {
+      request.error(() => requestsAmount--);
+      request.success((repoLangs: Record<string, number>) => {
         langStats.push(repoLangs);
         if (langStats.length === requestsAmount) {
           // all requests were made
@@ -51,8 +51,8 @@ export class GitHubApiLoader {
     });
   }
 
-  private identifyError(result: any, request: XMLHttpRequest): IApiError {
-    const error: IApiError = {
+  private identifyError(result: any, request: XMLHttpRequest): ApiError {
+    const error: ApiError = {
       message: result.message
     };
 
@@ -72,11 +72,11 @@ export class GitHubApiLoader {
     return error;
   }
 
-  private extractLangURLs(profileRepositories: IApiRepository[]): string[] {
+  private extractLangURLs(profileRepositories: ApiRepository[]): string[] {
     return profileRepositories.map(repository => repository.languages_url);
   }
 
-  private apiGet(url): IJqueryDeferredLike<any> {
+  private apiGet(url): JqueryDeferred<any> {
     const request = this.buildRequest(url);
 
     return {
@@ -114,7 +114,7 @@ export class GitHubApiLoader {
     return request;
   }
 
-  private buildApiHeaders(request: XMLHttpRequest, url: string) {
+  private buildApiHeaders(request: XMLHttpRequest, url: string): void {
     request.setRequestHeader('Accept', 'application/vnd.github.v3+json');
 
     const urlCache = this.cache.get(url);
