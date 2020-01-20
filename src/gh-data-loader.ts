@@ -1,10 +1,6 @@
 import { CacheStorage } from './gh-cache-storage';
 import { ApiUserData } from './interface/IWidget';
-import {
-  ApiCallback,
-  ApiError,
-  ApiRepository
-} from './interface/IGitHubApi';
+import { ApiCallback, ApiError, ApiRepository } from './interface/IGitHubApi';
 import { JqueryDeferred } from './interface/IShared';
 
 export class GitHubApiLoader {
@@ -51,7 +47,10 @@ export class GitHubApiLoader {
     });
   }
 
-  private identifyError(result: any, request: XMLHttpRequest): ApiError {
+  private identifyError(
+    result: Record<string, string>,
+    request: XMLHttpRequest
+  ): ApiError {
     const error: ApiError = {
       message: result.message
     };

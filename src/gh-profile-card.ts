@@ -43,10 +43,10 @@ export class GitHubCardWidget {
     return defaultConfig;
   }
 
-  private findTemplate(
-    templateCssSelector = '#github-card'
-  ): HTMLElement {
-    const $template = document.querySelector(templateCssSelector) as HTMLElement;
+  private findTemplate(templateCssSelector = '#github-card'): HTMLElement {
+    const $template = document.querySelector(
+      templateCssSelector
+    ) as HTMLElement;
     if (!$template) {
       throw `No template found for selector: ${templateCssSelector}`;
     }
@@ -127,7 +127,9 @@ export class GitHubCardWidget {
     return $topLanguages;
   }
 
-  private groupLanguagesUsage(langStats: Record<string, number>[]): Record<string, number> {
+  private groupLanguagesUsage(
+    langStats: Record<string, number>[]
+  ): Record<string, number> {
     const languagesRank: Record<string, number> = {};
 
     langStats.forEach(repoLangs => {

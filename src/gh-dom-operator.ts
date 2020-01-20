@@ -1,4 +1,12 @@
 import { ApiError, ApiProfile, ApiRepository } from './interface/IGitHubApi';
+import {
+  createAvatar,
+  createFollowButton,
+  createFollowContainer,
+  createFollowers,
+  createName,
+  createProfile
+} from './gh-dom.utils';
 
 export class DOMOperator {
   public static clearChildren($parent: HTMLElement): void {
@@ -7,10 +15,7 @@ export class DOMOperator {
     }
   }
 
-  public static createError(
-    error: ApiError,
-    username: string
-  ): HTMLDivElement {
+  public static createError(error: ApiError, username: string): HTMLDivElement {
     const $error = document.createElement('div');
     $error.className = 'error';
     $error.innerHTML = `<span>${error.message}</span>`;
@@ -30,73 +35,14 @@ export class DOMOperator {
   }
 
   public static createProfile(data: ApiProfile): HTMLDivElement {
-    const $followButton = followButton(data.login, data.html_url);
-    const $followers = followers(data.followers);
-    const $followContainer = followContainer([$followButton, $followers]);
+    const $followButton = createFollowButton(data.login, data.html_url);
+    const $followers = createFollowers(data.followers);
+    const $followContainer = createFollowContainer([$followButton, $followers]);
 
-    const $avatar = avatar(data.avatar_url);
-    const $name = name(data.html_url, data.name);
+    const $avatar = createAvatar(data.avatar_url);
+    const $name = createName(data.html_url, data.name);
 
-    return profile([$avatar, $name, $followContainer]);
-
-    //////////////////
-
-    function appendChildren($parent: HTMLElement, nodes: HTMLElement[]): void {
-      nodes.forEach(node => $parent.appendChild(node));
-    }
-
-    function profile(children: HTMLElement[]): HTMLDivElement {
-      const $profile = document.createElement('div');
-      $profile.classList.add('profile');
-      appendChildren($profile, children);
-
-      return $profile;
-    }
-
-    function name(profileUrl, name): HTMLAnchorElement {
-      const $name = document.createElement('a');
-      $name.href = profileUrl;
-      $name.className = 'name';
-      $name.appendChild(document.createTextNode(name));
-
-      return $name;
-    }
-
-    function avatar(avatarUrl: string): HTMLImageElement {
-      const $avatar = document.createElement('img');
-      $avatar.src = avatarUrl;
-      $avatar.className = 'avatar';
-
-      return $avatar;
-    }
-
-    function followButton(
-      username: string,
-      followUrl: string
-    ): HTMLAnchorElement {
-      const $followButton = document.createElement('a');
-      $followButton.href = followUrl;
-      $followButton.className = 'follow-button';
-      $followButton.innerHTML = 'Follow @' + username;
-
-      return $followButton;
-    }
-
-    function followers(followersAmount: number): HTMLSpanElement {
-      const $followers = document.createElement('span');
-      $followers.className = 'followers';
-      $followers.innerHTML = '' + followersAmount;
-
-      return $followers;
-    }
-
-    function followContainer(children: HTMLElement[]): HTMLDivElement {
-      const $followContainer = document.createElement('div');
-      $followContainer.className = 'followMe';
-      appendChildren($followContainer, children);
-
-      return $followContainer;
-    }
+    return createProfile([$avatar, $name, $followContainer]);
   }
 
   public static createTopLanguagesSection(): HTMLUListElement {
