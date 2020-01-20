@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const PACKAGE = require('./package.json');
 
