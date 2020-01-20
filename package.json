@@ -23,8 +23,10 @@
   },
   "scripts": {
     "build": "WEBPACK_ENV=build webpack",
+    "build:check": "yarn build && yarn format:check && yarn test",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
     "format": "prettier --write {*,src/*,demo/*}",
+    "format:check": "prettier --check {*,src/*,demo/*}",
     "test": "jest",
     "test:watch": "jest --watch"
   },
