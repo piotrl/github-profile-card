@@ -9,24 +9,24 @@
 
 ## Contents
 
--   [GitHub Profile Card](#github-profile-card)
-    -   [Main features](#main-features)
-    -   [Live demo and configuration](#live-demo-and-configuration)
-    -   [Changelog](#changelog)
--   [Quick install](#quick-install)
-    -   [Download](#download)
-    -   [Advanced configuration](#advanced-configuration)
-    -   [Configuration options](#configuration-options)
--   [FAQ](#faq)
--   [Feedback](#feedback)
+- [GitHub Profile Card](#github-profile-card)
+  - [Main features](#main-features)
+  - [Live demo and configuration](#live-demo-and-configuration)
+  - [Changelog](#changelog)
+- [Quick install](#quick-install)
+  - [Download](#download)
+  - [Advanced configuration](#advanced-configuration)
+  - [Configuration options](#configuration-options)
+- [FAQ](#faq)
+- [Feedback](#feedback)
 
 ### Main features
 
--   Top languages statistics
--   Last updated repositories
--   Configurable in HTML
--   Copy-Paste installation
--   No jQuery and any other libraries required
+- Top languages statistics
+- Last updated repositories
+- Configurable in HTML
+- Copy-Paste installation
+- No jQuery and any other libraries required
 
 ### [Changelog](https://github.com/piotrl/github-profile-card/releases)
 
@@ -98,40 +98,40 @@ widget.init();
 
 ## FAQ
 
--   **My language statistic is affected by libraries and dependencies**
+- **My language statistic is affected by libraries and dependencies**
 
-    Consider ignoring them with .gitattributes: [My repository is detected as the wrong language](https://github.com/github/linguist#overrides)
+  Consider ignoring them with .gitattributes: [My repository is detected as the wrong language](https://github.com/github/linguist#overrides)
 
--   **How language statistic is build?**
+- **How language statistic is build?**
 
-    It is sum of all characters written in language you use.
-    One big repository in `C#` will be ranked higher than many small `JavaScript` repositories.
+  It is sum of all characters written in language you use.
+  One big repository in `C#` will be ranked higher than many small `JavaScript` repositories.
 
-    It is based on 10 last updated repositories, to represent your current interests.
+  It is based on 10 last updated repositories, to represent your current interests.
 
--   **How to show two or more profiles on page?**
+- **How to show two or more profiles on page?**
 
-    You have to create two widgets with different ID, then initialize each manually in JS.
+  You have to create two widgets with different ID, then initialize each manually in JS.
 
-    e.g.
+  e.g.
 
-    ```
-    <div id="github-card-1" data-username="user1"></div>
-    <div id="github-card-2" data-username="user2"></div>
+  ```
+  <div id="github-card-1" data-username="user1"></div>
+  <div id="github-card-2" data-username="user2"></div>
 
-    <script>
-        new GitHubCard({ template: '#github-card-1' }).init();
-        new GitHubCard({ template: '#github-card-2' }).init();
-    </script>
-    ```
+  <script>
+      new GitHubCard({ template: '#github-card-1' }).init();
+      new GitHubCard({ template: '#github-card-2' }).init();
+  </script>
+  ```
 
 ## Feedback
 
 I love feedback, send me one!
 
--   show me website on which you're using this widget: [leave comment](https://github.com/piotrl/github-profile-card/issues/15)
--   ping me on twitter: [@constjs](https://twitter.com/constjs)
--   create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
+- show me website on which you're using this widget: [leave comment](https://github.com/piotrl/github-profile-card/issues/15)
+- ping me on twitter: [@constjs](https://twitter.com/constjs)
+- create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
 
 Remember no other libraries required. It's like gluten free 😉
 
