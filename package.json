@@ -9,6 +9,7 @@
     "clean-webpack-plugin": "2.0.1",
     "css-loader": "2.1.1",
     "jest": "24.5.0",
+    "prettier": "1.19.1",
     "sass": "1.17.3",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
@@ -23,6 +24,7 @@
   "scripts": {
     "build": "WEBPACK_ENV=build webpack",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "format": "prettier --write *",
     "test": "jest",
     "test:watch": "jest --watch"
   },
