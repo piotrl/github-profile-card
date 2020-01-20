@@ -24,7 +24,7 @@
   "scripts": {
     "build": "WEBPACK_ENV=build webpack",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "format": "prettier --write demo/*",
+    "format": "prettier --write {*,src/*,demo/*}",
     "test": "jest",
     "test:watch": "jest --watch"
   },

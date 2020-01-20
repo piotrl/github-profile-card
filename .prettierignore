@@ -1,0 +1,7 @@
+*.png
+*.yml
+yarn.lock
+*.log
+LICENSE
+CNAME
+*.iml
