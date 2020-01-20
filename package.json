@@ -1,48 +1,48 @@
 {
-  "name": "github-profile-card",
-  "version": "3.1.0",
-  "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
-  "main": "dist/gh-profile-card.min.js",
-  "dependencies": {},
-  "devDependencies": {
-    "@types/jest": "24.0.11",
-    "clean-webpack-plugin": "2.0.1",
-    "css-loader": "2.1.1",
-    "jest": "24.5.0",
-    "prettier": "1.19.1",
-    "sass": "1.17.3",
-    "sass-loader": "7.1.0",
-    "style-loader": "0.23.1",
-    "ts-jest": "24.0.0",
-    "ts-loader": "5.3.3",
-    "ts-node": "8.0.3",
-    "tslint": "5.14.0",
-    "typescript": "3.3.3333",
-    "webpack": "4.29.6",
-    "webpack-cli": "3.3.0"
-  },
-  "scripts": {
-    "build": "WEBPACK_ENV=build webpack",
-    "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "format": "prettier --write *",
-    "test": "jest",
-    "test:watch": "jest --watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/piotrl/github-profile-card.git"
-  },
-  "keywords": [
-    "github",
-    "widget",
-    "vanilla",
-    "javascript",
-    "browser"
-  ],
-  "author": "Piotr Lewandowski",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/piotrl/github-profile-card/issues"
-  },
-  "homepage": "https://github-profile.com/"
+    "name": "github-profile-card",
+    "version": "3.1.0",
+    "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
+    "main": "dist/gh-profile-card.min.js",
+    "dependencies": {},
+    "devDependencies": {
+        "@types/jest": "24.0.11",
+        "clean-webpack-plugin": "2.0.1",
+        "css-loader": "2.1.1",
+        "jest": "24.5.0",
+        "prettier": "1.19.1",
+        "sass": "1.17.3",
+        "sass-loader": "7.1.0",
+        "style-loader": "0.23.1",
+        "ts-jest": "24.0.0",
+        "ts-loader": "5.3.3",
+        "ts-node": "8.0.3",
+        "tslint": "5.14.0",
+        "typescript": "3.3.3333",
+        "webpack": "4.29.6",
+        "webpack-cli": "3.3.0"
+    },
+    "scripts": {
+        "build": "WEBPACK_ENV=build webpack",
+        "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+        "format": "prettier --write *",
+        "test": "jest",
+        "test:watch": "jest --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/piotrl/github-profile-card.git"
+    },
+    "keywords": [
+        "github",
+        "widget",
+        "vanilla",
+        "javascript",
+        "browser"
+    ],
+    "author": "Piotr Lewandowski",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/piotrl/github-profile-card/issues"
+    },
+    "homepage": "https://github-profile.com/"
 }

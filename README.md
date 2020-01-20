@@ -1,7 +1,7 @@
 # GitHub Profile Card
 
 > Widget shows your GitHub profile directly on your website.  
-Show your current projects — always up to date.
+> Show your current projects — always up to date.
 
 ![Screenshot](./demo/screenshot.png)
 
@@ -9,25 +9,24 @@ Show your current projects — always up to date.
 
 ## Contents
 
-  * [GitHub Profile Card](#github-profile-card)
-     * [Main features](#main-features)
-     * [Live demo and configuration](#live-demo-and-configuration)
-     * [Changelog](#changelog)
-  * [Quick install](#quick-install)
-    * [Download](#download)
-    * [Advanced configuration](#advanced-configuration)
-    * [Configuration options](#configuration-options)
-  * [FAQ](#faq)
-  * [Feedback](#feedback)
-
+-   [GitHub Profile Card](#github-profile-card)
+    -   [Main features](#main-features)
+    -   [Live demo and configuration](#live-demo-and-configuration)
+    -   [Changelog](#changelog)
+-   [Quick install](#quick-install)
+    -   [Download](#download)
+    -   [Advanced configuration](#advanced-configuration)
+    -   [Configuration options](#configuration-options)
+-   [FAQ](#faq)
+-   [Feedback](#feedback)
 
 ### Main features
 
-- Top languages statistics
-- Last updated repositories
-- Configurable in HTML
-- Copy-Paste installation
-- No jQuery and any other libraries required
+-   Top languages statistics
+-   Last updated repositories
+-   Configurable in HTML
+-   Copy-Paste installation
+-   No jQuery and any other libraries required
 
 ### [Changelog](https://github.com/piotrl/github-profile-card/releases)
 
@@ -39,7 +38,7 @@ Include script and style just before `</body>` tag:
 <script type="text/javascript" src="https://github-profile.com/dist/gh-profile-card.min.js"></script>
 ```
 
-Include HTML code anywhere you would like to place widget: 
+Include HTML code anywhere you would like to place widget:
 
 ```
 <div id="github-card"
@@ -51,7 +50,7 @@ Great! Widget will autoload. We're done here.
 
 ## Download
 
-With [*npm*](https://www.npmjs.com/package/github-profile-card)
+With [_npm_](https://www.npmjs.com/package/github-profile-card)
 
 ```
 npm install github-profile-card --save
@@ -86,52 +85,53 @@ var widget = new GitHubCard({
 widget.init();
 ```
 
-## Configuration options   
+## Configuration options
 
-HTML option (`data-` prefix)      | JavaScript option | Type                 | Default        | Details
----               | ---               | ---                  | ---            | ---
-`username`   | `username`        | *string*			 | `—`            | GitHub profile username
-`—`               | `template`        | *string*             | `#github-card` | DOM selector of your widget in HTML
-`sort-by`    | `sortBy`          | `stars`, `updateTime`| `stars`        | Repositories sorting method
-`max-repos`  | `maxRepos`        | *int*			     | `5`			  | Amount of listed repositories. `0` disables section
-`header-text`| `headerText`      | *string*             | `Most starred repositories` | Text label above repositories list                           
-`hide-top-languages`| `hideTopLanguages`      | *boolean*             | `false` | Avoids heavy network traffic for calculating `Top Languages` section. Recommended for profiles with huge amount of repositories.
+| HTML option (`data-` prefix) | JavaScript option  | Type                  | Default                     | Details                                                                                                                          |
+| ---------------------------- | ------------------ | --------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `username`                   | `username`         | _string_              | `—`                         | GitHub profile username                                                                                                          |
+| `—`                          | `template`         | _string_              | `#github-card`              | DOM selector of your widget in HTML                                                                                              |
+| `sort-by`                    | `sortBy`           | `stars`, `updateTime` | `stars`                     | Repositories sorting method                                                                                                      |
+| `max-repos`                  | `maxRepos`         | _int_                 | `5`                         | Amount of listed repositories. `0` disables section                                                                              |
+| `header-text`                | `headerText`       | _string_              | `Most starred repositories` | Text label above repositories list                                                                                               |
+| `hide-top-languages`         | `hideTopLanguages` | _boolean_             | `false`                     | Avoids heavy network traffic for calculating `Top Languages` section. Recommended for profiles with huge amount of repositories. |
 
 ## FAQ
 
-- **My language statistic is affected by libraries and dependencies**
+-   **My language statistic is affected by libraries and dependencies**
 
-  Consider ignoring them with .gitattributes: [My repository is detected as the wrong language](https://github.com/github/linguist#overrides)
+    Consider ignoring them with .gitattributes: [My repository is detected as the wrong language](https://github.com/github/linguist#overrides)
 
-- **How language statistic is build?**
- 
-  It is sum of all characters written in language you use.
- One big repository in `C#` will be ranked higher than many small `JavaScript` repositories.
+-   **How language statistic is build?**
 
-  It is based on 10 last updated repositories, to represent your current interests.
+    It is sum of all characters written in language you use.
+    One big repository in `C#` will be ranked higher than many small `JavaScript` repositories.
 
-  
-- **How to show two or more profiles on page?**
-  
-  You have to create two widgets with different ID, then initialize each manually in JS.
-  
-  e.g.
-  ```
-  <div id="github-card-1" data-username="user1"></div>
-  <div id="github-card-2" data-username="user2"></div>
-  
-  <script>
-      new GitHubCard({ template: '#github-card-1' }).init();      
-      new GitHubCard({ template: '#github-card-2' }).init();
-  </script>
-  ```
+    It is based on 10 last updated repositories, to represent your current interests.
+
+-   **How to show two or more profiles on page?**
+
+    You have to create two widgets with different ID, then initialize each manually in JS.
+
+    e.g.
+
+    ```
+    <div id="github-card-1" data-username="user1"></div>
+    <div id="github-card-2" data-username="user2"></div>
+
+    <script>
+        new GitHubCard({ template: '#github-card-1' }).init();
+        new GitHubCard({ template: '#github-card-2' }).init();
+    </script>
+    ```
+
 ## Feedback
 
 I love feedback, send me one!
 
-- show me website on which you're using this widget: [leave comment](https://github.com/piotrl/github-profile-card/issues/15)
-- ping me on twitter: [@constjs](https://twitter.com/constjs) 
-- create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
+-   show me website on which you're using this widget: [leave comment](https://github.com/piotrl/github-profile-card/issues/15)
+-   ping me on twitter: [@constjs](https://twitter.com/constjs)
+-   create [new issue](https://github.com/piotrl/github-profile-card/issues/new)
 
 Remember no other libraries required. It's like gluten free 😉
 
