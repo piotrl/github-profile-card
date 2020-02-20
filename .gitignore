@@ -46,3 +46,8 @@ build/Release
 
 
 /nbproject/private/
+
+# Yarn 2
+
+.yarn/unplugged
+.yarn/build-state.yml

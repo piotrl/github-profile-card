@@ -3,7 +3,9 @@
   "version": "3.1.0",
   "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
   "main": "dist/gh-profile-card.min.js",
-  "dependencies": {},
+  "engines": {
+    "yarn": ">= 2.0.0"
+  },
   "devDependencies": {
     "@types/jest": "24.9.0",
     "@typescript-eslint/eslint-plugin": "2.17.0",
