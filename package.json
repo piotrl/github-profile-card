@@ -22,11 +22,11 @@
     "ts-node": "8.6.2",
     "tslib": "1.10.0",
     "typescript": "3.7.5",
-    "webpack": "4.41.5",
-    "webpack-cli": "3.3.10"
+    "esbuild": "0.25.1",
+    "esbuild-sass-plugin": "3.3.1"
   },
   "scripts": {
-    "build": "WEBPACK_ENV=build webpack",
+    "build": "node build.js",
     "build:check": "npm run build && npm run lint && npm run format:check && npm run test",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
     "lint": "eslint . --ext .ts",
