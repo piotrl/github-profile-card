@@ -14,28 +14,28 @@ const banner = `/**
 
 const outfilePath = path.resolve(__dirname, 'dist', `${libraryName}.min.js`);
 
-esbuild.build({
+esbuild
+  .build({
     entryPoints: ['./src/gh-widget-init.ts'],
     outfile: outfilePath,
     bundle: true,
     minify: false,
     sourcemap: ENV === 'dev', // Inline source map in development
     format: 'iife',
-    target: ['es6'],
+    target: ['es2022'],
     plugins: [
-        sassPlugin(
-            {
-                type: 'style',
-            }
-        ), // Load SCSS using esbuild-sass-plugin
-        {
-            name: 'banner-plugin',
-            setup(build) {
-                build.onEnd((result) => {
-                    const content = fs.readFileSync(outfilePath, 'utf8');
-                    fs.writeFileSync(outfilePath, `${banner}\n${content}`);
-                });
-            },
+      sassPlugin({
+        type: 'style',
+      }), // Load SCSS using esbuild-sass-plugin
+      {
+        name: 'banner-plugin',
+        setup(build) {
+          build.onEnd((result) => {
+            const content = fs.readFileSync(outfilePath, 'utf8');
+            fs.writeFileSync(outfilePath, `${banner}\n${content}`);
+          });
         },
+      },
     ],
-}).catch(() => process.exit(1));
+  })
+  .catch(() => process.exit(1));

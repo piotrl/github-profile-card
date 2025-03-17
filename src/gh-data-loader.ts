@@ -7,14 +7,13 @@ const API_HOST = 'https://api.github.com';
 export class GitHubApiLoader {
   private cache = new CacheStorage(window.localStorage);
 
-  public loadUserData(username: string): Promise<ApiUserData> {
-    return this.fetch<ApiProfile>(`${API_HOST}/users/${username}`).then(
-      (profile) => {
-        return this.fetch<ApiRepository[]>(profile.repos_url).then(
-          (repositories) => ({ profile, repositories }),
-        );
-      },
+  public async loadUserData(username: string): Promise<ApiUserData> {
+    const profile = await this.fetch<ApiProfile>(
+      `${API_HOST}/users/${username}`,
     );
+    const repositories = await this.fetch<ApiRepository[]>(profile.repos_url);
+
+    return { profile, repositories };
   }
 
   public loadRepositoriesLanguages(
@@ -41,8 +40,8 @@ export class GitHubApiLoader {
     });
   }
 
-  private identifyError(response: Response): ApiError {
-    const result = response.json() as any;
+  private async identifyError(response: Response): Promise<ApiError> {
+    const result = await response.json();
     const error: ApiError = {
       message: result.message || '',
     };
@@ -67,35 +66,32 @@ export class GitHubApiLoader {
     return profileRepositories.map((repository) => repository.languages_url);
   }
 
-  private fetch<T>(url): Promise<T> {
+  private async fetch<T>(url: string): Promise<T> {
     const cache = this.cache.get(url);
-    const request = fetch(url, {
+    const res = await fetch(url, {
       headers: this.buildHeaders(cache),
     });
 
-    return request
-      .then((res) => {
-        if (res.status === 304) {
-          return cache.data;
-        }
+    if (res.status === 304) {
+      return cache.data;
+    }
+    if (res.status !== 200) {
+      throw await this.identifyError(res);
+    }
 
-        const response = res.json();
-        this.cache.add(url, {
-          lastModified: res.headers.get('Last-Modified'),
-          data: response,
-        });
+    const response = await res.json();
+    this.cache.add(url, {
+      lastModified: res.headers.get('Last-Modified'),
+      data: response,
+    });
 
-        return response;
-      })
-      .catch((err: Response) => {
-        throw this.identifyError(err);
-      });
+    return response;
   }
 
-  private buildHeaders(cache?: CacheEntry) {
+  private buildHeaders(cache?: CacheEntry): HeadersInit {
     return {
       Accept: 'application/vnd.github.v3+json',
-      'If-Modified-Since': cache ? cache.lastModified : undefined,
+      'If-Modified-Since': cache?.lastModified,
     };
   }
 }
