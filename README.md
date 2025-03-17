@@ -5,7 +5,7 @@
 
 ![Screenshot](./demo/screenshot.png)
 
-## Live [demo and configuration](https://piotrl.github.com/github-profile-card/demo?username=piotrl)
+## Live [demo and configuration](https://piotrl.github.io/github-profile-card/demo?username=piotrl)
 
 ## Contents
 
@@ -35,7 +35,7 @@
 Include script and style just before `</body>` tag:
 
 ```
-<script type="text/javascript" src="https://piotrl.github.com/github-profile-card/dist/gh-profile-card.min.js"></script>
+<script type="text/javascript" src="https://piotrl.github.io/github-profile-card/dist/gh-profile-card.min.js"></script>
 ```
 
 Include HTML code anywhere you would like to place widget:
