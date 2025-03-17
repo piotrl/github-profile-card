@@ -34,7 +34,7 @@ export class GitHubCardWidget {
       sortBy: 'stars', // possible: 'stars', 'updateTime'
       headerText: 'Most starred repositories',
       maxRepos: 5,
-      hideTopLanguages: false
+      hideTopLanguages: false,
     };
     for (const key in defaultConfig) {
       defaultConfig[key] = options[key] || defaultConfig[key];
@@ -45,7 +45,7 @@ export class GitHubCardWidget {
 
   private findTemplate(templateCssSelector = '#github-card'): HTMLElement {
     const $template = document.querySelector(
-      templateCssSelector
+      templateCssSelector,
     ) as HTMLElement;
     if (!$template) {
       throw `No template found for selector: ${templateCssSelector}`;
@@ -56,7 +56,7 @@ export class GitHubCardWidget {
 
   private extractHtmlConfig(
     widgetConfig: WidgetConfig,
-    $template: HTMLElement
+    $template: HTMLElement,
   ): void {
     widgetConfig.username =
       widgetConfig.username || $template.dataset['username'];
@@ -99,11 +99,11 @@ export class GitHubCardWidget {
 
     if (options.maxRepos > 0) {
       const $reposHeader = DOMOperator.createRepositoriesHeader(
-        options.headerText
+        options.headerText,
       );
       const $reposList = DOMOperator.createRepositoriesList(
         repositories,
-        options.maxRepos
+        options.maxRepos,
       );
       $reposList.insertBefore($reposHeader, $reposList.firstChild);
 
@@ -112,27 +112,26 @@ export class GitHubCardWidget {
   }
 
   private createTopLanguagesSection(
-    repositories: ApiRepository[]
+    repositories: ApiRepository[],
   ): HTMLUListElement {
     const $topLanguages = DOMOperator.createTopLanguagesSection();
     this.apiLoader.loadRepositoriesLanguages(
       repositories.slice(0, 10),
-      langStats => {
+      (langStats) => {
         const languagesRank = this.groupLanguagesUsage(langStats);
-        $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(
-          languagesRank
-        );
-      }
+        $topLanguages.innerHTML =
+          DOMOperator.createTopLanguagesList(languagesRank);
+      },
     );
     return $topLanguages;
   }
 
   private groupLanguagesUsage(
-    langStats: Record<string, number>[]
+    langStats: Record<string, number>[],
   ): Record<string, number> {
     const languagesRank: Record<string, number> = {};
 
-    langStats.forEach(repoLangs => {
+    langStats.forEach((repoLangs) => {
       for (const language in repoLangs) {
         languagesRank[language] = languagesRank[language] || 0;
         languagesRank[language] += repoLangs[language];

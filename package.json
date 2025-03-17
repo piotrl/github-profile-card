@@ -3,9 +3,6 @@
   "version": "3.1.0",
   "description": "Widget for presenting your GitHub profile on your website. Pure JavaScript.",
   "main": "dist/gh-profile-card.min.js",
-  "engines": {
-    "yarn": ">= 2.0.0"
-  },
   "devDependencies": {
     "@types/jest": "24.9.0",
     "@typescript-eslint/eslint-plugin": "2.17.0",
@@ -16,7 +13,7 @@
     "eslint-config-prettier": "6.9.0",
     "eslint-plugin-jest": "23.6.0",
     "jest": "24.9.0",
-    "prettier": "1.19.1",
+    "prettier": "3.5.3",
     "sass": "1.25.0",
     "sass-loader": "8.0.2",
     "style-loader": "1.1.3",
@@ -30,9 +27,9 @@
   },
   "scripts": {
     "build": "WEBPACK_ENV=build webpack",
-    "build:check": "yarn build && yarn lint && yarn format:check && yarn test",
+    "build:check": "npm run build && npm run lint && npm run format:check && npm run test",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "lint": "yarn eslint . --ext .ts",
+    "lint": "eslint . --ext .ts",
     "format": "prettier --write {*,src/*,demo/*}",
     "format:check": "prettier --check {*,src/*,demo/*}",
     "test": "jest",

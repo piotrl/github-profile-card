@@ -5,7 +5,7 @@ import {
   createFollowContainer,
   createFollowers,
   createName,
-  createProfile
+  createProfile,
 } from './gh-dom.utils';
 
 export class DOMOperator {
@@ -54,13 +54,13 @@ export class DOMOperator {
 
   public static createTopLanguagesList(langs: Record<string, number>): string {
     return Object.keys(langs)
-      .map(language => ({
+      .map((language) => ({
         name: language,
-        stat: langs[language]
+        stat: langs[language],
       }))
       .sort((a, b) => b.stat - a.stat)
       .slice(0, 3)
-      .map(lang => `<li>${lang.name}</li>`)
+      .map((lang) => `<li>${lang.name}</li>`)
       .reduce((list, nextElement) => list + nextElement);
   }
 
@@ -74,7 +74,7 @@ export class DOMOperator {
 
   public static createRepositoriesList(
     repositories: ApiRepository[],
-    maxRepos: number
+    maxRepos: number,
   ): HTMLDivElement {
     const $reposList = document.createElement('div');
     $reposList.className = 'repos';
@@ -82,13 +82,13 @@ export class DOMOperator {
     repositories
       .slice(0, maxRepos)
       .map(this.createRepositoryElement)
-      .forEach(el => $reposList.appendChild(el));
+      .forEach((el) => $reposList.appendChild(el));
 
     return $reposList;
   }
 
   private static createRepositoryElement(
-    repository: ApiRepository
+    repository: ApiRepository,
   ): HTMLAnchorElement {
     const updated = new Date(repository.updated_at);
     const $repoLink = document.createElement('a');

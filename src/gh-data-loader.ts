@@ -9,12 +9,12 @@ export class GitHubApiLoader {
 
   public loadUserData(
     username: string,
-    callback: ApiCallback<ApiUserData>
+    callback: ApiCallback<ApiUserData>,
   ): void {
     const request = this.apiGet(`${this.apiBase}/users/${username}`);
 
-    request.success(profile => {
-      this.apiGet(profile.repos_url).success(repositories => {
+    request.success((profile) => {
+      this.apiGet(profile.repos_url).success((repositories) => {
         callback({ profile, repositories }, null);
       });
     });
@@ -27,14 +27,14 @@ export class GitHubApiLoader {
 
   public loadRepositoriesLanguages(
     repositories: ApiRepository[],
-    callback: (rank: Record<string, number>[]) => void
+    callback: (rank: Record<string, number>[]) => void,
   ): void {
     const languagesUrls = this.extractLangURLs(repositories);
 
     const langStats = [];
     let requestsAmount = languagesUrls.length;
 
-    languagesUrls.forEach(repoLangUrl => {
+    languagesUrls.forEach((repoLangUrl) => {
       const request = this.apiGet(repoLangUrl);
       request.error(() => requestsAmount--);
       request.success((repoLangs: Record<string, number>) => {
@@ -49,10 +49,10 @@ export class GitHubApiLoader {
 
   private identifyError(
     result: Record<string, string>,
-    request: XMLHttpRequest
+    request: XMLHttpRequest,
   ): ApiError {
     const error: ApiError = {
-      message: result.message
+      message: result.message,
     };
 
     if (request.status === 404) {
@@ -72,14 +72,14 @@ export class GitHubApiLoader {
   }
 
   private extractLangURLs(profileRepositories: ApiRepository[]): string[] {
-    return profileRepositories.map(repository => repository.languages_url);
+    return profileRepositories.map((repository) => repository.languages_url);
   }
 
   private apiGet(url): JqueryDeferred<any> {
     const request = this.buildRequest(url);
 
     return {
-      success: callback => {
+      success: (callback) => {
         request.addEventListener('load', () => {
           if (request.status === 304) {
             callback(this.cache.get(url).data, request);
@@ -88,19 +88,19 @@ export class GitHubApiLoader {
             const response = JSON.parse(request.responseText);
             this.cache.add(url, {
               lastModified: request.getResponseHeader('Last-Modified'),
-              data: response
+              data: response,
             });
             callback(response, request);
           }
         });
       },
-      error: callback => {
+      error: (callback) => {
         request.addEventListener('load', () => {
           if (request.status !== 200 && request.status !== 304) {
             callback(JSON.parse(request.responseText), request);
           }
         });
-      }
+      },
     };
   }
 

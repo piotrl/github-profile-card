@@ -1,5 +1,5 @@
 .profile {
-  background: #FFF;
+  background: #fff;
   overflow: hidden;
   padding: 15px 10px;
   padding-bottom: 0;
@@ -17,14 +17,14 @@
     padding: 10px;
     min-height: 36px;
 
-    border-top: 1px solid #DEDEDE;
+    border-top: 1px solid #dedede;
     font-size: 0.8em;
   }
 
   &::before {
     position: absolute;
     top: -0.7em;
-    background: #FFF;
+    background: #fff;
     padding-right: 5px;
     content: 'Top languages';
     font-style: italic;
@@ -59,11 +59,11 @@
   float: left;
   padding: 0 10px;
   line-height: 1.5em;
-  border: 1px solid #D5D5D5;
+  border: 1px solid #d5d5d5;
   border-radius: 3px;
   font-weight: bold;
-  background: #EAEAEA;
-  background-image: linear-gradient(#FAFAFA, #EAEAEA);
+  background: #eaeaea;
+  background-image: linear-gradient(#fafafa, #eaeaea);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -73,20 +73,20 @@
 
 .follow-button:hover {
   color: inherit;
-  background: #DDD;
-  background-image: linear-gradient(#EEE, #DDD);
+  background: #ddd;
+  background-image: linear-gradient(#eee, #ddd);
 }
 
 /* followers number */
 .followMe span {
   position: relative;
-  background: #FFF;
+  background: #fff;
   margin-left: 8px;
   padding: 0 5px;
   color: #444;
   font-size: 0.8em;
   border: 1px solid;
-  border-color: #BBB;
+  border-color: #bbb;
 }
 
 .followMe span::before {
@@ -114,5 +114,5 @@
   margin: 0 10px 15px 0;
   margin-left: 0;
   border-radius: 5px;
-  box-shadow: 0 0 2px 0 #DDD;
+  box-shadow: 0 0 2px 0 #ddd;
 }

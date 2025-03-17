@@ -39,7 +39,7 @@ describe('DomOperator', () => {
     it('should create API error', () => {
       // given
       const error: ApiError = {
-        message: 'Service not reachable'
+        message: 'Service not reachable',
       };
 
       // when
@@ -55,7 +55,7 @@ describe('DomOperator', () => {
       const username = 'piotrl-not-defined';
       const error: ApiError = {
         isWrongUser: true,
-        message: 'Username not found'
+        message: 'Username not found',
       };
 
       // when

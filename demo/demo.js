@@ -1,4 +1,4 @@
-(function(GitHubCard, widgetGenerator) {
+(function (GitHubCard, widgetGenerator) {
   'use strict';
 
   // Generating new widget from user input
@@ -7,7 +7,7 @@
       template: '#github-card-demo',
       sortBy: 'stars', // possible: 'stars', 'updateTime'
       headerText: 'Most starred repositories',
-      maxRepos: 5
+      maxRepos: 5,
     };
     overrideOptionsByUrlParams(options);
 
@@ -40,11 +40,11 @@
   // radio inputs on website
   function initSortingControl(options, refreshWidget) {
     var $sortingRadios = document.querySelectorAll(
-      '.choose-repo-sorting label'
+      '.choose-repo-sorting label',
     );
 
     // sort by update time
-    $sortingRadios[0].addEventListener('click', event => {
+    $sortingRadios[0].addEventListener('click', (event) => {
       event.target.classList.add('active');
       $sortingRadios[1].classList.remove('active');
 
@@ -55,7 +55,7 @@
     });
 
     // sort by starrgazers
-    $sortingRadios[1].addEventListener('click', event => {
+    $sortingRadios[1].addEventListener('click', (event) => {
       event.target.classList.add('active');
       $sortingRadios[0].classList.remove('active');
 
@@ -82,7 +82,7 @@
     const $input = document.getElementById('gh-uname');
     const $submit = document.getElementById('gh-uname-submit');
 
-    $submit.addEventListener('click', event => {
+    $submit.addEventListener('click', (event) => {
       options.username = $input.value;
       cb(options);
 

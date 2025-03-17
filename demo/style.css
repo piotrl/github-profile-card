@@ -84,7 +84,12 @@ a {
   border: none;
   box-sizing: border-box;
   color: #4b4f56;
-  font-family: Menlo, Monaco, Andale Mono, Courier New, monospace;
+  font-family:
+    Menlo,
+    Monaco,
+    Andale Mono,
+    Courier New,
+    monospace;
   font-size: 14px;
   height: auto;
   line-height: 20px;

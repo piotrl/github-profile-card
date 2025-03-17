@@ -1,7 +1,6 @@
 /* List of repositories */
 
 .repos {
-
   & {
     clear: both;
   }
@@ -10,9 +9,9 @@
     display: block;
     width: 100%;
     font-weight: bold;
-    background: #EAEAEA;
-    background-image: linear-gradient(#FAFAFA, #EAEAEA);
-    border: solid #D5D5D5;
+    background: #eaeaea;
+    background-image: linear-gradient(#fafafa, #eaeaea);
+    border: solid #d5d5d5;
     border-width: 1px 0;
     color: #555;
     font-size: 0.8em;
@@ -24,7 +23,7 @@
     display: block;
     padding: 7px 10px;
     font-size: 0.9em;
-    border-top: 1px solid #DDD;
+    border-top: 1px solid #ddd;
 
     &:first-of-type {
       border: none;

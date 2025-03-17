@@ -1,5 +1,5 @@
 function appendChildren($parent: HTMLElement, nodes: HTMLElement[]): void {
-  nodes.forEach(node => $parent.appendChild(node));
+  nodes.forEach((node) => $parent.appendChild(node));
 }
 
 export function createProfile(children: HTMLElement[]): HTMLDivElement {
@@ -29,7 +29,7 @@ export function createAvatar(avatarUrl: string): HTMLImageElement {
 
 export function createFollowButton(
   username: string,
-  followUrl: string
+  followUrl: string,
 ): HTMLAnchorElement {
   const $followButton = document.createElement('a');
   $followButton.href = followUrl;

@@ -10,8 +10,8 @@ describe('CacheStorage', () => {
     data: {
       TypeScript: 19766,
       CSS: 3790,
-      JavaScript: 1350
-    }
+      JavaScript: 1350,
+    },
   };
 
   let storage: BrowserStorage;
@@ -48,8 +48,8 @@ describe('CacheStorage', () => {
     storage.setItem(
       cacheName,
       JSON.stringify({
-        [url]: cacheData
-      })
+        [url]: cacheData,
+      }),
     );
     const cache = new CacheStorage(storage);
 
