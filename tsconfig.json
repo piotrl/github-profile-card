@@ -5,6 +5,8 @@
     "module": "es2015",
     "target": "es2017",
     "sourceMap": true,
-    "allowJs": true
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   }
 }

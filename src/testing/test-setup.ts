@@ -7,25 +7,6 @@
 const originalError = console.error;
 const originalWarn = console.warn;
 
-beforeEach(() => {
-  console.error = jest.fn();
-  console.warn = jest.fn();
-});
-
-afterEach(() => {
-  console.error = originalError;
-  console.warn = originalWarn;
-});
-
-// Global DOM setup for tests that need it
-beforeEach(() => {
-  // Only reset DOM if it exists (for jsdom environment tests)
-  if (typeof document !== 'undefined') {
-    document.head.innerHTML = '';
-    document.body.innerHTML = '';
-  }
-});
-
 // Mock localStorage globally
 const localStorageMock = (() => {
   let store: { [key: string]: string } = {};
@@ -57,15 +38,30 @@ if (typeof window !== 'undefined') {
   (global as any).localStorage = localStorageMock;
 }
 
+beforeEach(() => {
+  console.error = jest.fn();
+  console.warn = jest.fn();
+
+  // Reset all mocks before each test
+  jest.clearAllMocks();
+  localStorageMock.clear();
+
+  // Global DOM setup for tests that need it
+  // Only reset DOM if it exists (for jsdom environment tests)
+  if (typeof document !== 'undefined') {
+    document.head.innerHTML = '';
+    document.body.innerHTML = '';
+  }
+});
+
+afterEach(() => {
+  console.error = originalError;
+  console.warn = originalWarn;
+});
+
 // Mock fetch globally
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
-
-// Reset all mocks before each test
-beforeEach(() => {
-  jest.clearAllMocks();
-  localStorageMock.clear();
-});
 
 // Add custom matchers
 expect.extend({
