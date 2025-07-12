@@ -64,9 +64,13 @@ export class CacheStorage {
     let hasChanges = false;
     
     for (const [url, entry] of Object.entries(this.requestCache)) {
-      if (entry.lastModified && new Date(entry.lastModified) < currentDate) {
-        delete this.requestCache[url];
-        hasChanges = true;
+      if (entry.lastModified) {
+        const entryDate = new Date(entry.lastModified);
+        // Clear entries with invalid dates or expired entries
+        if (isNaN(entryDate.getTime()) || entryDate < currentDate) {
+          delete this.requestCache[url];
+          hasChanges = true;
+        }
       }
     }
     
