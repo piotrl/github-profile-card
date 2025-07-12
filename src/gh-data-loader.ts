@@ -8,7 +8,7 @@ export class GitHubApiLoader {
   private cache = new CacheStorage(window.localStorage);
 
   public async loadUserData(username: string): Promise<ApiUserData> {
-    if (!username || typeof username !== 'string') {
+    if (typeof username !== 'string') {
       throw new Error('Invalid username provided');
     }
 
@@ -101,7 +101,7 @@ export class GitHubApiLoader {
   }
 
   private async fetch<T>(url: string): Promise<T> {
-    if (!url || typeof url !== 'string') {
+    if (typeof url !== 'string') {
       throw new Error('Invalid URL provided for fetch');
     }
 

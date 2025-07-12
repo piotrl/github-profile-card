@@ -13,7 +13,13 @@ window.GitHubCard = GitHubCardWidget;
 document.addEventListener('DOMContentLoaded', () => {
   const $defaultTemplate = document.querySelector('#github-card');
   if ($defaultTemplate) {
-    const widget = new GitHubCardWidget();
-    widget.init();
+    try {
+      const widget = new GitHubCardWidget();
+      widget.init().catch((error) => {
+        console.error('Failed to initialize GitHub Card widget:', error);
+      });
+    } catch (error) {
+      console.error('Failed to construct GitHub Card widget:', error);
+    }
   }
 });
