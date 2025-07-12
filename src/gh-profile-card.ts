@@ -33,19 +33,19 @@ export class GitHubCardWidget {
   }
 
   private completeConfiguration(options: WidgetConfig): WidgetConfig {
-    const defaultConfig = {
-      username: null,
+    const defaultConfig: Required<WidgetConfig> = {
+      username: '',
       template: '#github-card',
       sortBy: 'stars', // possible: 'stars', 'updateTime'
       headerText: 'Most starred repositories',
       maxRepos: 5,
       hideTopLanguages: false,
     };
-    for (const key in defaultConfig) {
-      defaultConfig[key] = options[key] || defaultConfig[key];
-    }
 
-    return defaultConfig;
+    return {
+      ...defaultConfig,
+      ...options,
+    };
   }
 
   private findTemplate(templateCssSelector = '#github-card'): HTMLElement {
@@ -53,7 +53,7 @@ export class GitHubCardWidget {
       templateCssSelector,
     ) as HTMLElement;
     if (!$template) {
-      throw `No template found for selector: ${templateCssSelector}`;
+      throw new Error(`No template found for selector: ${templateCssSelector}`);
     }
     $template.className = 'gh-profile-card';
     return $template;
@@ -63,19 +63,24 @@ export class GitHubCardWidget {
     widgetConfig: WidgetConfig,
     $template: HTMLElement,
   ): void {
-    widgetConfig.username =
-      widgetConfig.username || $template.dataset['username'];
-    widgetConfig.sortBy = widgetConfig.sortBy || $template.dataset['sortBy'];
-    widgetConfig.headerText =
-      widgetConfig.headerText || $template.dataset['headerText'];
-    widgetConfig.maxRepos =
-      widgetConfig.maxRepos || parseInt($template.dataset['maxRepos'], 10);
+    const dataset = $template.dataset;
+    
+    widgetConfig.username = widgetConfig.username || dataset.username;
+    widgetConfig.sortBy = widgetConfig.sortBy || dataset.sortBy;
+    widgetConfig.headerText = widgetConfig.headerText || dataset.headerText;
+    
+    if (dataset.maxRepos) {
+      const parsedMaxRepos = parseInt(dataset.maxRepos, 10);
+      if (!isNaN(parsedMaxRepos)) {
+        widgetConfig.maxRepos = widgetConfig.maxRepos || parsedMaxRepos;
+      }
+    }
+    
     widgetConfig.hideTopLanguages =
-      widgetConfig.hideTopLanguages ||
-      $template.dataset['hideTopLanguages'] === 'true';
+      widgetConfig.hideTopLanguages || dataset.hideTopLanguages === 'true';
 
     if (!widgetConfig.username) {
-      throw 'Not provided username';
+      throw new Error('Username is required but not provided');
     }
   }
 
@@ -86,15 +91,14 @@ export class GitHubCardWidget {
     DOMOperator.clearChildren($root);
 
     if (error) {
-      const $errorSection = DOMOperator.createError(error, options.username);
+      const $errorSection = DOMOperator.createError(error, options.username || '');
       $root.appendChild($errorSection);
-
       return;
     }
 
-    // API doesn't return errors, try to built widget
+    // API doesn't return errors, try to build widget
     const repositories = this.userData.repositories;
-    this.sortRepositories(repositories, options.sortBy);
+    this.sortRepositories(repositories, options.sortBy || 'stars');
 
     const $profile = DOMOperator.createProfile(this.userData.profile);
     if (!options.hideTopLanguages) {
@@ -102,13 +106,13 @@ export class GitHubCardWidget {
     }
     $root.appendChild($profile);
 
-    if (options.maxRepos > 0) {
+    if ((options.maxRepos || 0) > 0) {
       const $reposHeader = DOMOperator.createRepositoriesHeader(
-        options.headerText,
+        options.headerText || 'Repositories',
       );
       const $reposList = DOMOperator.createRepositoriesList(
         repositories,
-        options.maxRepos,
+        options.maxRepos || 5,
       );
       $reposList.insertBefore($reposHeader, $reposList.firstChild);
 
@@ -120,12 +124,18 @@ export class GitHubCardWidget {
     repositories: ApiRepository[],
   ): HTMLUListElement {
     const $topLanguages = DOMOperator.createTopLanguagesSection();
+    
+    if (!repositories || repositories.length === 0) {
+      return $topLanguages;
+    }
+
     this.apiLoader.loadRepositoriesLanguages(
       repositories.slice(0, 10),
       (langStats) => {
-        const languagesRank = this.groupLanguagesUsage(langStats);
-        $topLanguages.innerHTML =
-          DOMOperator.createTopLanguagesList(languagesRank);
+        if (langStats.length > 0) {
+          const languagesRank = this.groupLanguagesUsage(langStats);
+          $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(languagesRank);
+        }
       },
     );
     return $topLanguages;
@@ -137,18 +147,25 @@ export class GitHubCardWidget {
     const languagesRank: Record<string, number> = {};
 
     langStats.forEach((repoLangs) => {
-      for (const language in repoLangs) {
-        languagesRank[language] = languagesRank[language] || 0;
-        languagesRank[language] += repoLangs[language];
+      if (repoLangs && typeof repoLangs === 'object') {
+        Object.entries(repoLangs).forEach(([language, bytes]) => {
+          if (typeof bytes === 'number' && bytes > 0) {
+            languagesRank[language] = (languagesRank[language] || 0) + bytes;
+          }
+        });
       }
     });
 
     return languagesRank;
   }
 
-  private sortRepositories(repos: ApiRepository[], sortyBy: string): void {
+  private sortRepositories(repos: ApiRepository[], sortBy: string): void {
+    if (!repos || repos.length === 0) {
+      return;
+    }
+
     repos.sort((firstRepo, secondRepo) => {
-      if (sortyBy === 'stars') {
+      if (sortBy === 'stars') {
         const starDifference =
           secondRepo.stargazers_count - firstRepo.stargazers_count;
         if (starDifference !== 0) {
@@ -160,6 +177,13 @@ export class GitHubCardWidget {
   }
 
   private dateDifference(first: string, second: string): number {
-    return new Date(first).getTime() - new Date(second).getTime();
+    const firstDate = new Date(first);
+    const secondDate = new Date(second);
+    
+    if (isNaN(firstDate.getTime()) || isNaN(secondDate.getTime())) {
+      return 0;
+    }
+    
+    return firstDate.getTime() - secondDate.getTime();
   }
 }

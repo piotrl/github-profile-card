@@ -8,8 +8,17 @@ export class GitHubApiLoader {
   private cache = new CacheStorage(window.localStorage);
 
   public async loadUserData(username: string): Promise<ApiUserData> {
+    if (!username || typeof username !== 'string') {
+      throw new Error('Invalid username provided');
+    }
+
+    const sanitizedUsername = username.trim();
+    if (!sanitizedUsername) {
+      throw new Error('Username cannot be empty');
+    }
+
     const profile = await this.fetch<ApiProfile>(
-      `${API_HOST}/users/${username}`,
+      `${API_HOST}/users/${sanitizedUsername}`,
     );
     const repositories = await this.fetch<ApiRepository[]>(profile.repos_url);
 
@@ -20,30 +29,52 @@ export class GitHubApiLoader {
     repositories: ApiRepository[],
     callback: (rank: Record<string, number>[]) => void,
   ): void {
-    const languagesUrls = this.extractLangURLs(repositories);
+    if (!repositories || repositories.length === 0) {
+      callback([]);
+      return;
+    }
 
-    const langStats = [];
+    const languagesUrls = this.extractLangURLs(repositories);
+    const langStats: Record<string, number>[] = [];
     let requestsAmount = languagesUrls.length;
+    let completedRequests = 0;
+
+    if (requestsAmount === 0) {
+      callback([]);
+      return;
+    }
+
+    const handleCompletion = () => {
+      completedRequests++;
+      if (completedRequests === requestsAmount) {
+        callback(langStats);
+      }
+    };
 
     languagesUrls.forEach((repoLangUrl) => {
       this.fetch<Record<string, number>>(repoLangUrl)
         .then((repoLangs) => {
-          langStats.push(repoLangs);
-          if (langStats.length === requestsAmount) {
-            // all requests were made
-            callback(langStats);
-          }
+          langStats.push(repoLangs || {});
+          handleCompletion();
         })
-        .catch(() => () => {
-          requestsAmount--;
+        .catch((error) => {
+          console.warn('Failed to load languages for repository:', error);
+          langStats.push({});
+          handleCompletion();
         });
     });
   }
 
   private async identifyError(response: Response): Promise<ApiError> {
-    const result = await response.json();
+    let result: any;
+    try {
+      result = await response.json();
+    } catch (parseError) {
+      result = { message: 'Failed to parse error response' };
+    }
+
     const error: ApiError = {
-      message: result.message || '',
+      message: result.message || `HTTP ${response.status}: ${response.statusText}`,
     };
 
     if (response.status === 404) {
@@ -53,45 +84,73 @@ export class GitHubApiLoader {
     const limitRequests = response.headers.get('X-RateLimit-Remaining');
     if (Number(limitRequests) === 0) {
       const resetTime = response.headers.get('X-RateLimit-Reset');
-      error.resetDate = new Date(Number(resetTime) * 1000);
-
-      // full message is too long, leave only general message
-      error.message = error.message.split('(')[0];
+      if (resetTime) {
+        error.resetDate = new Date(Number(resetTime) * 1000);
+        // full message is too long, leave only general message
+        error.message = error.message.split('(')[0];
+      }
     }
 
     return error;
   }
 
   private extractLangURLs(profileRepositories: ApiRepository[]): string[] {
-    return profileRepositories.map((repository) => repository.languages_url);
+    return profileRepositories
+      .filter((repo) => repo && repo.languages_url)
+      .map((repository) => repository.languages_url);
   }
 
   private async fetch<T>(url: string): Promise<T> {
-    const cache = this.cache.get(url);
-    const res = await fetch(url, {
-      headers: this.buildHeaders(cache),
-    });
+    if (!url || typeof url !== 'string') {
+      throw new Error('Invalid URL provided for fetch');
+    }
 
-    if (res.status === 304) {
+    const cache = this.cache.get(url);
+    
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: this.buildHeaders(cache),
+      });
+    } catch (networkError) {
+      throw new Error(`Network error: ${networkError.message}`);
+    }
+
+    if (response.status === 304 && cache) {
       return cache.data;
     }
-    if (res.status !== 200) {
-      throw await this.identifyError(res);
+    
+    if (response.status !== 200) {
+      throw await this.identifyError(response);
     }
 
-    const response = await res.json();
-    this.cache.add(url, {
-      lastModified: res.headers.get('Last-Modified'),
-      data: response,
-    });
+    let jsonResponse: T;
+    try {
+      jsonResponse = await response.json();
+    } catch (parseError) {
+      throw new Error('Failed to parse API response as JSON');
+    }
 
-    return response;
+    const lastModified = response.headers.get('Last-Modified');
+    if (lastModified) {
+      this.cache.add(url, {
+        lastModified,
+        data: jsonResponse,
+      });
+    }
+
+    return jsonResponse;
   }
 
   private buildHeaders(cache?: CacheEntry): HeadersInit {
-    return {
+    const headers: HeadersInit = {
       Accept: 'application/vnd.github.v3+json',
-      'If-Modified-Since': cache?.lastModified,
     };
+
+    if (cache?.lastModified) {
+      headers['If-Modified-Since'] = cache.lastModified;
+    }
+
+    return headers;
   }
 }

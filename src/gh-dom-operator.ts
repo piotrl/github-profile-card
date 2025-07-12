@@ -10,25 +10,31 @@ import {
 
 export class DOMOperator {
   public static clearChildren($parent: HTMLElement): void {
-    while ($parent.hasChildNodes()) {
-      $parent.removeChild($parent.firstChild);
-    }
+    // More efficient way to clear children
+    $parent.textContent = '';
   }
 
   public static createError(error: ApiError, username: string): HTMLDivElement {
     const $error = document.createElement('div');
     $error.className = 'error';
-    $error.innerHTML = `<span>${error.message}</span>`;
+    
+    const $message = document.createElement('span');
+    $message.textContent = error.message;
+    $error.appendChild($message);
 
     if (error.isWrongUser) {
-      $error.innerHTML = `<span>Not found user: ${username}</span>`;
+      $message.textContent = `Not found user: ${username}`;
     }
+    
     if (error.resetDate) {
-      let remainingTime =
-        error.resetDate.getMinutes() - new Date().getMinutes();
-      remainingTime = remainingTime < 0 ? 60 + remainingTime : remainingTime;
-
-      $error.innerHTML += `<span class="remain">Come back after ${remainingTime} minutes</span>`;
+      const currentTime = new Date().getTime();
+      const resetTime = error.resetDate.getTime();
+      const remainingMinutes = Math.ceil((resetTime - currentTime) / (1000 * 60));
+      
+      const $remainingTime = document.createElement('span');
+      $remainingTime.className = 'remain';
+      $remainingTime.textContent = `Come back after ${remainingMinutes} minutes`;
+      $error.appendChild($remainingTime);
     }
 
     return $error;
@@ -53,18 +59,30 @@ export class DOMOperator {
   }
 
   public static createTopLanguagesList(langs: Record<string, number>): string {
-    return Object.keys(langs)
+    const sortedLanguages = Object.keys(langs)
       .map((language) => ({
         name: language,
         stat: langs[language],
       }))
       .sort((a, b) => b.stat - a.stat)
-      .slice(0, 3)
-      .map((lang) => `<li>${lang.name}</li>`)
-      .reduce((list, nextElement) => list + nextElement);
+      .slice(0, 3);
+
+    return sortedLanguages
+      .map((lang) => {
+        // Escape HTML to prevent XSS
+        const escapedName = this.escapeHtml(lang.name);
+        return `<li>${escapedName}</li>`;
+      })
+      .join('');
   }
 
-  public static createRepositoriesHeader(headerText): HTMLSpanElement {
+  private static escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  public static createRepositoriesHeader(headerText: string): HTMLSpanElement {
     const $repositoriesHeader = document.createElement('span');
     $repositoriesHeader.className = 'header';
     $repositoriesHeader.appendChild(document.createTextNode(`${headerText}`));
@@ -94,12 +112,25 @@ export class DOMOperator {
     const $repoLink = document.createElement('a');
 
     $repoLink.href = repository.html_url;
-    $repoLink.title = repository.description;
-    $repoLink.innerHTML = `
-                <span class="repo-name"> ${repository.name} </span>
-                <span class="updated">Updated: ${updated.toLocaleDateString()} </span>
-                <span class="star"> ${repository.stargazers_count} </span>
-            `;
+    $repoLink.title = repository.description || '';
+
+    // Create elements safely to prevent XSS
+    const $repoName = document.createElement('span');
+    $repoName.className = 'repo-name';
+    $repoName.textContent = repository.name;
+
+    const $updated = document.createElement('span');
+    $updated.className = 'updated';
+    $updated.textContent = `Updated: ${updated.toLocaleDateString()}`;
+
+    const $star = document.createElement('span');
+    $star.className = 'star';
+    $star.textContent = String(repository.stargazers_count);
+
+    $repoLink.appendChild($repoName);
+    $repoLink.appendChild($updated);
+    $repoLink.appendChild($star);
+
     return $repoLink;
   }
 }

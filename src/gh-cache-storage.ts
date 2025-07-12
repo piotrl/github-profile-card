@@ -11,7 +11,7 @@ export interface CacheEntry {
 
 export class CacheStorage {
   private cacheName = 'github-request-cache';
-  private requestCache: Cache = this.getCache() || {};
+  private requestCache: Cache = this.initializeCache();
 
   constructor(private readonly storage: BrowserStorage) {}
 
@@ -21,11 +21,57 @@ export class CacheStorage {
 
   public add(url: string, entry: CacheEntry): void {
     this.requestCache[url] = entry;
-
-    this.storage.setItem(this.cacheName, JSON.stringify(this.requestCache));
+    this.saveCache();
   }
 
-  private getCache(): Cache {
-    return JSON.parse(this.storage.getItem(this.cacheName));
+  private initializeCache(): Cache {
+    try {
+      const cacheData = this.storage.getItem(this.cacheName);
+      if (!cacheData) {
+        return {};
+      }
+      
+      const cache = JSON.parse(cacheData);
+      return cache && typeof cache === 'object' ? cache : {};
+    } catch (error) {
+      console.error('Failed to parse cache:', error);
+      // Clear corrupted cache data
+      try {
+        this.storage.removeItem(this.cacheName);
+      } catch (cleanupError) {
+        console.error('Failed to clear corrupted cache:', cleanupError);
+      }
+      return {};
+    }
+  }
+
+  private saveCache(): void {
+    try {
+      this.storage.setItem(this.cacheName, JSON.stringify(this.requestCache));
+    } catch (error) {
+      console.error('Failed to save cache:', error);
+      // If storage is full, try to clear expired entries and retry
+      this.clearExpiredEntries(new Date());
+      try {
+        this.storage.setItem(this.cacheName, JSON.stringify(this.requestCache));
+      } catch (retryError) {
+        console.error('Failed to save cache after cleanup:', retryError);
+      }
+    }
+  }
+
+  public clearExpiredEntries(currentDate: Date): void {
+    let hasChanges = false;
+    
+    for (const [url, entry] of Object.entries(this.requestCache)) {
+      if (entry.lastModified && new Date(entry.lastModified) < currentDate) {
+        delete this.requestCache[url];
+        hasChanges = true;
+      }
+    }
+    
+    if (hasChanges) {
+      this.saveCache();
+    }
   }
 }
