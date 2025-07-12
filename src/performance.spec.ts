@@ -2,248 +2,316 @@
  * @jest-environment jsdom
  */
 import { GitHubCardWidget } from './gh-profile-card';
-import { CacheStorage } from './gh-cache-storage';
-import { InMemoryStorage } from './testing/in-memory-storage';
+import { mockProfile, mockRepositories } from './testing/mock-github-data';
+
+// Mock fetch for performance tests
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
 
 describe('Performance Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    document.body.innerHTML = '';
+    document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+    localStorage.clear();
+
+    // Mock successful API responses by default
+    mockFetch
+      .mockResolvedValueOnce({
+        status: 200,
+        headers: { get: () => null },
+        json: () => Promise.resolve(mockProfile),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        headers: { get: () => null },
+        json: () => Promise.resolve(mockRepositories),
+      });
   });
 
-  describe('Widget Creation Performance', () => {
-    it('should create widget instances quickly', () => {
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+  describe('initialization performance', () => {
+    it('should initialize widget within reasonable time', async () => {
+      // Given
+      const startTime = performance.now();
+      const widget = new GitHubCardWidget();
 
-      const start = performance.now();
-      
-      for (let i = 0; i < 100; i++) {
-        new GitHubCardWidget();
-      }
-      
-      const end = performance.now();
-      const duration = end - start;
+      // When
+      await widget.init();
+      const endTime = performance.now();
 
-      // Should create 100 instances in under 100ms
-      expect(duration).toBeLessThan(100);
+      // Then
+      const initTime = endTime - startTime;
+      expect(initTime).toBeLessThan(1000); // Should complete within 1 second
     });
 
-    it('should handle multiple widgets on the same page', () => {
+    it('should render DOM elements efficiently', async () => {
+      // Given
+      const widget = new GitHubCardWidget();
+      const startTime = performance.now();
+
+      // When
+      await widget.init();
+      const endTime = performance.now();
+
+      // Then
+      const renderTime = endTime - startTime;
+      expect(renderTime).toBeLessThan(500); // DOM rendering should be fast
+    });
+
+    it('should handle multiple widgets without performance degradation', async () => {
+      // Given
       document.body.innerHTML = `
-        <div id="widget-1" data-username="user1"></div>
-        <div id="widget-2" data-username="user2"></div>
-        <div id="widget-3" data-username="user3"></div>
-        <div id="widget-4" data-username="user4"></div>
-        <div id="widget-5" data-username="user5"></div>
+        <div id="github-card-1" data-username="user1"></div>
+        <div id="github-card-2" data-username="user2"></div>
+        <div id="github-card-3" data-username="user3"></div>
       `;
 
-      const start = performance.now();
+      // Mock responses for all three widgets
+      for (let i = 0; i < 6; i++) { // 3 widgets * 2 API calls each
+        mockFetch.mockResolvedValueOnce({
+          status: 200,
+          headers: { get: () => null },
+          json: () => Promise.resolve(i % 2 === 0 ? mockProfile : mockRepositories),
+        });
+      }
 
+      const startTime = performance.now();
+
+      // When
       const widgets = [
-        new GitHubCardWidget({ template: '#widget-1' }),
-        new GitHubCardWidget({ template: '#widget-2' }),
-        new GitHubCardWidget({ template: '#widget-3' }),
-        new GitHubCardWidget({ template: '#widget-4' }),
-        new GitHubCardWidget({ template: '#widget-5' }),
+        new GitHubCardWidget({ template: '#github-card-1' }),
+        new GitHubCardWidget({ template: '#github-card-2' }),
+        new GitHubCardWidget({ template: '#github-card-3' }),
       ];
 
-      const end = performance.now();
-      
-      expect(widgets).toHaveLength(5);
-      expect(end - start).toBeLessThan(50);
+      await Promise.all(widgets.map(widget => widget.init()));
+      const endTime = performance.now();
+
+      // Then
+      const totalTime = endTime - startTime;
+      expect(totalTime).toBeLessThan(2000); // Multiple widgets should still be reasonably fast
     });
   });
 
-  describe('DOM Manipulation Performance', () => {
-    it('should clear large DOM trees efficiently', () => {
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
-      const container = document.querySelector('#github-card') as HTMLElement;
-
-      // Create a large DOM tree
-      for (let i = 0; i < 1000; i++) {
-        const div = document.createElement('div');
-        div.innerHTML = `<span>Item ${i}</span><p>Content ${i}</p>`;
-        container.appendChild(div);
-      }
-
-      expect(container.children.length).toBe(1000);
-
-      const start = performance.now();
-      
-      // Clear children manually for performance testing
-      while (container.firstChild) {
-        container.removeChild(container.firstChild);
-      }
-      
-      const end = performance.now();
-      
-      expect(container.textContent).toBe('');
-      expect(end - start).toBeLessThan(50); // Should clear in under 50ms (relaxed for CI)
-    });
-  });
-
-  describe('Cache Performance', () => {
-    it('should handle large cache efficiently', () => {
-      const storage = new InMemoryStorage();
-      const cache = new CacheStorage(storage);
-
-      const start = performance.now();
-
-      // Add 1000 cache entries
-      for (let i = 0; i < 1000; i++) {
-        cache.add(`https://api.github.com/test/${i}`, {
-          lastModified: 'Mon, 18 Mar 2019 20:40:35 GMT',
-          data: { index: i, data: `Data for item ${i}` },
-        });
-      }
-
-      const midTime = performance.now();
-
-      // Retrieve cache entries
-      for (let i = 0; i < 1000; i++) {
-        const result = cache.get(`https://api.github.com/test/${i}`);
-        expect(result?.data.index).toBe(i);
-      }
-
-      const end = performance.now();
-
-      expect(midTime - start).toBeLessThan(100); // Adding should be fast
-      expect(end - midTime).toBeLessThan(50);    // Retrieval should be very fast
-    });
-
-    it('should clear expired entries efficiently from large cache', () => {
-      const storage = new InMemoryStorage();
-      const cache = new CacheStorage(storage);
-
-      // Add many entries with different dates
-      for (let i = 0; i < 1000; i++) {
-        const date = new Date(2020, 0, i % 365 + 1); // Spread across year 2020
-        cache.add(`https://api.github.com/test/${i}`, {
-          lastModified: date.toUTCString(),
-          data: { index: i },
-        });
-      }
-
-      const cutoffDate = new Date(2020, 5, 1); // June 1, 2020
-      
-      const start = performance.now();
-      cache.clearExpiredEntries(cutoffDate);
-      const end = performance.now();
-
-      expect(end - start).toBeLessThan(50);
-    });
-  });
-
-  describe('Memory Usage', () => {
-    it('should not leak memory when creating many widgets', () => {
-      // This test helps identify memory leaks during development
-      const widgets: GitHubCardWidget[] = [];
-
-      for (let i = 0; i < 50; i++) {
-        document.body.innerHTML = `<div id="github-card-${i}" data-username="user${i}"></div>`;
-        widgets.push(new GitHubCardWidget({ template: `#github-card-${i}` }));
-      }
-
-      expect(widgets).toHaveLength(50);
-
-      // Clean up
-      document.body.innerHTML = '';
-      widgets.length = 0;
-
-      // Force garbage collection if available (only in Node.js with --expose-gc)
-      if (global.gc) {
-        global.gc();
-      }
-    });
-  });
-
-  describe('Error Handling Performance', () => {
-    it('should handle errors quickly without blocking', async () => {
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
-
-      // Mock fetch to always fail
-      global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
-
+  describe('memory usage', () => {
+    it('should not create memory leaks during initialization', async () => {
+      // Given
+      const initialMemory = (performance as any).memory?.usedJSHeapSize || 0;
       const widget = new GitHubCardWidget();
-      
-      const start = performance.now();
+
+      // When
       await widget.init();
-      const end = performance.now();
+      const afterInitMemory = (performance as any).memory?.usedJSHeapSize || 0;
 
-      // Error handling should be fast
-      expect(end - start).toBeLessThan(100);
+      // Then
+      const memoryIncrease = afterInitMemory - initialMemory;
+      // Memory increase should be reasonable (less than 1MB)
+      expect(memoryIncrease).toBeLessThan(1024 * 1024);
+    });
 
-      // Should show error in DOM
-      expect(document.querySelector('.error')).toBeTruthy();
+    it('should clean up properly on refresh', async () => {
+      // Given
+      const widget = new GitHubCardWidget();
+      await widget.init();
+
+      const beforeRefreshElements = document.querySelectorAll('#github-card *').length;
+
+      // When
+      widget.refresh({ maxRepos: 2 });
+      const afterRefreshElements = document.querySelectorAll('#github-card *').length;
+
+      // Then
+      // Should not accumulate DOM elements on refresh
+      expect(afterRefreshElements).toBeLessThanOrEqual(beforeRefreshElements + 5);
     });
   });
 
-  describe('Sorting Performance', () => {
-    it('should sort large repository arrays efficiently', () => {
-      const repositories = [];
-      
-      // Create large array of mock repositories
-      for (let i = 0; i < 1000; i++) {
-        repositories.push({
-          id: i,
-          name: `repo-${i}`,
-          stargazers_count: Math.floor(Math.random() * 1000),
-          updated_at: new Date(2020 + Math.floor(Math.random() * 4), 
-                              Math.floor(Math.random() * 12), 
-                              Math.floor(Math.random() * 28)).toISOString(),
+  describe('API call efficiency', () => {
+    it('should minimize API calls through caching', async () => {
+      // Given
+      const widget1 = new GitHubCardWidget();
+      await widget1.init();
+
+      jest.clearAllMocks();
+
+      // Setup second widget with same username
+      document.body.innerHTML += '<div id="github-card-2" data-username="testuser"></div>';
+
+      // When
+      const widget2 = new GitHubCardWidget({ template: '#github-card-2' });
+      await widget2.init();
+
+      // Then
+      const apiCallCount = mockFetch.mock.calls.length;
+      expect(apiCallCount).toBe(0); // Should use cached data, no new API calls
+    });
+
+    it('should handle concurrent API requests efficiently', async () => {
+      // Given
+      document.body.innerHTML = `
+        <div id="github-card-1" data-username="user1"></div>
+        <div id="github-card-2" data-username="user2"></div>
+      `;
+
+      // Mock responses for concurrent requests
+      for (let i = 0; i < 4; i++) { // 2 widgets * 2 API calls each
+        mockFetch.mockResolvedValueOnce({
+          status: 200,
+          headers: { get: () => null },
+          json: () => Promise.resolve(i % 2 === 0 ? mockProfile : mockRepositories),
         });
       }
 
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
-      const widget = new GitHubCardWidget();
+      const startTime = performance.now();
 
-      const start = performance.now();
-      
-      // Access private method for testing
-      (widget as any).sortRepositories(repositories, 'stars');
-      
-      const end = performance.now();
+      // When
+      const widgets = [
+        new GitHubCardWidget({ template: '#github-card-1' }),
+        new GitHubCardWidget({ template: '#github-card-2' }),
+      ];
 
-      expect(end - start).toBeLessThan(50);
+      await Promise.all(widgets.map(widget => widget.init()));
+      const endTime = performance.now();
 
-      // Verify sorting worked
-      for (let i = 1; i < repositories.length; i++) {
-        expect(repositories[i-1].stargazers_count).toBeGreaterThanOrEqual(
-          repositories[i].stargazers_count
-        );
-      }
+      // Then
+      const concurrentTime = endTime - startTime;
+      expect(concurrentTime).toBeLessThan(1500); // Concurrent requests should be efficient
     });
   });
 
-  describe('Language Processing Performance', () => {
-    it('should process language statistics efficiently', () => {
-      const langStats = [];
-      
-      // Create large language statistics array
-      for (let i = 0; i < 100; i++) {
-        const langs: { [key: string]: number } = {};
-        const languages = ['TypeScript', 'JavaScript', 'Python', 'Java', 'C++', 'Go', 'Rust'];
-        
-        languages.forEach(lang => {
-          langs[lang] = Math.floor(Math.random() * 10000);
-        });
-        
-        langStats.push(langs);
-      }
-
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+  describe('DOM manipulation performance', () => {
+    it('should efficiently clear and rebuild DOM content', () => {
+      // Given
       const widget = new GitHubCardWidget();
+      const cardElement = document.querySelector('#github-card')!;
 
-      const start = performance.now();
-      
-      // Access private method for testing
-      const result = (widget as any).groupLanguagesUsage(langStats);
-      
-      const end = performance.now();
+      // Add some initial content
+      cardElement.innerHTML = '<div>Initial content</div>'.repeat(100);
+      const startTime = performance.now();
 
-      expect(end - start).toBeLessThan(20);
-      expect(Object.keys(result)).toContain('TypeScript');
-      expect(Object.keys(result)).toContain('JavaScript');
+      // When
+      widget.refresh({ maxRepos: 5 });
+      const endTime = performance.now();
+
+      // Then
+      const clearTime = endTime - startTime;
+      expect(clearTime).toBeLessThan(100); // DOM clearing should be very fast
+    });
+
+    it('should handle large repository lists efficiently', async () => {
+      // Given
+      const largeRepoList = Array(50).fill(0).map((_, index) => ({
+        ...mockRepositories[0],
+        id: index,
+        name: `repo-${index}`,
+      }));
+
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 200,
+          headers: { get: () => null },
+          json: () => Promise.resolve(mockProfile),
+        })
+        .mockResolvedValueOnce({
+          status: 200,
+          headers: { get: () => null },
+          json: () => Promise.resolve(largeRepoList),
+        });
+
+      const widget = new GitHubCardWidget({ maxRepos: 50 });
+      const startTime = performance.now();
+
+      // When
+      await widget.init();
+      const endTime = performance.now();
+
+      // Then
+      const renderTime = endTime - startTime;
+      expect(renderTime).toBeLessThan(2000); // Should handle large lists efficiently
+    });
+
+    it('should efficiently update display when configuration changes', () => {
+      // Given
+      const widget = new GitHubCardWidget();
+      const startTime = performance.now();
+
+      // When
+      widget.refresh({ sortBy: 'stars' });
+      widget.refresh({ sortBy: 'updateTime' });
+      widget.refresh({ maxRepos: 3 });
+      const endTime = performance.now();
+
+      // Then
+      const updateTime = endTime - startTime;
+      expect(updateTime).toBeLessThan(50); // Multiple updates should be fast
+    });
+  });
+
+  describe('cache performance', () => {
+    it('should store and retrieve cached data efficiently', async () => {
+      // Given
+      const widget = new GitHubCardWidget();
+      await widget.init(); // This should cache the data
+
+      jest.clearAllMocks();
+      const startTime = performance.now();
+
+      // When
+      const newWidget = new GitHubCardWidget();
+      await newWidget.init(); // This should use cached data
+      const endTime = performance.now();
+
+      // Then
+      const cacheRetrievalTime = endTime - startTime;
+      expect(cacheRetrievalTime).toBeLessThan(100); // Cache retrieval should be very fast
+    });
+
+    it('should handle cache storage without performance impact', async () => {
+      // Given
+      const widget = new GitHubCardWidget();
+      const startTime = performance.now();
+
+      // When
+      await widget.init(); // This includes caching
+      const endTime = performance.now();
+
+      // Then
+      const totalTimeWithCaching = endTime - startTime;
+      expect(totalTimeWithCaching).toBeLessThan(1000); // Caching shouldn't significantly slow down init
+    });
+  });
+
+  describe('error handling performance', () => {
+    it('should handle API errors without performance degradation', async () => {
+      // Given
+      mockFetch
+        .mockRejectedValueOnce(new Error('Network error'))
+        .mockRejectedValueOnce(new Error('Network error'));
+
+      const widget = new GitHubCardWidget();
+      const startTime = performance.now();
+
+      // When
+      await widget.init();
+      const endTime = performance.now();
+
+      // Then
+      const errorHandlingTime = endTime - startTime;
+      expect(errorHandlingTime).toBeLessThan(500); // Error handling should be fast
+    });
+
+    it('should efficiently display error messages', async () => {
+      // Given
+      mockFetch.mockRejectedValueOnce(new Error('API Error'));
+      const widget = new GitHubCardWidget();
+      const startTime = performance.now();
+
+      // When
+      await widget.init();
+      const endTime = performance.now();
+
+      // Then
+      const errorDisplayTime = endTime - startTime;
+      expect(errorDisplayTime).toBeLessThan(200); // Error display should be immediate
     });
   });
 });

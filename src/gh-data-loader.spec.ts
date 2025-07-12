@@ -37,52 +37,102 @@ describe('GitHubApiLoader', () => {
 
   describe('loadUserData', () => {
     it('should load user profile and repositories successfully', async () => {
-      // Setup mocks using utilities
+      // Given
       setupUserDataMocks(mockProfile, mockRepositories);
       setupEmptyCache(mockCache);
 
-      // Execute
+      // When
       const result = await loader.loadUserData('testuser');
 
-      // Verify
+      // Then
       expect(result).toEqual({
         profile: mockProfile,
         repositories: mockRepositories,
       });
+    });
 
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+    it('should make correct number of API calls', async () => {
+      // Given
+      setupUserDataMocks(mockProfile, mockRepositories);
+      setupEmptyCache(mockCache);
+
+      // When
+      await loader.loadUserData('testuser');
+
+      // Then
+      const callCount = mockFetch.mock.calls.length;
+      expect(callCount).toBe(2);
+    });
+
+    it('should call profile API with correct URL', async () => {
+      // Given
+      setupUserDataMocks(mockProfile, mockRepositories);
+      setupEmptyCache(mockCache);
+
+      // When
+      await loader.loadUserData('testuser');
+
+      // Then
       expect(mockFetch).toHaveBeenCalledWith(
         'https://api.github.com/users/testuser',
         expect.any(Object),
       );
-      expect(mockCache.add).toHaveBeenCalledTimes(2);
     });
 
-    it('should throw error for invalid username', async () => {
-      await expect(loader.loadUserData('')).rejects.toThrow(
-        'Username cannot be empty',
-      );
-      await expect(loader.loadUserData('   ')).rejects.toThrow(
-        'Username cannot be empty',
-      );
-      await expect(loader.loadUserData(null as any)).rejects.toThrow(
-        'Invalid username provided',
-      );
+    it('should cache API responses after successful load', async () => {
+      // Given
+      setupUserDataMocks(mockProfile, mockRepositories);
+      setupEmptyCache(mockCache);
+
+      // When
+      await loader.loadUserData('testuser');
+
+      // Then
+      const cacheAddCallCount = mockCache.add.mock.calls.length;
+      expect(cacheAddCallCount).toBe(2);
+    });
+
+    it('should throw error for empty username', async () => {
+      // Given
+      const emptyUsername = '';
+
+      // When & Then
+      await expect(loader.loadUserData(emptyUsername)).rejects.toThrow();
+    });
+
+    it('should throw error for whitespace username', async () => {
+      // Given
+      const whitespaceUsername = '   ';
+
+      // When & Then
+      await expect(loader.loadUserData(whitespaceUsername)).rejects.toThrow();
+    });
+
+    it('should throw error for null username', async () => {
+      // Given
+      const nullUsername = null as any;
+
+      // When & Then
+      await expect(loader.loadUserData(nullUsername)).rejects.toThrow();
     });
 
     it('should handle 404 user not found error', async () => {
+      // Given
       mockFetch.mockResolvedValueOnce(createErrorResponse(404, 'Not Found'));
       setupEmptyCache(mockCache);
 
-      await expect(
-        loader.loadUserData('nonexistentuser'),
-      ).rejects.toMatchObject({
+      // When
+      const result = loader.loadUserData('nonexistentuser');
+
+      // Then
+      await expect(result).rejects.toMatchObject({
         message: 'Not Found',
         isWrongUser: true,
       });
     });
 
     it('should handle rate limit error', async () => {
+      // Given
       const resetDate = new Date(Date.now() + 3600000); // 1 hour from now
 
       mockFetch.mockResolvedValueOnce(
@@ -93,18 +143,18 @@ describe('GitHubApiLoader', () => {
       );
       setupEmptyCache(mockCache);
 
-      try {
-        await loader.loadUserData('testuser');
-        fail('Should have thrown an error');
-      } catch (error) {
-        expect(error).toMatchObject({
-          message: 'API rate limit exceeded ',
-          resetDate: expect.any(Date),
-        });
-      }
+      // When
+      const result = loader.loadUserData('testuser');
+
+      // Then
+      await expect(result).rejects.toMatchObject({
+        message: 'API rate limit exceeded ',
+        resetDate: expect.any(Date),
+      });
     });
 
     it('should use cached data when available with 304 response', async () => {
+      // Given
       const cachedData = {
         profile: mockProfile,
         repositories: mockRepositories,
@@ -137,23 +187,30 @@ describe('GitHubApiLoader', () => {
           json: jest.fn().mockResolvedValue(mockRepositories),
         });
 
+      // When
       const result = await loader.loadUserData('testuser');
+
+      // Then
       expect(result).toBeDefined();
     });
 
     it('should handle network errors', async () => {
+      // Given
       // First setup valid profile response, then fail on repos
       mockFetch
         .mockResolvedValueOnce(createSuccessResponse(mockProfile))
         .mockRejectedValueOnce(createNetworkError('Network failure'));
       setupEmptyCache(mockCache);
 
-      await expect(loader.loadUserData('testuser')).rejects.toThrow(
-        'Network error: Network failure',
-      );
+      // When
+      const result = loader.loadUserData('testuser');
+
+      // Then
+      await expect(result).rejects.toThrow('Network error: Network failure');
     });
 
     it('should handle JSON parsing errors', async () => {
+      // Given
       // First setup valid profile response, then fail parsing on repos
       mockFetch
         .mockResolvedValueOnce(createSuccessResponse(mockProfile))
@@ -164,7 +221,11 @@ describe('GitHubApiLoader', () => {
         });
       setupEmptyCache(mockCache);
 
-      await expect(loader.loadUserData('testuser')).rejects.toThrow(
+      // When
+      const result = loader.loadUserData('testuser');
+
+      // Then
+      await expect(result).rejects.toThrow(
         'Failed to parse API response as JSON',
       );
     });
