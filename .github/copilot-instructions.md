@@ -28,7 +28,7 @@ src/
 └── testing/           # Test utilities and mocks
 ```
 
-### Key Interfaces
+### Key Interfaces - You cannot modify these as they come from GitHub API
 - `WidgetConfig` - Widget configuration options
 - `ApiProfile` - GitHub user profile data structure
 - `ApiRepository` - GitHub repository data structure

@@ -6,7 +6,7 @@ import { ApiError, ApiRepository } from './interface/IGitHubApi';
 export class GitHubCardWidget {
   private apiLoader: GitHubApiLoader = new GitHubApiLoader();
   private $template: HTMLElement;
-  private userData: ApiUserData;
+  private userData: ApiUserData | null = null;
   private options: WidgetConfig;
 
   constructor(options: WidgetConfig = {}) {
@@ -15,16 +15,13 @@ export class GitHubCardWidget {
     this.options = this.completeConfiguration(options);
   }
 
-  public init(): void {
-    this.apiLoader
-      .loadUserData(this.options.username)
-      .then((data) => {
-        this.userData = data;
-        this.render(this.options);
-      })
-      .catch((err) => {
-        this.render(this.options, err);
-      });
+  public async init(): Promise<void> {
+    try {
+      this.userData = await this.apiLoader.loadUserData(this.options.username!);
+      this.render(this.options);
+    } catch (err) {
+      this.render(this.options, err as ApiError);
+    }
   }
 
   public refresh(options: WidgetConfig): void {
@@ -97,10 +94,10 @@ export class GitHubCardWidget {
     }
 
     // API doesn't return errors, try to build widget
-    const repositories = this.userData.repositories;
+    const repositories = this.userData!.repositories;
     this.sortRepositories(repositories, options.sortBy || 'stars');
 
-    const $profile = DOMOperator.createProfile(this.userData.profile);
+    const $profile = DOMOperator.createProfile(this.userData!.profile);
     if (!options.hideTopLanguages) {
       $profile.appendChild(this.createTopLanguagesSection(repositories));
     }

@@ -15,9 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if ($defaultTemplate) {
     try {
       const widget = new GitHubCardWidget();
-      widget.init();
+      widget.init().catch((error) => {
+        console.error('Failed to initialize GitHub Card widget:', error);
+      });
     } catch (error) {
-      console.error('Failed to initialize GitHub Card widget:', error);
+      console.error('Failed to construct GitHub Card widget:', error);
     }
   }
 });
