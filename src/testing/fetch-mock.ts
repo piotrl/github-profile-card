@@ -79,7 +79,7 @@ export function createJsonError(message: string = 'Invalid JSON'): Error {
  * Resets the fetch mock
  */
 export function resetFetchMock(): void {
-  mockFetch.mockClear();
+  mockFetch.mockReset();
 }
 
 /**

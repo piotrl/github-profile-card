@@ -59,10 +59,6 @@ afterEach(() => {
   console.warn = originalWarn;
 });
 
-// Mock fetch globally
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
-
 // Add custom matchers
 expect.extend({
   toBeInDOM() {
@@ -74,4 +70,4 @@ expect.extend({
 });
 
 // Export for use in tests
-export { localStorageMock, mockFetch };
+export { localStorageMock };
