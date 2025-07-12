@@ -10,11 +10,11 @@ export function createProfile(children: HTMLElement[]): HTMLDivElement {
   return $profile;
 }
 
-export function createName(profileUrl, name): HTMLAnchorElement {
+export function createName(profileUrl: string, name: string): HTMLAnchorElement {
   const $name = document.createElement('a');
   $name.href = profileUrl;
   $name.className = 'name';
-  $name.appendChild(document.createTextNode(name));
+  $name.appendChild(document.createTextNode(name || ''));
 
   return $name;
 }
@@ -23,6 +23,7 @@ export function createAvatar(avatarUrl: string): HTMLImageElement {
   const $avatar = document.createElement('img');
   $avatar.src = avatarUrl;
   $avatar.className = 'avatar';
+  $avatar.alt = 'GitHub avatar';
 
   return $avatar;
 }
@@ -34,7 +35,7 @@ export function createFollowButton(
   const $followButton = document.createElement('a');
   $followButton.href = followUrl;
   $followButton.className = 'follow-button';
-  $followButton.innerHTML = 'Follow @' + username;
+  $followButton.textContent = `Follow @${username}`;
 
   return $followButton;
 }
@@ -42,7 +43,7 @@ export function createFollowButton(
 export function createFollowers(followersAmount: number): HTMLSpanElement {
   const $followers = document.createElement('span');
   $followers.className = 'followers';
-  $followers.innerHTML = '' + followersAmount;
+  $followers.textContent = String(followersAmount);
 
   return $followers;
 }
