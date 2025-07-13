@@ -1,7 +1,4 @@
-/**
- * Test setup file for Jest
- * Global test configuration and mocks
- */
+// import { jest } from '@jest/globals';
 
 // Mock console methods during tests to reduce noise
 const originalError = console.error;

@@ -230,7 +230,7 @@ describe('CacheStorage', () => {
 
       // Should be able to retrieve any entry quickly
       const result = cache.get('url-500');
-      expect(result?.data.index).toBe(500);
+      expect(result?.data).toEqual({ index: 500 });
     });
   });
 

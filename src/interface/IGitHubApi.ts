@@ -5,7 +5,6 @@
  */
 
 export interface ApiError {
-  type: 'api-error' | 'network-error' | 'rate-limit' | 'not-found';
   message: string;
   status?: number;
   username?: string;

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 // Mock the GitHubCardWidget
 jest.mock('./gh-profile-card');
 
