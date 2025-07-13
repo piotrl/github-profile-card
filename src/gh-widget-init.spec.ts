@@ -6,7 +6,9 @@
 jest.mock('./gh-profile-card');
 
 import { GitHubCardWidget } from './gh-profile-card';
-const MockGitHubCardWidget = GitHubCardWidget as jest.MockedClass<typeof GitHubCardWidget>;
+const MockGitHubCardWidget = GitHubCardWidget as jest.MockedClass<
+  typeof GitHubCardWidget
+>;
 
 // Import after mocking
 import './gh-widget-init';
@@ -16,10 +18,10 @@ describe('Widget Initialization', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Clear any existing DOM
     document.body.innerHTML = '';
-    
+
     // Mock widget instance
     mockWidget = {
       init: jest.fn(),
@@ -43,7 +45,8 @@ describe('Widget Initialization', () => {
   describe('Automatic initialization', () => {
     it('should auto-initialize when #github-card element exists', () => {
       // Setup DOM with default template
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+      document.body.innerHTML =
+        '<div id="github-card" data-username="testuser"></div>';
 
       // Trigger DOMContentLoaded event
       const event = new Event('DOMContentLoaded');
@@ -67,7 +70,8 @@ describe('Widget Initialization', () => {
 
     it('should work when DOM is already loaded', () => {
       // Setup DOM
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+      document.body.innerHTML =
+        '<div id="github-card" data-username="testuser"></div>';
 
       // Simulate DOMContentLoaded already fired by directly calling the handler
       const event = new Event('DOMContentLoaded');
@@ -96,7 +100,8 @@ describe('Widget Initialization', () => {
 
   describe('Manual initialization', () => {
     it('should allow manual initialization with custom options', () => {
-      document.body.innerHTML = '<div id="custom-template" data-username="testuser"></div>';
+      document.body.innerHTML =
+        '<div id="custom-template" data-username="testuser"></div>';
 
       const customWidget = new window.GitHubCard({
         template: '#custom-template',
@@ -121,8 +126,12 @@ describe('Widget Initialization', () => {
       const widget2 = new window.GitHubCard({ template: '#widget-2' });
 
       expect(MockGitHubCardWidget).toHaveBeenCalledTimes(2);
-      expect(MockGitHubCardWidget).toHaveBeenNthCalledWith(1, { template: '#widget-1' });
-      expect(MockGitHubCardWidget).toHaveBeenNthCalledWith(2, { template: '#widget-2' });
+      expect(MockGitHubCardWidget).toHaveBeenNthCalledWith(1, {
+        template: '#widget-1',
+      });
+      expect(MockGitHubCardWidget).toHaveBeenNthCalledWith(2, {
+        template: '#widget-2',
+      });
     });
   });
 
@@ -132,7 +141,8 @@ describe('Widget Initialization', () => {
         throw new Error('Template not found');
       });
 
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+      document.body.innerHTML =
+        '<div id="github-card" data-username="testuser"></div>';
 
       // Should not throw when auto-initializing
       expect(() => {
@@ -146,7 +156,8 @@ describe('Widget Initialization', () => {
         throw new Error('API error');
       });
 
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+      document.body.innerHTML =
+        '<div id="github-card" data-username="testuser"></div>';
 
       // Should not throw when auto-initializing
       expect(() => {
@@ -158,7 +169,8 @@ describe('Widget Initialization', () => {
 
   describe('Browser compatibility', () => {
     it('should work with querySelector', () => {
-      document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+      document.body.innerHTML =
+        '<div id="github-card" data-username="testuser"></div>';
 
       const element = document.querySelector('#github-card');
       expect(element).not.toBeNull();
@@ -168,10 +180,10 @@ describe('Widget Initialization', () => {
     it('should work with addEventListener', () => {
       const handler = jest.fn();
       document.addEventListener('DOMContentLoaded', handler);
-      
+
       const event = new Event('DOMContentLoaded');
       document.dispatchEvent(event);
-      
+
       expect(handler).toHaveBeenCalled();
     });
   });

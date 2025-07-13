@@ -79,7 +79,7 @@ describe('DOMOperator', () => {
       };
 
       const $error = DOMOperator.createError(error, username);
-      
+
       expect($error.children).toHaveLength(2);
       expect($error.children[0].textContent).toBe('Rate limit exceeded');
       expect($error.children[1].textContent).toContain('Come back after');
@@ -95,7 +95,7 @@ describe('DOMOperator', () => {
       };
 
       const $error = DOMOperator.createError(error, username);
-      
+
       // Should still show the remaining time (will be negative, but handled)
       expect($error.children).toHaveLength(2);
       expect($error.children[1].textContent).toContain('Come back after');
@@ -107,7 +107,7 @@ describe('DOMOperator', () => {
       };
 
       const $error = DOMOperator.createError(error, 'testuser');
-      
+
       expect($error.children[0].textContent).toBe('');
     });
   });
@@ -365,7 +365,10 @@ describe('DOMOperator', () => {
 
     it('should handle repository without description', () => {
       const repoWithoutDesc = { ...mockRepo, description: null };
-      const $reposList = DOMOperator.createRepositoriesList([repoWithoutDesc], 1);
+      const $reposList = DOMOperator.createRepositoriesList(
+        [repoWithoutDesc],
+        1,
+      );
       const $repoElement = $reposList.children[0] as HTMLAnchorElement;
 
       expect($repoElement.title).toBe('');
@@ -389,7 +392,10 @@ describe('DOMOperator', () => {
 
     it('should handle invalid date in repository', () => {
       const repoWithInvalidDate = { ...mockRepo, updated_at: 'invalid-date' };
-      const $reposList = DOMOperator.createRepositoriesList([repoWithInvalidDate], 1);
+      const $reposList = DOMOperator.createRepositoriesList(
+        [repoWithInvalidDate],
+        1,
+      );
       const $repoElement = $reposList.children[0] as HTMLAnchorElement;
       const $updated = $repoElement.querySelector('.updated');
 
@@ -399,7 +405,10 @@ describe('DOMOperator', () => {
 
     it('should handle zero stargazers', () => {
       const repoWithZeroStars = { ...mockRepo, stargazers_count: 0 };
-      const $reposList = DOMOperator.createRepositoriesList([repoWithZeroStars], 1);
+      const $reposList = DOMOperator.createRepositoriesList(
+        [repoWithZeroStars],
+        1,
+      );
       const $repoElement = $reposList.children[0] as HTMLAnchorElement;
       const $star = $repoElement.querySelector('.star');
 
@@ -412,7 +421,7 @@ describe('DOMOperator', () => {
       ['<script>', '&lt;script&gt;'],
       ['&', '&amp;'],
       ['"', '"'],
-      ["'", '\''],
+      ["'", "'"],
       ['<img src=x onerror=alert(1)>', '&lt;img src=x onerror=alert(1)&gt;'],
     ];
 

@@ -25,7 +25,10 @@ export function setupFetchMock(): void {
 /**
  * Creates a successful HTTP response mock
  */
-export function createSuccessResponse(data: any, headers: Record<string, string> = {}): MockResponse {
+export function createSuccessResponse(
+  data: any,
+  headers: Record<string, string> = {},
+): MockResponse {
   return {
     status: 200,
     headers: {
@@ -41,7 +44,7 @@ export function createSuccessResponse(data: any, headers: Record<string, string>
 export function createErrorResponse(
   status: number,
   message: string,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): MockResponse {
   return {
     status,
@@ -87,19 +90,25 @@ export function resetFetchMock(): void {
  */
 export function setupUserDataMocks(profile: any, repositories: any[]): void {
   mockFetch
-    .mockResolvedValueOnce(createSuccessResponse(profile, {
-      'Last-Modified': 'Mon, 18 Mar 2019 20:40:35 GMT',
-    }))
-    .mockResolvedValueOnce(createSuccessResponse(repositories, {
-      'Last-Modified': 'Mon, 18 Mar 2019 20:40:35 GMT',
-    }));
+    .mockResolvedValueOnce(
+      createSuccessResponse(profile, {
+        'Last-Modified': 'Mon, 18 Mar 2019 20:40:35 GMT',
+      }),
+    )
+    .mockResolvedValueOnce(
+      createSuccessResponse(repositories, {
+        'Last-Modified': 'Mon, 18 Mar 2019 20:40:35 GMT',
+      }),
+    );
 }
 
 /**
  * Sets up language loading mocks for repositories
  */
-export function setupLanguageMocks(languageStats: Record<string, number>[]): void {
-  languageStats.forEach(stats => {
+export function setupLanguageMocks(
+  languageStats: Record<string, number>[],
+): void {
+  languageStats.forEach((stats) => {
     mockFetch.mockResolvedValueOnce(createSuccessResponse(stats));
   });
 }

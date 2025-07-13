@@ -12,7 +12,9 @@ import { mockProfile, mockRepositories } from './testing/mock-github-data';
 jest.mock('./gh-data-loader');
 jest.mock('./gh-dom-operator');
 
-const MockGitHubApiLoader = GitHubApiLoader as jest.MockedClass<typeof GitHubApiLoader>;
+const MockGitHubApiLoader = GitHubApiLoader as jest.MockedClass<
+  typeof GitHubApiLoader
+>;
 const MockDOMOperator = DOMOperator as jest.MockedClass<typeof DOMOperator>;
 
 describe('GitHubCardWidget', () => {
@@ -23,7 +25,8 @@ describe('GitHubCardWidget', () => {
     jest.clearAllMocks();
 
     // Setup DOM
-    document.body.innerHTML = '<div id="github-card" data-username="testuser"></div>';
+    document.body.innerHTML =
+      '<div id="github-card" data-username="testuser"></div>';
 
     // Mock API loader
     mockApiLoader = {
@@ -35,12 +38,24 @@ describe('GitHubCardWidget', () => {
 
     // Mock DOM Operator static methods
     MockDOMOperator.clearChildren = jest.fn();
-    MockDOMOperator.createError = jest.fn().mockReturnValue(document.createElement('div'));
-    MockDOMOperator.createProfile = jest.fn().mockReturnValue(document.createElement('div'));
-    MockDOMOperator.createTopLanguagesSection = jest.fn().mockReturnValue(document.createElement('ul'));
-    MockDOMOperator.createTopLanguagesList = jest.fn().mockReturnValue('<li>TypeScript</li>');
-    MockDOMOperator.createRepositoriesHeader = jest.fn().mockReturnValue(document.createElement('span'));
-    MockDOMOperator.createRepositoriesList = jest.fn().mockReturnValue(document.createElement('div'));
+    MockDOMOperator.createError = jest
+      .fn()
+      .mockReturnValue(document.createElement('div'));
+    MockDOMOperator.createProfile = jest
+      .fn()
+      .mockReturnValue(document.createElement('div'));
+    MockDOMOperator.createTopLanguagesSection = jest
+      .fn()
+      .mockReturnValue(document.createElement('ul'));
+    MockDOMOperator.createTopLanguagesList = jest
+      .fn()
+      .mockReturnValue('<li>TypeScript</li>');
+    MockDOMOperator.createRepositoriesHeader = jest
+      .fn()
+      .mockReturnValue(document.createElement('span'));
+    MockDOMOperator.createRepositoriesList = jest
+      .fn()
+      .mockReturnValue(document.createElement('div'));
   });
 
   describe('constructor', () => {
@@ -64,8 +79,9 @@ describe('GitHubCardWidget', () => {
         maxRepos: 3,
         hideTopLanguages: true,
       };
-      document.body.innerHTML = '<div id="custom-template" data-username="fallback"></div>';
-      
+      document.body.innerHTML =
+        '<div id="custom-template" data-username="fallback"></div>';
+
       // When
       const result = new GitHubCardWidget(options);
 
@@ -97,21 +113,26 @@ describe('GitHubCardWidget', () => {
       const options = { template: '#non-existent' };
 
       // When & Then
-      expect(() => new GitHubCardWidget(options)).toThrow('No template found for selector: #non-existent');
+      expect(() => new GitHubCardWidget(options)).toThrow(
+        'No template found for selector: #non-existent',
+      );
     });
 
     it('should throw error when username is not provided', () => {
       // Given
       document.body.innerHTML = '<div id="github-card"></div>';
-      
+
       // When & Then
-      expect(() => new GitHubCardWidget()).toThrow('Username is required but not provided');
+      expect(() => new GitHubCardWidget()).toThrow(
+        'Username is required but not provided',
+      );
     });
 
     it('should handle invalid maxRepos data attribute gracefully', () => {
       // Given
-      document.body.innerHTML = '<div id="github-card" data-username="testuser" data-max-repos="invalid"></div>';
-      
+      document.body.innerHTML =
+        '<div id="github-card" data-username="testuser" data-max-repos="invalid"></div>';
+
       // When
       const result = new GitHubCardWidget();
 
@@ -171,17 +192,23 @@ describe('GitHubCardWidget', () => {
 
       // When
       widget.init();
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       // Then
-      expect(MockDOMOperator.createError).toHaveBeenCalledWith(error, 'testuser');
+      expect(MockDOMOperator.createError).toHaveBeenCalledWith(
+        error,
+        'testuser',
+      );
     });
   });
 
   describe('refresh', () => {
     beforeEach(() => {
       widget = new GitHubCardWidget();
-      (widget as any).userData = { profile: mockProfile, repositories: mockRepositories };
+      (widget as any).userData = {
+        profile: mockProfile,
+        repositories: mockRepositories,
+      };
     });
 
     it('should clear DOM children when refreshing', () => {
@@ -199,7 +226,10 @@ describe('GitHubCardWidget', () => {
   describe('sorting functionality', () => {
     beforeEach(() => {
       widget = new GitHubCardWidget();
-      (widget as any).userData = { profile: mockProfile, repositories: [...mockRepositories] };
+      (widget as any).userData = {
+        profile: mockProfile,
+        repositories: [...mockRepositories],
+      };
     });
 
     it('should sort repositories by stars correctly', () => {
@@ -219,25 +249,30 @@ describe('GitHubCardWidget', () => {
       // Given
       const sortRepos = (widget as any).sortRepositories.bind(widget);
       const repos = [...mockRepositories];
-      
+
       // When
       sortRepos(repos, 'stars');
-      
+
       // Then
-      const isCorrectOrder = repos[0].stargazers_count >= repos[1].stargazers_count;
+      const isCorrectOrder =
+        repos[0].stargazers_count >= repos[1].stargazers_count;
       expect(isCorrectOrder).toBe(true);
     });
 
     it('should sort by update time when stars are equal', () => {
       // Given
       const sortRepos = (widget as any).sortRepositories.bind(widget);
-      const repos = mockRepositories.map(repo => ({ ...repo, stargazers_count: 10 }));
-      
+      const repos = mockRepositories.map((repo) => ({
+        ...repo,
+        stargazers_count: 10,
+      }));
+
       // When
       sortRepos(repos, 'stars');
-      
+
       // Then
-      const isNewerFirst = new Date(repos[0].updated_at) >= new Date(repos[1].updated_at);
+      const isNewerFirst =
+        new Date(repos[0].updated_at) >= new Date(repos[1].updated_at);
       expect(isNewerFirst).toBe(true);
     });
 
@@ -245,7 +280,7 @@ describe('GitHubCardWidget', () => {
       // Given
       const sortRepos = (widget as any).sortRepositories.bind(widget);
       const repos: ApiRepository[] = [];
-      
+
       // When & Then
       expect(() => sortRepos(repos, 'stars')).not.toThrow();
     });
@@ -253,7 +288,7 @@ describe('GitHubCardWidget', () => {
     it('should handle null repositories array without error', () => {
       // Given
       const sortRepos = (widget as any).sortRepositories.bind(widget);
-      
+
       // When & Then
       expect(() => sortRepos(null, 'stars')).not.toThrow();
     });
@@ -287,7 +322,7 @@ describe('GitHubCardWidget', () => {
     it('should return empty object for empty language statistics', () => {
       // Given
       const groupLanguages = (widget as any).groupLanguagesUsage.bind(widget);
-      
+
       // When
       const result = groupLanguages([]);
 
@@ -315,8 +350,10 @@ describe('GitHubCardWidget', () => {
 
     it('should create top languages section for empty repositories', () => {
       // Given
-      const createSection = (widget as any).createTopLanguagesSection.bind(widget);
-      
+      const createSection = (widget as any).createTopLanguagesSection.bind(
+        widget,
+      );
+
       // When
       createSection([]);
 
@@ -333,7 +370,7 @@ describe('GitHubCardWidget', () => {
     it('should calculate date difference correctly', () => {
       // Given
       const dateDiff = (widget as any).dateDifference.bind(widget);
-      
+
       // When
       const result = dateDiff('2023-01-02T00:00:00Z', '2023-01-01T00:00:00Z');
 
@@ -344,7 +381,7 @@ describe('GitHubCardWidget', () => {
     it('should return zero for invalid first date', () => {
       // Given
       const dateDiff = (widget as any).dateDifference.bind(widget);
-      
+
       // When
       const result = dateDiff('invalid-date', '2023-01-01T00:00:00Z');
 
@@ -355,7 +392,7 @@ describe('GitHubCardWidget', () => {
     it('should return zero for both invalid dates', () => {
       // Given
       const dateDiff = (widget as any).dateDifference.bind(widget);
-      
+
       // When
       const result = dateDiff('invalid', 'also-invalid');
 
@@ -367,19 +404,25 @@ describe('GitHubCardWidget', () => {
   describe('rendering', () => {
     beforeEach(() => {
       widget = new GitHubCardWidget();
-      (widget as any).userData = { profile: mockProfile, repositories: mockRepositories };
+      (widget as any).userData = {
+        profile: mockProfile,
+        repositories: mockRepositories,
+      };
     });
 
     it('should render error when error is provided', () => {
       // Given
       const render = (widget as any).render.bind(widget);
       const error: ApiError = { message: 'Test error' };
-      
+
       // When
       render({ username: 'testuser' }, error);
-      
+
       // Then
-      expect(MockDOMOperator.createError).toHaveBeenCalledWith(error, 'testuser');
+      expect(MockDOMOperator.createError).toHaveBeenCalledWith(
+        error,
+        'testuser',
+      );
     });
 
     it('should render profile when no error occurs', () => {
@@ -390,7 +433,7 @@ describe('GitHubCardWidget', () => {
         maxRepos: 5,
         hideTopLanguages: false,
         headerText: 'Repositories',
-        sortBy: 'stars'
+        sortBy: 'stars',
       };
 
       // When
@@ -408,14 +451,17 @@ describe('GitHubCardWidget', () => {
         maxRepos: 5,
         hideTopLanguages: false,
         headerText: 'Repositories',
-        sortBy: 'stars'
+        sortBy: 'stars',
       };
 
       // When
       render(config);
 
       // Then
-      expect(MockDOMOperator.createRepositoriesList).toHaveBeenCalledWith(mockRepositories, 5);
+      expect(MockDOMOperator.createRepositoriesList).toHaveBeenCalledWith(
+        mockRepositories,
+        5,
+      );
     });
 
     it('should skip repositories section when maxRepos is zero', () => {

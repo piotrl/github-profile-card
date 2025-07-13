@@ -10,7 +10,10 @@ export function createProfile(children: HTMLElement[]): HTMLDivElement {
   return $profile;
 }
 
-export function createName(profileUrl: string, name: string): HTMLAnchorElement {
+export function createName(
+  profileUrl: string,
+  name: string,
+): HTMLAnchorElement {
   const $name = document.createElement('a');
   $name.href = profileUrl;
   $name.className = 'name';

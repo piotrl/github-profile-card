@@ -175,7 +175,10 @@ describe('DOM Utils', () => {
 
   describe('createFollowContainer', () => {
     it('should create a follow container with children', () => {
-      const followButton = createFollowButton('testuser', 'https://github.com/testuser');
+      const followButton = createFollowButton(
+        'testuser',
+        'https://github.com/testuser',
+      );
       const followers = createFollowers(100);
 
       const container = createFollowContainer([followButton, followers]);
@@ -211,27 +214,32 @@ describe('DOM Utils', () => {
 
   describe('integration tests', () => {
     it('should create a complete profile structure', () => {
-      const avatar = createAvatar('https://avatars.githubusercontent.com/u/123456');
+      const avatar = createAvatar(
+        'https://avatars.githubusercontent.com/u/123456',
+      );
       const name = createName('https://github.com/testuser', 'Test User');
-      const followButton = createFollowButton('testuser', 'https://github.com/testuser');
+      const followButton = createFollowButton(
+        'testuser',
+        'https://github.com/testuser',
+      );
       const followers = createFollowers(1234);
       const followContainer = createFollowContainer([followButton, followers]);
       const profile = createProfile([avatar, name, followContainer]);
 
       expect(profile.classList.contains('profile')).toBe(true);
       expect(profile.children).toHaveLength(3);
-      
+
       // Check avatar
       const avatarElement = profile.children[0] as HTMLImageElement;
       expect(avatarElement.tagName).toBe('IMG');
       expect(avatarElement.className).toBe('avatar');
-      
+
       // Check name
       const nameElement = profile.children[1] as HTMLAnchorElement;
       expect(nameElement.tagName).toBe('A');
       expect(nameElement.className).toBe('name');
       expect(nameElement.textContent).toBe('Test User');
-      
+
       // Check follow container
       const followContainerElement = profile.children[2] as HTMLDivElement;
       expect(followContainerElement.tagName).toBe('DIV');
@@ -242,14 +250,20 @@ describe('DOM Utils', () => {
     it('should handle XSS attempts in user data', () => {
       const maliciousName = '<script>alert("xss")</script>';
       const maliciousUsername = '<img src=x onerror=alert("xss")>';
-      
-      const nameElement = createName('https://github.com/testuser', maliciousName);
-      const followButton = createFollowButton(maliciousUsername, 'https://github.com/testuser');
-      
+
+      const nameElement = createName(
+        'https://github.com/testuser',
+        maliciousName,
+      );
+      const followButton = createFollowButton(
+        maliciousUsername,
+        'https://github.com/testuser',
+      );
+
       // Text content should be escaped
       expect(nameElement.textContent).toBe(maliciousName);
       expect(nameElement.innerHTML).not.toContain('<script>');
-      
+
       expect(followButton.textContent).toBe(`Follow @${maliciousUsername}`);
       expect(followButton.innerHTML).not.toContain('<img');
     });

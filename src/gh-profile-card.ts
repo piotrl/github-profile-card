@@ -61,18 +61,18 @@ export class GitHubCardWidget {
     $template: HTMLElement,
   ): void {
     const dataset = $template.dataset;
-    
+
     widgetConfig.username = widgetConfig.username || dataset.username;
     widgetConfig.sortBy = widgetConfig.sortBy || dataset.sortBy;
     widgetConfig.headerText = widgetConfig.headerText || dataset.headerText;
-    
+
     if (dataset.maxRepos) {
       const parsedMaxRepos = parseInt(dataset.maxRepos, 10);
       if (!isNaN(parsedMaxRepos)) {
         widgetConfig.maxRepos = widgetConfig.maxRepos || parsedMaxRepos;
       }
     }
-    
+
     widgetConfig.hideTopLanguages =
       widgetConfig.hideTopLanguages || dataset.hideTopLanguages === 'true';
 
@@ -88,7 +88,10 @@ export class GitHubCardWidget {
     DOMOperator.clearChildren($root);
 
     if (error) {
-      const $errorSection = DOMOperator.createError(error, options.username || '');
+      const $errorSection = DOMOperator.createError(
+        error,
+        options.username || '',
+      );
       $root.appendChild($errorSection);
       return;
     }
@@ -121,7 +124,7 @@ export class GitHubCardWidget {
     repositories: ApiRepository[],
   ): HTMLUListElement {
     const $topLanguages = DOMOperator.createTopLanguagesSection();
-    
+
     if (!repositories || repositories.length === 0) {
       return $topLanguages;
     }
@@ -131,7 +134,8 @@ export class GitHubCardWidget {
       (langStats) => {
         if (langStats.length > 0) {
           const languagesRank = this.groupLanguagesUsage(langStats);
-          $topLanguages.innerHTML = DOMOperator.createTopLanguagesList(languagesRank);
+          $topLanguages.innerHTML =
+            DOMOperator.createTopLanguagesList(languagesRank);
         }
       },
     );
@@ -176,11 +180,11 @@ export class GitHubCardWidget {
   private dateDifference(first: string, second: string): number {
     const firstDate = new Date(first);
     const secondDate = new Date(second);
-    
+
     if (isNaN(firstDate.getTime()) || isNaN(secondDate.getTime())) {
       return 0;
     }
-    
+
     return firstDate.getTime() - secondDate.getTime();
   }
 }
