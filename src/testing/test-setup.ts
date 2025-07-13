@@ -1,4 +1,4 @@
-// import { jest } from '@jest/globals';
+import { jest, beforeEach, expect, afterEach } from '@jest/globals';
 
 // Mock console methods during tests to reduce noise
 const originalError = console.error;

@@ -1,6 +1,5 @@
-/**
- * Fetch mock utilities for testing
- */
+import { jest } from '@jest/globals';
+import { ApiProfile, ApiRepository } from '../interface/IGitHubApi';
 
 export interface MockResponse {
   status: number;
@@ -25,8 +24,8 @@ export function setupFetchMock(): void {
 /**
  * Creates a successful HTTP response mock
  */
-export function createSuccessResponse(
-  data: any,
+export function createSuccessResponse<T>(
+  data: T,
   headers: Record<string, string> = {},
 ): MockResponse {
   return {
@@ -88,7 +87,10 @@ export function resetFetchMock(): void {
 /**
  * Sets up common fetch mock responses for user data loading
  */
-export function setupUserDataMocks(profile: any, repositories: any[]): void {
+export function setupUserDataMocks(
+  profile: ApiProfile,
+  repositories: ApiRepository[],
+): void {
   mockFetch
     .mockResolvedValueOnce(
       createSuccessResponse(profile, {

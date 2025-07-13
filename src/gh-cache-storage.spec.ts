@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CacheStorage, CacheEntry } from './gh-cache-storage';
 import { InMemoryStorage } from './testing/in-memory-storage';
 import { BrowserStorage } from './interface/storage';

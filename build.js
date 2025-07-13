@@ -1,8 +1,8 @@
-const esbuild = require('esbuild');
-const { sassPlugin } = require('esbuild-sass-plugin');
-const fs = require('fs');
-const path = require('path');
-const PACKAGE = require('./package.json');
+import esbuild from 'esbuild';
+import { sassPlugin } from 'esbuild-sass-plugin';
+import fs from 'fs';
+import path from 'path';
+import PACKAGE from './package.json' with { type: 'json' };
 
 const ENV = process.env.WEBPACK_ENV;
 const libraryName = 'gh-profile-card';
@@ -12,7 +12,7 @@ const banner = `/**
 */
 `;
 
-const outfilePath = path.resolve(__dirname, 'dist', `${libraryName}.min.js`);
+const outfilePath = path.resolve('dist', `${libraryName}.min.js`);
 
 esbuild
   .build({

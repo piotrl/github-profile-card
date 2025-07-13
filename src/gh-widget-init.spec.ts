@@ -1,4 +1,5 @@
-// Mock the GitHubCardWidget
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+
 jest.mock('./gh-profile-card');
 
 import { GitHubCardWidget } from './gh-profile-card';
