@@ -15,7 +15,7 @@ describe('CacheStorage', () => {
   };
 
   let storage: BrowserStorage;
-  
+
   beforeEach(() => {
     storage = new InMemoryStorage();
   });
@@ -58,7 +58,7 @@ describe('CacheStorage', () => {
     it('should handle corrupted cache data gracefully', () => {
       const cacheName = 'github-request-cache';
       storage.setItem(cacheName, 'invalid-json');
-      
+
       // Should not throw
       const cache = new CacheStorage(storage);
       const result = cache.get(url);
@@ -82,7 +82,7 @@ describe('CacheStorage', () => {
     it('should handle non-object cache data', () => {
       const cacheName = 'github-request-cache';
       storage.setItem(cacheName, '"string-instead-of-object"');
-      
+
       const cache = new CacheStorage(storage);
       const result = cache.get(url);
 
@@ -98,7 +98,9 @@ describe('CacheStorage', () => {
 
       new CacheStorage(mockStorage);
 
-      expect(mockStorage.removeItem).toHaveBeenCalledWith('github-request-cache');
+      expect(mockStorage.removeItem).toHaveBeenCalledWith(
+        'github-request-cache',
+      );
     });
 
     it('should handle storage errors during save', () => {
@@ -111,7 +113,7 @@ describe('CacheStorage', () => {
       };
 
       const cache = new CacheStorage(mockStorage);
-      
+
       // Should not throw
       expect(() => cache.add(url, cacheData)).not.toThrow();
     });
@@ -191,7 +193,7 @@ describe('CacheStorage', () => {
       cache.add('test-url', entryWithoutDate);
 
       const cutoffDate = new Date();
-      
+
       // Should not throw
       expect(() => cache.clearExpiredEntries(cutoffDate)).not.toThrow();
     });
@@ -206,7 +208,7 @@ describe('CacheStorage', () => {
       cache.add('test-url', entryWithInvalidDate);
 
       const cutoffDate = new Date();
-      
+
       // Should not throw and should clear invalid entries
       expect(() => cache.clearExpiredEntries(cutoffDate)).not.toThrow();
       expect(cache.get('test-url')).toBeUndefined();
@@ -235,7 +237,7 @@ describe('CacheStorage', () => {
   describe('edge cases', () => {
     it('should handle empty string as URL', () => {
       const cache = new CacheStorage(storage);
-      
+
       cache.add('', cacheData);
       const result = cache.get('');
 
@@ -244,8 +246,9 @@ describe('CacheStorage', () => {
 
     it('should handle special characters in URLs', () => {
       const cache = new CacheStorage(storage);
-      const specialUrl = 'https://api.github.com/repos/user/repo?param=value&other=ção';
-      
+      const specialUrl =
+        'https://api.github.com/repos/user/repo?param=value&other=ção';
+
       cache.add(specialUrl, cacheData);
       const result = cache.get(specialUrl);
 

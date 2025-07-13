@@ -74,7 +74,8 @@ export class GitHubApiLoader {
     }
 
     const error: ApiError = {
-      message: result.message || `HTTP ${response.status}: ${response.statusText}`,
+      message:
+        result.message || `HTTP ${response.status}: ${response.statusText}`,
     };
 
     if (response.status === 404) {
@@ -106,7 +107,7 @@ export class GitHubApiLoader {
     }
 
     const cache = this.cache.get(url);
-    
+
     let response: Response;
     try {
       response = await fetch(url, {
@@ -119,7 +120,7 @@ export class GitHubApiLoader {
     if (response.status === 304 && cache) {
       return cache.data;
     }
-    
+
     if (response.status !== 200) {
       throw await this.identifyError(response);
     }

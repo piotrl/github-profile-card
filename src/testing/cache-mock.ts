@@ -28,7 +28,7 @@ export function setupCacheWithData(
   mockCache: jest.Mocked<CacheStorage>,
   url: string,
   data: any,
-  lastModified: string = 'Mon, 18 Mar 2019 20:40:35 GMT'
+  lastModified: string = 'Mon, 18 Mar 2019 20:40:35 GMT',
 ): void {
   mockCache.get.mockImplementation((requestedUrl: string) => {
     if (requestedUrl === url) {

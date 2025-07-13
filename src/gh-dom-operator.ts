@@ -17,7 +17,7 @@ export class DOMOperator {
   public static createError(error: ApiError, username: string): HTMLDivElement {
     const $error = document.createElement('div');
     $error.className = 'error';
-    
+
     const $message = document.createElement('span');
     $message.textContent = error.message;
     $error.appendChild($message);
@@ -25,12 +25,14 @@ export class DOMOperator {
     if (error.isWrongUser) {
       $message.textContent = `Not found user: ${username}`;
     }
-    
+
     if (error.resetDate) {
       const currentTime = new Date().getTime();
       const resetTime = error.resetDate.getTime();
-      const remainingMinutes = Math.ceil((resetTime - currentTime) / (1000 * 60));
-      
+      const remainingMinutes = Math.ceil(
+        (resetTime - currentTime) / (1000 * 60),
+      );
+
       const $remainingTime = document.createElement('span');
       $remainingTime.className = 'remain';
       $remainingTime.textContent = `Come back after ${remainingMinutes} minutes`;

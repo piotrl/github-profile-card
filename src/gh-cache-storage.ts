@@ -30,7 +30,7 @@ export class CacheStorage {
       if (!cacheData) {
         return {};
       }
-      
+
       const cache = JSON.parse(cacheData);
       return cache && typeof cache === 'object' ? cache : {};
     } catch (error) {
@@ -62,7 +62,7 @@ export class CacheStorage {
 
   public clearExpiredEntries(currentDate: Date): void {
     let hasChanges = false;
-    
+
     for (const [url, entry] of Object.entries(this.requestCache)) {
       if (entry.lastModified) {
         const entryDate = new Date(entry.lastModified);
@@ -73,7 +73,7 @@ export class CacheStorage {
         }
       }
     }
-    
+
     if (hasChanges) {
       this.saveCache();
     }

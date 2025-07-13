@@ -11,13 +11,13 @@ export function setupTestEnvironment(): {
   mockCache: jest.Mocked<CacheStorage>;
 } {
   setupFetchMock();
-  
+
   const mockCache = createCacheMock();
   MockCacheStorage.mockImplementation(() => mockCache);
   setupEmptyCache(mockCache);
-  
+
   const loader = new GitHubApiLoader();
-  
+
   return { loader, mockCache };
 }
 

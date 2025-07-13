@@ -40,7 +40,8 @@ export const mockRepositories: ApiRepository[] = [
     full_name: 'testuser/test-repo-1',
     html_url: 'https://github.com/testuser/test-repo-1',
     description: 'A test repository',
-    languages_url: 'https://api.github.com/repos/testuser/test-repo-1/languages',
+    languages_url:
+      'https://api.github.com/repos/testuser/test-repo-1/languages',
     stargazers_count: 20,
     updated_at: '2023-02-01T00:00:00Z',
     owner: {} as any,
@@ -109,7 +110,8 @@ export const mockRepositories: ApiRepository[] = [
     full_name: 'testuser/test-repo-2',
     html_url: 'https://github.com/testuser/test-repo-2',
     description: 'Another test repository',
-    languages_url: 'https://api.github.com/repos/testuser/test-repo-2/languages',
+    languages_url:
+      'https://api.github.com/repos/testuser/test-repo-2/languages',
     stargazers_count: 10,
     updated_at: '2023-01-01T00:00:00Z',
     owner: {} as any,
@@ -182,7 +184,9 @@ export const mockLanguageStats = [
 /**
  * Creates a mock repository with custom properties
  */
-export function createMockRepository(overrides: Partial<ApiRepository> = {}): ApiRepository {
+export function createMockRepository(
+  overrides: Partial<ApiRepository> = {},
+): ApiRepository {
   return {
     ...mockRepositories[0],
     ...overrides,
@@ -192,11 +196,11 @@ export function createMockRepository(overrides: Partial<ApiRepository> = {}): Ap
 /**
  * Creates a mock profile with custom properties
  */
-export function createMockProfile(overrides: Partial<ApiProfile> = {}): ApiProfile {
+export function createMockProfile(
+  overrides: Partial<ApiProfile> = {},
+): ApiProfile {
   return {
     ...mockProfile,
     ...overrides,
   };
 }
-
-
