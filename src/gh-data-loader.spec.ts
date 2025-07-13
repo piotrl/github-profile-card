@@ -4,7 +4,6 @@
 import { GitHubApiLoader } from './gh-data-loader';
 import { CacheStorage } from './gh-cache-storage';
 
-// Import test utilities and mocks
 import {
   cleanupTestEnvironment,
   createErrorResponse,
@@ -155,11 +154,6 @@ describe('GitHubApiLoader', () => {
 
     it('should use cached data when available with 304 response', async () => {
       // Given
-      const cachedData = {
-        profile: mockProfile,
-        repositories: mockRepositories,
-      };
-
       mockCache.get.mockReturnValue({
         lastModified: 'Mon, 18 Mar 2019 20:40:35 GMT',
         data: mockProfile,

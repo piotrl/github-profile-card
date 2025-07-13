@@ -36,7 +36,7 @@ export class GitHubApiLoader {
 
     const languagesUrls = this.extractLangURLs(repositories);
     const langStats: Record<string, number>[] = [];
-    let requestsAmount = languagesUrls.length;
+    const requestsAmount = languagesUrls.length;
     let completedRequests = 0;
 
     if (requestsAmount === 0) {
@@ -66,10 +66,10 @@ export class GitHubApiLoader {
   }
 
   private async identifyError(response: Response): Promise<ApiError> {
-    let result: any;
+    let result: { message?: string };
     try {
       result = await response.json();
-    } catch (parseError) {
+    } catch {
       result = { message: 'Failed to parse error response' };
     }
 
@@ -118,7 +118,7 @@ export class GitHubApiLoader {
     }
 
     if (response.status === 304 && cache) {
-      return cache.data;
+      return cache.data as T;
     }
 
     if (response.status !== 200) {
@@ -128,7 +128,7 @@ export class GitHubApiLoader {
     let jsonResponse: T;
     try {
       jsonResponse = await response.json();
-    } catch (parseError) {
+    } catch {
       throw new Error('Failed to parse API response as JSON');
     }
 
