@@ -6,7 +6,7 @@ interface Cache {
 
 export interface CacheEntry {
   lastModified: string;
-  data: any;
+  data: unknown;
 }
 
 export class CacheStorage {

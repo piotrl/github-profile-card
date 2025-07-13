@@ -19,12 +19,14 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.spec.ts', '**/*.test.ts'],
+    files: ['**/*.spec.ts', '**/testing/*.ts'],
     plugins: {
       jest: jestPlugin,
     },
     rules: {
       ...jestPlugin.configs.recommended.rules,
+      '@typescript-eslint/no-explicit-any': 'off',
+      'jest/no-done-callback': 'warn'
     },
     languageOptions: {
       globals: {

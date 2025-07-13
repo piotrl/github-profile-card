@@ -186,7 +186,7 @@ describe('CacheStorage', () => {
     it('should handle entries without lastModified date', () => {
       const cache = new CacheStorage(storage);
       const entryWithoutDate: CacheEntry = {
-        lastModified: undefined as any,
+        lastModified: undefined as string,
         data: { test: 'data' },
       };
 

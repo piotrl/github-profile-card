@@ -37,7 +37,7 @@ describe('Widget Initialization', () => {
     });
 
     it('should allow creating new instances via global', () => {
-      const widget = new window.GitHubCard();
+      new window.GitHubCard();
       expect(MockGitHubCardWidget).toHaveBeenCalled();
     });
   });
@@ -103,7 +103,7 @@ describe('Widget Initialization', () => {
       document.body.innerHTML =
         '<div id="custom-template" data-username="testuser"></div>';
 
-      const customWidget = new window.GitHubCard({
+      new window.GitHubCard({
         template: '#custom-template',
         sortBy: 'updateTime',
         maxRepos: 3,
@@ -122,8 +122,8 @@ describe('Widget Initialization', () => {
         <div id="widget-2" data-username="user2"></div>
       `;
 
-      const widget1 = new window.GitHubCard({ template: '#widget-1' });
-      const widget2 = new window.GitHubCard({ template: '#widget-2' });
+      new window.GitHubCard({ template: '#widget-1' });
+      new window.GitHubCard({ template: '#widget-2' });
 
       expect(MockGitHubCardWidget).toHaveBeenCalledTimes(2);
       expect(MockGitHubCardWidget).toHaveBeenNthCalledWith(1, {
