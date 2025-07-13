@@ -1,3 +1,11 @@
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  afterEach,
+  jest,
+} from '@jest/globals';
 import { GitHubApiLoader } from './gh-data-loader';
 import { CacheStorage } from './gh-cache-storage';
 
@@ -168,15 +176,15 @@ describe('GitHubApiLoader', () => {
           headers: {
             get: jest.fn().mockReturnValue('Mon, 18 Mar 2019 20:40:35 GMT'),
           },
-          json: jest.fn().mockResolvedValue(mockProfile),
-        })
+          json: jest.fn(() => Promise.resolve(mockProfile)),
+        } as any)
         .mockResolvedValueOnce({
           status: 200,
           headers: {
             get: jest.fn().mockReturnValue('Mon, 18 Mar 2019 20:40:35 GMT'),
           },
-          json: jest.fn().mockResolvedValue(mockRepositories),
-        });
+          json: jest.fn(() => Promise.resolve(mockRepositories)),
+        } as any);
 
       // When
       const result = await loader.loadUserData('testuser');
@@ -242,7 +250,7 @@ describe('GitHubApiLoader', () => {
             );
             done();
           } catch (error) {
-            done(error);
+            done(error as Error);
           }
         },
       );
@@ -279,7 +287,7 @@ describe('GitHubApiLoader', () => {
             );
             done();
           } catch (error) {
-            done(error);
+            done(error as Error);
           }
         },
       );

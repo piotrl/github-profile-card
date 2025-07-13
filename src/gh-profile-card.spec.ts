@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { GitHubCardWidget } from './gh-profile-card';
 import { GitHubApiLoader } from './gh-data-loader';
 import { DOMOperator } from './gh-dom-operator';
