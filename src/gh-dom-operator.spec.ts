@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { DOMOperator } from './gh-dom-operator';
 import { ApiError, ApiProfile, ApiRepository } from './interface/IGitHubApi';
 

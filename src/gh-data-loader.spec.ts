@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { GitHubApiLoader } from './gh-data-loader';
 import { CacheStorage } from './gh-cache-storage';
 
