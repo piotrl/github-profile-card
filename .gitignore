@@ -2,7 +2,6 @@ tmp/
 .idea/
 *.iml
 node_modules/
-src/**/*.js
 
 # SASS
 .sass-cache
