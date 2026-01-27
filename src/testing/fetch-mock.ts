@@ -55,15 +55,6 @@ export function createErrorResponse(
 }
 
 /**
- * Creates a 304 Not Modified response mock
- */
-export function createNotModifiedResponse(): MockResponse {
-  return {
-    status: 304,
-  };
-}
-
-/**
  * Creates a network error for fetch
  */
 export function createNetworkError(message: string = 'Network failure'): Error {

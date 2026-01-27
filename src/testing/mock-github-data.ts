@@ -180,27 +180,3 @@ export const mockLanguageStats = [
   { TypeScript: 1000, JavaScript: 500 },
   { Python: 800, TypeScript: 200 },
 ];
-
-/**
- * Creates a mock repository with custom properties
- */
-export function createMockRepository(
-  overrides: Partial<ApiRepository> = {},
-): ApiRepository {
-  return {
-    ...mockRepositories[0],
-    ...overrides,
-  };
-}
-
-/**
- * Creates a mock profile with custom properties
- */
-export function createMockProfile(
-  overrides: Partial<ApiProfile> = {},
-): ApiProfile {
-  return {
-    ...mockProfile,
-    ...overrides,
-  };
-}
