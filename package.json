@@ -26,6 +26,7 @@
     "build": "node build.js",
     "build:check": "npm run build && npm run lint && npm run format:check && npm run test",
     "lint": "eslint .",
+    "lint:knip": "knip",
     "format": "prettier --write {*,src/*,demo/*}",
     "format:check": "prettier --check {*,src/*,demo/*}",
     "test": "jest",
