@@ -44,3 +44,5 @@ build/Release
 
 /nbproject/private/
 coverage/
+# Build output (produced in CI for GitHub Pages)
+dist/

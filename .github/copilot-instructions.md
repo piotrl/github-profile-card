@@ -149,7 +149,7 @@ Support both **programmatic** and **HTML data-attribute** configuration:
 ### Build Process (Current Setup)
 - **ESBuild** compiles TypeScript to optimized JavaScript
 - **CSS** bundled by esbuild as text and injected via a `<style>` tag
-- **Bundle** created for browser distribution
+- **Bundle** written to `dist/` (gitignored; built in CI and deployed to GitHub Pages by `.github/workflows/pages.yml`)
 - **Source maps** generated for debugging
 
 *Note: Build tooling can evolve as project needs change*
