@@ -1,0 +1,59 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "ignorePatterns": ["dist", "node_modules", "coverage", "**/*.js"],
+  "rules": {
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unused-vars": "error",
+    "typescript/no-empty-object-type": "error",
+    "typescript/no-require-imports": "error",
+    "typescript/no-unsafe-function-type": "error",
+    "typescript/no-namespace": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/prefer-namespace-keyword": "error",
+    "typescript/triple-slash-reference": "error",
+    "no-case-declarations": "error",
+    "no-empty": "error",
+    "no-prototype-builtins": "error",
+    "no-useless-escape": "error",
+    "prefer-const": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts", "**/testing/*.ts"],
+      "plugins": ["jest"],
+      "env": { "jest": true },
+      "rules": {
+        "typescript/no-explicit-any": "off",
+        "no-new": "off",
+        "jest/require-to-throw-message": "off",
+        "jest/expect-expect": "warn",
+        "jest/no-alias-methods": "error",
+        "jest/no-commented-out-tests": "warn",
+        "jest/no-conditional-expect": "error",
+        "jest/no-deprecated-functions": "error",
+        "jest/no-disabled-tests": "warn",
+        "jest/no-done-callback": "warn",
+        "jest/no-export": "error",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/no-interpolation-in-snapshots": "error",
+        "jest/no-jasmine-globals": "error",
+        "jest/no-mocks-import": "error",
+        "jest/no-standalone-expect": "error",
+        "jest/no-test-prefixes": "error",
+        "jest/valid-describe-callback": "error",
+        "jest/valid-expect": "error",
+        "jest/valid-title": "error"
+      }
+    }
+  ]
+}
