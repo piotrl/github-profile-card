@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CacheStorage, CacheEntry } from './gh-cache-storage';
 import { InMemoryStorage } from './testing/in-memory-storage';
 import { BrowserStorage } from './interface/storage';
@@ -69,9 +69,9 @@ describe('CacheStorage', () => {
 
     it('should handle null cache data', () => {
       const mockStorage: BrowserStorage = {
-        getItem: jest.fn<BrowserStorage['getItem']>().mockReturnValue(null),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
+        getItem: vi.fn<BrowserStorage['getItem']>().mockReturnValue(null),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
       };
 
       const cache = new CacheStorage(mockStorage);
@@ -92,11 +92,11 @@ describe('CacheStorage', () => {
 
     it('should clear corrupted cache on initialization error', () => {
       const mockStorage: BrowserStorage = {
-        getItem: jest
+        getItem: vi
           .fn<BrowserStorage['getItem']>()
           .mockReturnValue('invalid-json'),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
       };
 
       new CacheStorage(mockStorage);
@@ -108,11 +108,11 @@ describe('CacheStorage', () => {
 
     it('should handle storage errors during save', () => {
       const mockStorage: BrowserStorage = {
-        getItem: jest.fn<BrowserStorage['getItem']>().mockReturnValue(null),
-        setItem: jest.fn().mockImplementation(() => {
+        getItem: vi.fn<BrowserStorage['getItem']>().mockReturnValue(null),
+        setItem: vi.fn().mockImplementation(() => {
           throw new Error('Storage full');
         }),
-        removeItem: jest.fn(),
+        removeItem: vi.fn(),
       };
 
       const cache = new CacheStorage(mockStorage);
@@ -124,15 +124,15 @@ describe('CacheStorage', () => {
     it('should retry save after clearing expired entries on storage error', () => {
       let callCount = 0;
       const mockStorage: BrowserStorage = {
-        getItem: jest.fn<BrowserStorage['getItem']>().mockReturnValue(null),
-        setItem: jest.fn().mockImplementation(() => {
+        getItem: vi.fn<BrowserStorage['getItem']>().mockReturnValue(null),
+        setItem: vi.fn().mockImplementation(() => {
           callCount++;
           if (callCount === 1) {
             throw new Error('Storage full');
           }
           // Second call succeeds
         }),
-        removeItem: jest.fn(),
+        removeItem: vi.fn(),
       };
 
       const cache = new CacheStorage(mockStorage);
@@ -166,9 +166,9 @@ describe('CacheStorage', () => {
 
     it('should not save when no entries are expired', () => {
       const mockStorage: BrowserStorage = {
-        getItem: jest.fn<BrowserStorage['getItem']>().mockReturnValue(null),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
+        getItem: vi.fn<BrowserStorage['getItem']>().mockReturnValue(null),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
       };
 
       const cache = new CacheStorage(mockStorage);
@@ -178,7 +178,7 @@ describe('CacheStorage', () => {
       };
 
       cache.add('recent-url', recentEntry);
-      jest.clearAllMocks(); // Clear the setItem call from add()
+      vi.clearAllMocks(); // Clear the setItem call from add()
 
       const cutoffDate = new Date('2020-01-01');
       cache.clearExpiredEntries(cutoffDate);

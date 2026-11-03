@@ -1,9 +1,17 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mocked,
+  type MockedClass,
+} from 'vitest';
 
-jest.mock('./gh-profile-card');
+vi.mock('./gh-profile-card');
 
 import { GitHubCardWidget } from './gh-profile-card';
-const MockGitHubCardWidget = GitHubCardWidget as jest.MockedClass<
+const MockGitHubCardWidget = GitHubCardWidget as MockedClass<
   typeof GitHubCardWidget
 >;
 
@@ -11,21 +19,23 @@ const MockGitHubCardWidget = GitHubCardWidget as jest.MockedClass<
 import './gh-widget-init';
 
 describe('Widget Initialization', () => {
-  let mockWidget: jest.Mocked<GitHubCardWidget>;
+  let mockWidget: Mocked<GitHubCardWidget>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Clear any existing DOM
     document.body.innerHTML = '';
 
     // Mock widget instance
     mockWidget = {
-      init: jest.fn(),
-      refresh: jest.fn(),
+      init: vi.fn(),
+      refresh: vi.fn(),
     } as any;
 
-    MockGitHubCardWidget.mockImplementation(() => mockWidget);
+    MockGitHubCardWidget.mockImplementation(function () {
+      return mockWidget;
+    });
   });
 
   describe('Global GitHubCard', () => {
@@ -134,7 +144,7 @@ describe('Widget Initialization', () => {
 
   describe('Error scenarios', () => {
     it('should handle widget initialization errors gracefully', () => {
-      MockGitHubCardWidget.mockImplementation(() => {
+      MockGitHubCardWidget.mockImplementation(function () {
         throw new Error('Template not found');
       });
 
@@ -175,7 +185,7 @@ describe('Widget Initialization', () => {
     });
 
     it('should work with addEventListener', () => {
-      const handler = jest.fn();
+      const handler = vi.fn();
       document.addEventListener('DOMContentLoaded', handler);
 
       const event = new Event('DOMContentLoaded');

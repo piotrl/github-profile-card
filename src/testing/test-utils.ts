@@ -1,20 +1,28 @@
-import { afterEach, beforeEach, jest } from '@jest/globals';
+import {
+  afterEach,
+  beforeEach,
+  vi,
+  type Mocked,
+  type MockedClass,
+} from 'vitest';
 import { CacheStorage } from '../gh-cache-storage';
 import { GitHubApiLoader } from '../gh-data-loader';
 import { createCacheMock, setupEmptyCache } from './cache-mock';
 import { setupFetchMock, resetFetchMock } from './fetch-mock';
 
-jest.mock('../gh-cache-storage');
-const MockCacheStorage = CacheStorage as jest.MockedClass<typeof CacheStorage>;
+vi.mock('../gh-cache-storage');
+const MockCacheStorage = CacheStorage as MockedClass<typeof CacheStorage>;
 
 export function setupTestEnvironment(): {
   loader: GitHubApiLoader;
-  mockCache: jest.Mocked<CacheStorage>;
+  mockCache: Mocked<CacheStorage>;
 } {
   setupFetchMock();
 
   const mockCache = createCacheMock();
-  MockCacheStorage.mockImplementation(() => mockCache);
+  MockCacheStorage.mockImplementation(function () {
+    return mockCache;
+  });
   setupEmptyCache(mockCache);
 
   const loader = new GitHubApiLoader();
@@ -23,7 +31,7 @@ export function setupTestEnvironment(): {
 }
 
 export function cleanupTestEnvironment(): void {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   resetFetchMock();
 }
 
@@ -33,10 +41,10 @@ export function setupTestDOM(html: string): void {
 
 export function setupCommonTestHooks(): {
   getLoader: () => GitHubApiLoader;
-  getMockCache: () => jest.Mocked<CacheStorage>;
+  getMockCache: () => Mocked<CacheStorage>;
 } {
   let loader: GitHubApiLoader;
-  let mockCache: jest.Mocked<CacheStorage>;
+  let mockCache: Mocked<CacheStorage>;
 
   beforeEach(() => {
     const env = setupTestEnvironment();
