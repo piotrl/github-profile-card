@@ -12,7 +12,7 @@ const config: Config = {
     url: 'https://piotrl.github.io/github-profile-card',
   },
   moduleNameMapper: {
-    '\\.(css|scss)$': '<rootDir>/src/testing/style-mock.js',
+    '\\.css$': '<rootDir>/src/testing/style-mock.js',
   },
   // Coverage configuration
   collectCoverage: true,
