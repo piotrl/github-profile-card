@@ -1,20 +1,21 @@
 .gh-profile-card {
   width: 280px;
+  max-width: 100%;
   border-radius: 5px;
   font-size: 16px;
   font-family: Helvetica;
-  background: #fafafa;
+  background: var(--ghc-bg, #fafafa);
   border-width: 1px 1px 2px;
   border-style: solid;
-  border-color: #ddd;
+  border-color: var(--ghc-border, #ddd);
   overflow: hidden;
 
   a {
     text-decoration: none;
-    color: #444;
+    color: var(--ghc-text, #444);
 
     &:hover {
-      color: #4183c4;
+      color: var(--ghc-accent, #4183c4);
     }
   }
 
@@ -27,12 +28,12 @@
 
   .error {
     font-size: 0.8em;
-    color: #444;
+    color: var(--ghc-text, #444);
     padding: 10px;
 
     span {
       display: block;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid var(--ghc-border, #ddd);
       padding-bottom: 5px;
       margin-bottom: 5px;
 
@@ -46,10 +47,12 @@
   /* Profile header */
 
   .profile {
-    background: #fff;
-    overflow: hidden;
-    padding: 15px 10px;
-    padding-bottom: 0;
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    grid-template-rows: auto auto 1fr;
+    column-gap: 10px;
+    background: var(--ghc-bg-raised, #fff);
+    padding: 15px 10px 0;
   }
 
   .stats {
@@ -58,7 +61,7 @@
 
   .languages {
     position: relative;
-    clear: both;
+    grid-column: 1 / -1;
     margin: 0 -10px;
     padding: 10px;
     min-height: 36px;
@@ -69,7 +72,7 @@
     &::before {
       position: absolute;
       top: -0.7em;
-      background: #fff;
+      background: var(--ghc-bg-raised, #fff);
       padding-right: 5px;
       content: 'Top languages';
       font-style: italic;
@@ -78,37 +81,34 @@
 
     li {
       display: inline-block;
-      color: #444;
+      color: var(--ghc-text, #444);
       font-weight: bold;
       margin-left: 10px;
 
-      &::after {
+      &:not(:last-child)::after {
         content: '\2022';
         margin-left: 10px;
         color: #999;
-      }
-
-      &:last-child::after {
-        content: '';
       }
     }
   }
 
   .followMe {
+    display: flex;
+    align-items: center;
     margin-top: 3px;
   }
 
   .follow-button {
     font-size: 0.8em;
     color: #333;
-    float: left;
     padding: 0 10px;
     line-height: 1.5em;
-    border: 1px solid #d5d5d5;
+    border: 1px solid var(--ghc-border-strong, #d5d5d5);
     border-radius: 3px;
     font-weight: bold;
     background: #eaeaea;
-    background-image: linear-gradient(#fafafa, #eaeaea);
+    background-image: linear-gradient(var(--ghc-bg, #fafafa), #eaeaea);
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     user-select: none;
 
@@ -122,10 +122,10 @@
   /* followers number */
   .followMe span {
     position: relative;
-    background: #fff;
+    background: var(--ghc-bg-raised, #fff);
     margin-left: 8px;
     padding: 0 5px;
-    color: #444;
+    color: var(--ghc-text, #444);
     font-size: 0.8em;
     border: 1px solid;
     border-color: #bbb;
@@ -149,9 +149,8 @@
   .avatar {
     width: 64px;
     height: 64px;
-    float: left;
-    margin: 0 10px 15px 0;
-    margin-left: 0;
+    grid-row: 1 / span 3;
+    margin-bottom: 15px;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 #ddd;
   }
@@ -159,15 +158,13 @@
   /* List of repositories */
 
   .repos {
-    clear: both;
-
     .header {
       display: block;
       width: 100%;
       font-weight: bold;
       background: #eaeaea;
-      background-image: linear-gradient(#fafafa, #eaeaea);
-      border: solid #d5d5d5;
+      background-image: linear-gradient(var(--ghc-bg, #fafafa), #eaeaea);
+      border: solid var(--ghc-border-strong, #d5d5d5);
       border-width: 1px 0;
       color: #555;
       font-size: 0.8em;
@@ -179,16 +176,18 @@
       display: block;
       padding: 7px 10px;
       font-size: 0.9em;
-      border-top: 1px solid #ddd;
 
-      &:first-of-type {
-        border: none;
+      &:not(:first-of-type) {
+        border-top: 1px solid var(--ghc-border, #ddd);
       }
     }
 
     .repo-name {
-      max-width: 280px;
+      display: block;
+      padding-right: 3em;
       font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
 
