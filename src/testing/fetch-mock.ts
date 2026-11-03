@@ -12,7 +12,7 @@ export interface MockResponse {
 /**
  * Global fetch mock function
  */
-export const mockFetch = jest.fn();
+export const mockFetch = jest.fn<(...args: unknown[]) => Promise<unknown>>();
 
 /**
  * Sets up the global fetch mock
@@ -33,7 +33,7 @@ export function createSuccessResponse<T>(
     headers: {
       get: jest.fn((header: string) => headers[header] || null),
     },
-    json: jest.fn().mockResolvedValue(data),
+    json: jest.fn<() => Promise<unknown>>().mockResolvedValue(data),
   };
 }
 
@@ -50,7 +50,7 @@ export function createErrorResponse(
     headers: {
       get: jest.fn((header: string) => headers[header] || null),
     },
-    json: jest.fn().mockResolvedValue({ message }),
+    json: jest.fn<() => Promise<unknown>>().mockResolvedValue({ message }),
   };
 }
 

@@ -216,7 +216,9 @@ describe('GitHubApiLoader', () => {
         .mockResolvedValueOnce({
           status: 200,
           headers: { get: jest.fn().mockReturnValue(null) },
-          json: jest.fn().mockRejectedValue(createJsonError('Invalid JSON')),
+          json: jest
+            .fn<() => Promise<unknown>>()
+            .mockRejectedValue(createJsonError('Invalid JSON')),
         });
       setupEmptyCache(mockCache);
 

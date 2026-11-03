@@ -1,6 +1,7 @@
 /**
  * Cache mock utilities for testing
  */
+import { jest } from '@jest/globals';
 import { CacheStorage } from '../gh-cache-storage';
 
 /**

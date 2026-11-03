@@ -37,22 +37,22 @@ describe('GitHubCardWidget', () => {
     // Mock DOM Operator static methods
     MockDOMOperator.clearChildren = jest.fn();
     MockDOMOperator.createError = jest
-      .fn()
+      .fn<typeof DOMOperator.createError>()
       .mockReturnValue(document.createElement('div'));
     MockDOMOperator.createProfile = jest
-      .fn()
+      .fn<typeof DOMOperator.createProfile>()
       .mockReturnValue(document.createElement('div'));
     MockDOMOperator.createTopLanguagesSection = jest
-      .fn()
+      .fn<typeof DOMOperator.createTopLanguagesSection>()
       .mockReturnValue(document.createElement('ul'));
     MockDOMOperator.createTopLanguagesList = jest
-      .fn()
+      .fn<typeof DOMOperator.createTopLanguagesList>()
       .mockReturnValue('<li>TypeScript</li>');
     MockDOMOperator.createRepositoriesHeader = jest
-      .fn()
+      .fn<typeof DOMOperator.createRepositoriesHeader>()
       .mockReturnValue(document.createElement('span'));
     MockDOMOperator.createRepositoriesList = jest
-      .fn()
+      .fn<typeof DOMOperator.createRepositoriesList>()
       .mockReturnValue(document.createElement('div'));
   });
 

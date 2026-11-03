@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, jest } from '@jest/globals';
 import { CacheStorage } from '../gh-cache-storage';
 import { GitHubApiLoader } from '../gh-data-loader';
 import { createCacheMock, setupEmptyCache } from './cache-mock';
