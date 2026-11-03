@@ -3,8 +3,6 @@ tmp/
 *.iml
 node_modules/
 
-# SASS
-.sass-cache
 src/*.css
 
 # Linux

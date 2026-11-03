@@ -1,6 +1,6 @@
 import { GitHubCardWidget } from './gh-profile-card';
 
-import './css/base.scss';
+import styles from './css/gh-profile-card.css';
 
 declare global {
   interface Window {
@@ -9,6 +9,14 @@ declare global {
 }
 
 window.GitHubCard = GitHubCardWidget;
+
+const injectStyles = () => {
+  const $style = document.createElement('style');
+  $style.textContent = styles;
+  document.head.appendChild($style);
+};
+
+injectStyles();
 
 document.addEventListener('DOMContentLoaded', () => {
   const $defaultTemplate = document.querySelector('#github-card');
