@@ -11,9 +11,11 @@ export interface CacheEntry {
 
 export class CacheStorage {
   private cacheName = 'github-request-cache';
-  private requestCache: Cache = this.initializeCache();
+  private readonly requestCache: Cache;
 
-  constructor(private readonly storage: BrowserStorage) {}
+  constructor(private readonly storage: BrowserStorage) {
+    this.requestCache = this.initializeCache();
+  }
 
   public get(key: string): CacheEntry | undefined {
     return this.requestCache[key];
