@@ -18,28 +18,6 @@ describe('DOMOperator', () => {
     it('should compile', () => {
       expect($template).toBeDefined();
     });
-
-    it('should clear children efficiently', () => {
-      $template.innerHTML = `
-              <div class="profile"></div>
-              <div class="repos"></div>
-          `;
-
-      DOMOperator.clearChildren($template);
-      const result = $template.innerHTML;
-
-      expect(result).toBe('');
-    });
-
-    it('should clear children with text content', () => {
-      $template.textContent = 'Some text content';
-      $template.appendChild(document.createElement('div'));
-
-      DOMOperator.clearChildren($template);
-
-      expect($template.textContent).toBe('');
-      expect($template.children).toHaveLength(0);
-    });
   });
 
   describe('error handling', () => {
@@ -186,14 +164,12 @@ describe('DOMOperator', () => {
         Python: 500,
       };
 
-      const result = DOMOperator.createTopLanguagesList(langs);
+      const names = DOMOperator.createTopLanguagesList(langs).map(
+        ($lang) => $lang.textContent,
+      );
 
-      expect(result).toContain('<li>TypeScript</li>');
-      expect(result).toContain('<li>JavaScript</li>');
-      expect(result).toContain('<li>CSS</li>');
       // Should only include top 3
-      expect(result).not.toContain('<li>HTML</li>');
-      expect(result).not.toContain('<li>Python</li>');
+      expect(names).toEqual(['TypeScript', 'JavaScript', 'CSS']);
     });
 
     it('should create top languages list with fewer than 3 languages', () => {
@@ -202,34 +178,29 @@ describe('DOMOperator', () => {
         JavaScript: 5000,
       };
 
-      const result = DOMOperator.createTopLanguagesList(langs);
+      const $items = DOMOperator.createTopLanguagesList(langs);
 
-      expect(result).toContain('<li>TypeScript</li>');
-      expect(result).toContain('<li>JavaScript</li>');
-      expect((result.match(/<li>/g) || []).length).toBe(2);
+      expect($items).toHaveLength(2);
+      expect($items.every(($lang) => $lang.tagName === 'LI')).toBe(true);
     });
 
     it('should handle empty languages object', () => {
-      const langs = {};
+      const $items = DOMOperator.createTopLanguagesList({});
 
-      const result = DOMOperator.createTopLanguagesList(langs);
-
-      expect(result).toBe('');
+      expect($items).toEqual([]);
     });
 
-    it('should escape HTML in language names', () => {
+    it('should render language names as text, not markup', () => {
       const langs = {
-        'C++': 10000,
-        '<script>alert("xss")</script>': 5000,
+        '<img src=x onerror=alert(1)>': 10000,
         'C#': 2000,
       };
 
-      const result = DOMOperator.createTopLanguagesList(langs);
+      const [$xss, $csharp] = DOMOperator.createTopLanguagesList(langs);
 
-      expect(result).toContain('<li>C++</li>');
-      expect(result).toContain('<li>C#</li>');
-      expect(result).not.toContain('<script>');
-      expect(result).toContain('&lt;script&gt;');
+      expect($xss.textContent).toBe('<img src=x onerror=alert(1)>');
+      expect($xss.children).toHaveLength(0);
+      expect($csharp.textContent).toBe('C#');
     });
 
     it('should sort languages by usage correctly', () => {
@@ -239,10 +210,9 @@ describe('DOMOperator', () => {
         CSS: 2000,
       };
 
-      const result = DOMOperator.createTopLanguagesList(langs);
-      const firstLang = result.match(/<li>([^<]+)</)?.[1];
+      const [$first] = DOMOperator.createTopLanguagesList(langs);
 
-      expect(firstLang).toBe('TypeScript');
+      expect($first.textContent).toBe('TypeScript');
     });
   });
 
@@ -411,32 +381,6 @@ describe('DOMOperator', () => {
       const $star = $repoElement.querySelector('.star');
 
       expect($star?.textContent).toBe('0');
-    });
-  });
-
-  describe('HTML escaping', () => {
-    const testCases = [
-      ['<script>', '&lt;script&gt;'],
-      ['&', '&amp;'],
-      ['"', '"'],
-      ["'", "'"],
-      ['<img src=x onerror=alert(1)>', '&lt;img src=x onerror=alert(1)&gt;'],
-    ];
-
-    it.each(testCases)('should properly escape: %s', (input, expected) => {
-      const escaped = (DOMOperator as any).escapeHtml(input);
-      expect(escaped).toBe(expected);
-    });
-
-    it('should handle empty string', () => {
-      const escaped = (DOMOperator as any).escapeHtml('');
-      expect(escaped).toBe('');
-    });
-
-    it('should handle normal text without special characters', () => {
-      const input = 'Normal text 123';
-      const escaped = (DOMOperator as any).escapeHtml(input);
-      expect(escaped).toBe(input);
     });
   });
 });

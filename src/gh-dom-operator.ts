@@ -9,11 +9,6 @@ import {
 } from './gh-dom.utils';
 
 export class DOMOperator {
-  public static clearChildren($parent: HTMLElement): void {
-    // More efficient way to clear children
-    $parent.textContent = '';
-  }
-
   public static createError(error: ApiError, username: string): HTMLDivElement {
     const $error = document.createElement('div');
     $error.className = 'error';
@@ -60,28 +55,21 @@ export class DOMOperator {
     return $langsList;
   }
 
-  public static createTopLanguagesList(langs: Record<string, number>): string {
-    const sortedLanguages = Object.keys(langs)
+  public static createTopLanguagesList(
+    langs: Record<string, number>,
+  ): HTMLLIElement[] {
+    return Object.keys(langs)
       .map((language) => ({
         name: language,
         stat: langs[language],
       }))
       .sort((a, b) => b.stat - a.stat)
-      .slice(0, 3);
-
-    return sortedLanguages
+      .slice(0, 3)
       .map((lang) => {
-        // Escape HTML to prevent XSS
-        const escapedName = this.escapeHtml(lang.name);
-        return `<li>${escapedName}</li>`;
-      })
-      .join('');
-  }
-
-  private static escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+        const $lang = document.createElement('li');
+        $lang.textContent = lang.name;
+        return $lang;
+      });
   }
 
   public static createRepositoriesHeader(headerText: string): HTMLSpanElement {
@@ -99,10 +87,9 @@ export class DOMOperator {
     const $reposList = document.createElement('div');
     $reposList.className = 'repos';
 
-    repositories
-      .slice(0, maxRepos)
-      .map(this.createRepositoryElement)
-      .forEach((el) => $reposList.appendChild(el));
+    $reposList.append(
+      ...repositories.slice(0, maxRepos).map(this.createRepositoryElement),
+    );
 
     return $reposList;
   }

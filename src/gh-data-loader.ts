@@ -35,33 +35,26 @@ export class GitHubApiLoader {
     }
 
     const languagesUrls = this.extractLangURLs(repositories);
-    const langStats: Record<string, number>[] = [];
-    const requestsAmount = languagesUrls.length;
-    let completedRequests = 0;
-
-    if (requestsAmount === 0) {
+    if (languagesUrls.length === 0) {
       callback([]);
       return;
     }
 
-    const handleCompletion = () => {
-      completedRequests++;
-      if (completedRequests === requestsAmount) {
-        callback(langStats);
-      }
-    };
-
-    languagesUrls.forEach((repoLangUrl) => {
-      this.fetch<Record<string, number>>(repoLangUrl)
-        .then((repoLangs) => {
-          langStats.push(repoLangs || {});
-          handleCompletion();
-        })
-        .catch((error) => {
-          console.warn('Failed to load languages for repository:', error);
-          langStats.push({});
-          handleCompletion();
-        });
+    Promise.allSettled(
+      languagesUrls.map((url) => this.fetch<Record<string, number>>(url)),
+    ).then((results) => {
+      callback(
+        results.map((result) => {
+          if (result.status === 'fulfilled') {
+            return result.value || {};
+          }
+          console.warn(
+            'Failed to load languages for repository:',
+            result.reason,
+          );
+          return {};
+        }),
+      );
     });
   }
 

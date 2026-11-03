@@ -45,7 +45,6 @@ describe('GitHubCardWidget', () => {
     });
 
     // Mock DOM Operator static methods
-    MockDOMOperator.clearChildren = vi.fn();
     MockDOMOperator.createError = vi
       .fn<typeof DOMOperator.createError>()
       .mockReturnValue(document.createElement('div'));
@@ -57,7 +56,7 @@ describe('GitHubCardWidget', () => {
       .mockReturnValue(document.createElement('ul'));
     MockDOMOperator.createTopLanguagesList = vi
       .fn<typeof DOMOperator.createTopLanguagesList>()
-      .mockReturnValue('<li>TypeScript</li>');
+      .mockReturnValue([document.createElement('li')]);
     MockDOMOperator.createRepositoriesHeader = vi
       .fn<typeof DOMOperator.createRepositoriesHeader>()
       .mockReturnValue(document.createElement('span'));
@@ -166,8 +165,9 @@ describe('GitHubCardWidget', () => {
       expect(mockApiLoader.loadUserData).toHaveBeenCalledWith('testuser');
     });
 
-    it('should clear DOM children during initialization', async () => {
+    it('should replace template children during initialization', async () => {
       // Given
+      document.querySelector('#github-card')!.innerHTML = '<p>stale</p>';
       const userData = { profile: mockProfile, repositories: mockRepositories };
       mockApiLoader.loadUserData.mockResolvedValue(userData);
 
@@ -175,7 +175,7 @@ describe('GitHubCardWidget', () => {
       await widget.init();
 
       // Then
-      expect(MockDOMOperator.clearChildren).toHaveBeenCalled();
+      expect(document.querySelector('#github-card p')).toBeNull();
     });
 
     it('should render profile after successful data load', async () => {
@@ -219,15 +219,16 @@ describe('GitHubCardWidget', () => {
       };
     });
 
-    it('should clear DOM children when refreshing', () => {
+    it('should replace DOM children when refreshing', () => {
       // Given
+      document.querySelector('#github-card')!.innerHTML = '<p>stale</p>';
       const newOptions: WidgetConfig = { sortBy: 'updateTime', maxRepos: 3 };
 
       // When
       widget.refresh(newOptions);
 
       // Then
-      expect(MockDOMOperator.clearChildren).toHaveBeenCalled();
+      expect(document.querySelector('#github-card p')).toBeNull();
     });
   });
 

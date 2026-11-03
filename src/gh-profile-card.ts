@@ -84,15 +84,10 @@ export class GitHubCardWidget {
   private render(options: WidgetConfig, error?: ApiError): void {
     const $root = this.$template;
 
-    // clear root template element to prepare space for widget
-    DOMOperator.clearChildren($root);
-
     if (error) {
-      const $errorSection = DOMOperator.createError(
-        error,
-        options.username || '',
+      $root.replaceChildren(
+        DOMOperator.createError(error, options.username || ''),
       );
-      $root.appendChild($errorSection);
       return;
     }
 
@@ -104,7 +99,7 @@ export class GitHubCardWidget {
     if (!options.hideTopLanguages) {
       $profile.appendChild(this.createTopLanguagesSection(repositories));
     }
-    $root.appendChild($profile);
+    const sections: HTMLElement[] = [$profile];
 
     if ((options.maxRepos || 0) > 0) {
       const $reposHeader = DOMOperator.createRepositoriesHeader(
@@ -116,8 +111,10 @@ export class GitHubCardWidget {
       );
       $reposList.insertBefore($reposHeader, $reposList.firstChild);
 
-      $root.appendChild($reposList);
+      sections.push($reposList);
     }
+
+    $root.replaceChildren(...sections);
   }
 
   private createTopLanguagesSection(
@@ -134,8 +131,9 @@ export class GitHubCardWidget {
       (langStats) => {
         if (langStats.length > 0) {
           const languagesRank = this.groupLanguagesUsage(langStats);
-          $topLanguages.innerHTML =
-            DOMOperator.createTopLanguagesList(languagesRank);
+          $topLanguages.replaceChildren(
+            ...DOMOperator.createTopLanguagesList(languagesRank),
+          );
         }
       },
     );
