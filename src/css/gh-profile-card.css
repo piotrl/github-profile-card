@@ -1,15 +1,13 @@
-@scope (.gh-profile-card) {
-  :scope {
-    width: 280px;
-    border-radius: 5px;
-    font-size: 16px;
-    font-family: Helvetica;
-    background: #fafafa;
-    border-width: 1px 1px 2px;
-    border-style: solid;
-    border-color: #ddd;
-    overflow: hidden;
-  }
+.gh-profile-card {
+  width: 280px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: Helvetica;
+  background: #fafafa;
+  border-width: 1px 1px 2px;
+  border-style: solid;
+  border-color: #ddd;
+  overflow: hidden;
 
   a {
     text-decoration: none;
