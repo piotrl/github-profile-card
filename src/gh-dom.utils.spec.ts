@@ -97,7 +97,7 @@ describe('DOM Utils', () => {
       const avatar = createAvatar(avatarUrl);
 
       expect(avatar.tagName).toBe('IMG');
-      expect(avatar.src).toBe(document.baseURI);
+      expect(avatar.src).toBe('https://piotrl.github.io/github-profile-card');
       expect(avatar.className).toBe('avatar');
       expect(avatar.alt).toBe('GitHub avatar');
     });

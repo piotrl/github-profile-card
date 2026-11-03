@@ -1,5 +1,4 @@
 import esbuild from 'esbuild';
-import { sassPlugin } from 'esbuild-sass-plugin';
 import fs from 'fs';
 import path from 'path';
 import PACKAGE from './package.json' with { type: 'json' };
@@ -22,11 +21,9 @@ esbuild
     minify: false,
     sourcemap: ENV === 'dev', // Inline source map in development
     format: 'iife',
+    loader: { '.css': 'text' },
     target: ['es2022'],
     plugins: [
-      sassPlugin({
-        type: 'style',
-      }), // Load SCSS using esbuild-sass-plugin
       {
         name: 'banner-plugin',
         setup(build) {

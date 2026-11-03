@@ -8,7 +8,7 @@ This is a **GitHub Profile Card Widget** - a vanilla JavaScript/TypeScript libra
 - **TypeScript** (v3.7.5) - Primary language
 - **Jest** (v24.9.0) - Testing framework
 - **ESBuild** - Build tool (can evolve as needed)
-- **SCSS** - Styling
+- **Native CSS** (nesting, `@scope`) - Styling
 - **Vanilla JavaScript** - No frameworks, pure browser compatibility
 
 ## Architecture & Code Organization
@@ -24,7 +24,7 @@ This is a **GitHub Profile Card Widget** - a vanilla JavaScript/TypeScript libra
 ```
 src/
 ├── interface/          # TypeScript interfaces and types
-├── css/               # SCSS stylesheets
+├── css/               # Native CSS stylesheet (@scope-d to .gh-profile-card)
 └── testing/           # Test utilities and mocks
 ```
 
@@ -119,7 +119,7 @@ Support both **programmatic** and **HTML data-attribute** configuration:
 
 ### Styling Changes
 **Preferences:**
-1. **Prefer** modifying SCSS files in `src/css/` for consistency
+1. **Prefer** modifying CSS files in `src/css/` for consistency
 2. **Consider** BEM methodology for CSS classes (but not required)
 3. **Use** CSS custom properties for theming when appropriate
 4. **Test** responsive design across devices
@@ -148,7 +148,7 @@ Support both **programmatic** and **HTML data-attribute** configuration:
 
 ### Build Process (Current Setup)
 - **ESBuild** compiles TypeScript to optimized JavaScript
-- **SCSS** compiled to minified CSS
+- **CSS** bundled by esbuild as text and injected via a `<style>` tag
 - **Bundle** created for browser distribution
 - **Source maps** generated for debugging
 

@@ -1,0 +1,218 @@
+@scope (.gh-profile-card) {
+  :scope {
+    width: 280px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: Helvetica;
+    background: #fafafa;
+    border-width: 1px 1px 2px;
+    border-style: solid;
+    border-color: #ddd;
+    overflow: hidden;
+  }
+
+  a {
+    text-decoration: none;
+    color: #444;
+
+    &:hover {
+      color: #4183c4;
+    }
+  }
+
+  .name {
+    display: block;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #222;
+  }
+
+  .error {
+    font-size: 0.8em;
+    color: #444;
+    padding: 10px;
+
+    span {
+      display: block;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+
+      &.remain {
+        text-align: center;
+        font-weight: bold;
+      }
+    }
+  }
+
+  /* Profile header */
+
+  .profile {
+    background: #fff;
+    overflow: hidden;
+    padding: 15px 10px;
+    padding-bottom: 0;
+  }
+
+  .stats {
+    padding: 5px;
+  }
+
+  .languages {
+    position: relative;
+    clear: both;
+    margin: 0 -10px;
+    padding: 10px;
+    min-height: 36px;
+
+    border-top: 1px solid #dedede;
+    font-size: 0.8em;
+
+    &::before {
+      position: absolute;
+      top: -0.7em;
+      background: #fff;
+      padding-right: 5px;
+      content: 'Top languages';
+      font-style: italic;
+      color: #555;
+    }
+
+    li {
+      display: inline-block;
+      color: #444;
+      font-weight: bold;
+      margin-left: 10px;
+
+      &::after {
+        content: '\2022';
+        margin-left: 10px;
+        color: #999;
+      }
+
+      &:last-child::after {
+        content: '';
+      }
+    }
+  }
+
+  .followMe {
+    margin-top: 3px;
+  }
+
+  .follow-button {
+    font-size: 0.8em;
+    color: #333;
+    float: left;
+    padding: 0 10px;
+    line-height: 1.5em;
+    border: 1px solid #d5d5d5;
+    border-radius: 3px;
+    font-weight: bold;
+    background: #eaeaea;
+    background-image: linear-gradient(#fafafa, #eaeaea);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    user-select: none;
+
+    &:hover {
+      color: inherit;
+      background: #ddd;
+      background-image: linear-gradient(#eee, #ddd);
+    }
+  }
+
+  /* followers number */
+  .followMe span {
+    position: relative;
+    background: #fff;
+    margin-left: 8px;
+    padding: 0 5px;
+    color: #444;
+    font-size: 0.8em;
+    border: 1px solid;
+    border-color: #bbb;
+
+    &::before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 5px;
+      height: 5px;
+      left: -4px;
+      top: 30%;
+      background: inherit;
+      border-left: 1px solid;
+      border-top: 1px solid;
+      border-color: inherit;
+      transform: rotate(-45deg);
+    }
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+    float: left;
+    margin: 0 10px 15px 0;
+    margin-left: 0;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 #ddd;
+  }
+
+  /* List of repositories */
+
+  .repos {
+    clear: both;
+
+    .header {
+      display: block;
+      width: 100%;
+      font-weight: bold;
+      background: #eaeaea;
+      background-image: linear-gradient(#fafafa, #eaeaea);
+      border: solid #d5d5d5;
+      border-width: 1px 0;
+      color: #555;
+      font-size: 0.8em;
+      padding: 5px 10px;
+    }
+
+    a {
+      position: relative;
+      display: block;
+      padding: 7px 10px;
+      font-size: 0.9em;
+      border-top: 1px solid #ddd;
+
+      &:first-of-type {
+        border: none;
+      }
+    }
+
+    .repo-name {
+      max-width: 280px;
+      font-weight: bold;
+      text-overflow: ellipsis;
+    }
+
+    .updated {
+      display: block;
+      font-size: 0.75em;
+      font-style: italic;
+      color: #777;
+    }
+
+    .star {
+      position: absolute;
+      font-size: 0.9em;
+      right: 0.5em;
+      top: 1.1em;
+      color: #888;
+
+      &::after {
+        content: '\a0\2605';
+        font-size: 1.1em;
+        font-weight: bold;
+      }
+    }
+  }
+}
