@@ -1,24 +1,24 @@
-import { jest } from '@jest/globals';
+import { vi, type Mock } from 'vitest';
 import { ApiProfile, ApiRepository } from '../interface/IGitHubApi';
 
 export interface MockResponse {
   status: number;
   headers?: {
-    get: jest.Mock;
+    get: Mock;
   };
-  json?: jest.Mock;
+  json?: Mock;
 }
 
 /**
  * Global fetch mock function
  */
-export const mockFetch = jest.fn<(...args: unknown[]) => Promise<unknown>>();
+export const mockFetch = vi.fn<(...args: unknown[]) => Promise<unknown>>();
 
 /**
  * Sets up the global fetch mock
  */
 export function setupFetchMock(): void {
-  (global as any).fetch = mockFetch;
+  (globalThis as any).fetch = mockFetch;
 }
 
 /**
@@ -31,9 +31,9 @@ export function createSuccessResponse<T>(
   return {
     status: 200,
     headers: {
-      get: jest.fn((header: string) => headers[header] || null),
+      get: vi.fn((header: string) => headers[header] || null),
     },
-    json: jest.fn<() => Promise<unknown>>().mockResolvedValue(data),
+    json: vi.fn<() => Promise<unknown>>().mockResolvedValue(data),
   };
 }
 
@@ -48,9 +48,9 @@ export function createErrorResponse(
   return {
     status,
     headers: {
-      get: jest.fn((header: string) => headers[header] || null),
+      get: vi.fn((header: string) => headers[header] || null),
     },
-    json: jest.fn<() => Promise<unknown>>().mockResolvedValue({ message }),
+    json: vi.fn<() => Promise<unknown>>().mockResolvedValue({ message }),
   };
 }
 

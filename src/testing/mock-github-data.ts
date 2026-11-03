@@ -176,7 +176,7 @@ export const mockRepositories: ApiRepository[] = [
   },
 ];
 
-export const mockLanguageStats = [
+export const mockLanguageStats: Record<string, number>[] = [
   { TypeScript: 1000, JavaScript: 500 },
   { Python: 800, TypeScript: 200 },
 ];

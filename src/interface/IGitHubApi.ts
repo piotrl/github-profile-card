@@ -73,7 +73,7 @@ export interface ApiRepository {
   owner: RepositoryOwner;
   private: boolean;
   html_url: string;
-  description: string;
+  description: string | null;
   fork: boolean;
   url: string;
   forks_url: string;

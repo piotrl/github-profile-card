@@ -1,4 +1,4 @@
-import { jest, beforeEach, expect, afterEach } from '@jest/globals';
+import { vi, beforeEach, expect, afterEach } from 'vitest';
 
 // Mock console methods during tests to reduce noise
 const originalError = console.error;
@@ -9,18 +9,18 @@ const localStorageMock = (() => {
   let store: { [key: string]: string } = {};
 
   return {
-    getItem: jest.fn((key: string) => store[key] || null),
-    setItem: jest.fn((key: string, value: string) => {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => {
       store[key] = value.toString();
     }),
-    removeItem: jest.fn((key: string) => {
+    removeItem: vi.fn((key: string) => {
       delete store[key];
     }),
-    clear: jest.fn(() => {
+    clear: vi.fn(() => {
       store = {};
     }),
     length: 0,
-    key: jest.fn(),
+    key: vi.fn(),
   };
 })();
 
@@ -32,15 +32,15 @@ if (typeof window !== 'undefined') {
   });
 } else {
   // For node environment, create a global localStorage
-  (global as any).localStorage = localStorageMock;
+  (globalThis as any).localStorage = localStorageMock;
 }
 
 beforeEach(() => {
-  console.error = jest.fn();
-  console.warn = jest.fn();
+  console.error = vi.fn();
+  console.warn = vi.fn();
 
   // Reset all mocks before each test
-  jest.clearAllMocks();
+  vi.clearAllMocks();
   localStorageMock.clear();
 
   // Global DOM setup for tests that need it

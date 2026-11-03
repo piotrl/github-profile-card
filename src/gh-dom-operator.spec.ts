@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { DOMOperator } from './gh-dom-operator';
 import { ApiError, ApiProfile, ApiRepository } from './interface/IGitHubApi';
 

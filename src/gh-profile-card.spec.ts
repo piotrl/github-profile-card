@@ -1,4 +1,12 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import {
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type Mocked,
+  type MockedClass,
+} from 'vitest';
 import { GitHubCardWidget } from './gh-profile-card';
 import { GitHubApiLoader } from './gh-data-loader';
 import { DOMOperator } from './gh-dom-operator';
@@ -7,20 +15,20 @@ import { WidgetConfig } from './interface/IWidget';
 import { mockProfile, mockRepositories } from './testing/mock-github-data';
 
 // Mock dependencies
-jest.mock('./gh-data-loader');
-jest.mock('./gh-dom-operator');
+vi.mock('./gh-data-loader');
+vi.mock('./gh-dom-operator');
 
-const MockGitHubApiLoader = GitHubApiLoader as jest.MockedClass<
+const MockGitHubApiLoader = GitHubApiLoader as MockedClass<
   typeof GitHubApiLoader
 >;
-const MockDOMOperator = DOMOperator as jest.MockedClass<typeof DOMOperator>;
+const MockDOMOperator = DOMOperator as MockedClass<typeof DOMOperator>;
 
 describe('GitHubCardWidget', () => {
-  let mockApiLoader: jest.Mocked<GitHubApiLoader>;
+  let mockApiLoader: Mocked<GitHubApiLoader>;
   let widget: GitHubCardWidget;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Setup DOM
     document.body.innerHTML =
@@ -28,30 +36,32 @@ describe('GitHubCardWidget', () => {
 
     // Mock API loader
     mockApiLoader = {
-      loadUserData: jest.fn(),
-      loadRepositoriesLanguages: jest.fn(),
+      loadUserData: vi.fn(),
+      loadRepositoriesLanguages: vi.fn(),
     } as any;
 
-    MockGitHubApiLoader.mockImplementation(() => mockApiLoader);
+    MockGitHubApiLoader.mockImplementation(function () {
+      return mockApiLoader;
+    });
 
     // Mock DOM Operator static methods
-    MockDOMOperator.clearChildren = jest.fn();
-    MockDOMOperator.createError = jest
+    MockDOMOperator.clearChildren = vi.fn();
+    MockDOMOperator.createError = vi
       .fn<typeof DOMOperator.createError>()
       .mockReturnValue(document.createElement('div'));
-    MockDOMOperator.createProfile = jest
+    MockDOMOperator.createProfile = vi
       .fn<typeof DOMOperator.createProfile>()
       .mockReturnValue(document.createElement('div'));
-    MockDOMOperator.createTopLanguagesSection = jest
+    MockDOMOperator.createTopLanguagesSection = vi
       .fn<typeof DOMOperator.createTopLanguagesSection>()
       .mockReturnValue(document.createElement('ul'));
-    MockDOMOperator.createTopLanguagesList = jest
+    MockDOMOperator.createTopLanguagesList = vi
       .fn<typeof DOMOperator.createTopLanguagesList>()
       .mockReturnValue('<li>TypeScript</li>');
-    MockDOMOperator.createRepositoriesHeader = jest
+    MockDOMOperator.createRepositoriesHeader = vi
       .fn<typeof DOMOperator.createRepositoriesHeader>()
       .mockReturnValue(document.createElement('span'));
-    MockDOMOperator.createRepositoriesList = jest
+    MockDOMOperator.createRepositoriesList = vi
       .fn<typeof DOMOperator.createRepositoriesList>()
       .mockReturnValue(document.createElement('div'));
   });

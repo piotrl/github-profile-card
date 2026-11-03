@@ -114,7 +114,7 @@ export class GitHubApiLoader {
         headers: this.buildHeaders(cache),
       });
     } catch (networkError) {
-      throw new Error(`Network error: ${networkError.message}`);
+      throw new Error(`Network error: ${(networkError as Error).message}`);
     }
 
     if (response.status === 304 && cache) {

@@ -4,10 +4,12 @@ import {
   expect,
   it,
   afterEach,
-  jest,
-} from '@jest/globals';
+  vi,
+  type Mocked,
+} from 'vitest';
 import { GitHubApiLoader } from './gh-data-loader';
 import { CacheStorage } from './gh-cache-storage';
+import type { ApiRepository } from './interface/IGitHubApi';
 
 import {
   cleanupTestEnvironment,
@@ -27,7 +29,7 @@ import {
 
 describe('GitHubApiLoader', () => {
   let loader: GitHubApiLoader;
-  let mockCache: jest.Mocked<CacheStorage>;
+  let mockCache: Mocked<CacheStorage>;
 
   beforeEach(() => {
     const setup = setupTestEnvironment();
@@ -174,16 +176,16 @@ describe('GitHubApiLoader', () => {
         .mockResolvedValueOnce({
           status: 200,
           headers: {
-            get: jest.fn().mockReturnValue('Mon, 18 Mar 2019 20:40:35 GMT'),
+            get: vi.fn().mockReturnValue('Mon, 18 Mar 2019 20:40:35 GMT'),
           },
-          json: jest.fn(() => Promise.resolve(mockProfile)),
+          json: vi.fn(() => Promise.resolve(mockProfile)),
         } as any)
         .mockResolvedValueOnce({
           status: 200,
           headers: {
-            get: jest.fn().mockReturnValue('Mon, 18 Mar 2019 20:40:35 GMT'),
+            get: vi.fn().mockReturnValue('Mon, 18 Mar 2019 20:40:35 GMT'),
           },
-          json: jest.fn(() => Promise.resolve(mockRepositories)),
+          json: vi.fn(() => Promise.resolve(mockRepositories)),
         } as any);
 
       // When
@@ -215,8 +217,8 @@ describe('GitHubApiLoader', () => {
         .mockResolvedValueOnce(createSuccessResponse(mockProfile))
         .mockResolvedValueOnce({
           status: 200,
-          headers: { get: jest.fn().mockReturnValue(null) },
-          json: jest
+          headers: { get: vi.fn().mockReturnValue(null) },
+          json: vi
             .fn<() => Promise<unknown>>()
             .mockRejectedValue(createJsonError('Invalid JSON')),
         });
@@ -233,78 +235,52 @@ describe('GitHubApiLoader', () => {
   });
 
   describe('loadRepositoriesLanguages', () => {
-    it('should load language statistics for repositories', (done) => {
-      // Setup language mocks using utility
+    const loadLanguages = (repos: ApiRepository[]) =>
+      new Promise<Record<string, number>[]>((resolve) =>
+        loader.loadRepositoriesLanguages(repos, resolve),
+      );
+
+    it('should load language statistics for repositories', async () => {
       setupLanguageMocks(mockLanguageStats);
       setupEmptyCache(mockCache);
 
-      loader.loadRepositoriesLanguages(
-        mockRepositories.slice(0, 2),
-        (langStats) => {
-          try {
-            expect(langStats).toHaveLength(2);
-            // Since completion order is not guaranteed, just check that we got the expected data
-            expect(langStats).toEqual(
-              expect.arrayContaining([
-                mockLanguageStats[0],
-                mockLanguageStats[1],
-              ]),
-            );
-            done();
-          } catch (error) {
-            done(error as Error);
-          }
-        },
-      );
+      const langStats = await loadLanguages(mockRepositories.slice(0, 2));
+
+      expect(langStats).toHaveLength(2);
+      // Completion order is not guaranteed
+      expect(langStats).toEqual(expect.arrayContaining(mockLanguageStats));
     });
 
-    it('should handle empty repositories array', (done) => {
-      loader.loadRepositoriesLanguages([], (langStats) => {
-        expect(langStats).toEqual([]);
-        done();
-      });
+    it('should handle empty repositories array', async () => {
+      expect(await loadLanguages([])).toEqual([]);
     });
 
-    it('should handle null repositories', (done) => {
-      loader.loadRepositoriesLanguages(null as any, (langStats) => {
-        expect(langStats).toEqual([]);
-        done();
-      });
+    it('should handle null repositories', async () => {
+      expect(await loadLanguages(null as any)).toEqual([]);
     });
 
-    it('should handle failed language requests gracefully', (done) => {
+    it('should handle failed language requests gracefully', async () => {
       mockFetch
         .mockResolvedValueOnce(createSuccessResponse(mockLanguageStats[0]))
         .mockRejectedValueOnce(createNetworkError('Network error'));
       setupEmptyCache(mockCache);
 
-      loader.loadRepositoriesLanguages(
-        mockRepositories.slice(0, 2),
-        (langStats) => {
-          try {
-            expect(langStats).toHaveLength(2);
-            // One should succeed with the mock data, one should fail with empty object
-            expect(langStats).toEqual(
-              expect.arrayContaining([mockLanguageStats[0], {}]),
-            );
-            done();
-          } catch (error) {
-            done(error as Error);
-          }
-        },
+      const langStats = await loadLanguages(mockRepositories.slice(0, 2));
+
+      expect(langStats).toHaveLength(2);
+      // One should succeed with the mock data, one should fail with empty object
+      expect(langStats).toEqual(
+        expect.arrayContaining([mockLanguageStats[0], {}]),
       );
     });
 
-    it('should handle repositories without language URLs', (done) => {
+    it('should handle repositories without language URLs', async () => {
       const reposWithoutLangUrl = mockRepositories.map((repo) => ({
         ...repo,
         languages_url: undefined as any,
       }));
 
-      loader.loadRepositoriesLanguages(reposWithoutLangUrl, (langStats) => {
-        expect(langStats).toEqual([]);
-        done();
-      });
+      expect(await loadLanguages(reposWithoutLangUrl)).toEqual([]);
     });
   });
 });
