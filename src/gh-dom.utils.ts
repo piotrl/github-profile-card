@@ -1,11 +1,7 @@
-function appendChildren($parent: HTMLElement, nodes: HTMLElement[]): void {
-  nodes.forEach((node) => $parent.appendChild(node));
-}
-
 export function createProfile(children: HTMLElement[]): HTMLDivElement {
   const $profile = document.createElement('div');
   $profile.classList.add('profile');
-  appendChildren($profile, children);
+  $profile.append(...children);
 
   return $profile;
 }
@@ -54,7 +50,7 @@ export function createFollowers(followersAmount: number): HTMLSpanElement {
 export function createFollowContainer(children: HTMLElement[]): HTMLDivElement {
   const $followContainer = document.createElement('div');
   $followContainer.className = 'followMe';
-  appendChildren($followContainer, children);
+  $followContainer.append(...children);
 
   return $followContainer;
 }
