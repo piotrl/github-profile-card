@@ -21,7 +21,8 @@
     "format": "prettier --write --ignore-unknown {*,src/*,demo/*}",
     "format:check": "prettier --check --ignore-unknown {*,src/*,demo/*}",
     "test": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -39,5 +40,8 @@
   "bugs": {
     "url": "https://github.com/piotrl/github-profile-card/issues"
   },
-  "homepage": "https://piotrl.github.io/github-profile-card/"
+  "homepage": "https://piotrl.github.io/github-profile-card/",
+  "files": [
+    "dist"
+  ]
 }
